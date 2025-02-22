@@ -290,17 +290,7 @@ class m_users {
         }
         
         return false;
-    }
-
-
-
-
-
-
-
-
-
-
+    }  
 
 }
 ?>

@@ -18,13 +18,22 @@ class Users extends Controller {
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
                 'confirm_password' => trim($_POST['confirm_password']),
+                'userType' => trim($_POST['userType'] ?? 'member'),
                 'name_err' => '',
                 'email_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => ''
+                'confirm_password_err' => '',
+                'userType_err' => ''
             ];
 
+
+            // Validate userType
+            if (empty($data['userType'])) {
+                $data['userType_err'] = 'Please select a user type';
+            }
+
             // Add optional fields if they exist
+
             if (isset($_POST['specialty'])) {
                 $data['specialty'] = trim($_POST['specialty']);
             }
@@ -48,8 +57,10 @@ class Users extends Controller {
                 $data['email_err'] = 'Please enter an email';
             } else {
                 // Check if email exists in any user table
-                $existingUser = $this->userModel->findUserByEmail($data['email']);
-                if ($existingUser['exists']) {
+                $userType = trim($_POST['userType'] ?? 'member'); // Default to member if not set
+                $existingUser = $this->userModel->findUserByEmail($data['email'], $userType);
+                if ($existingUser) {
+
                     $data['email_err'] = 'Email is already registered';
                 }
             }
@@ -67,13 +78,16 @@ class Users extends Controller {
 
             // Check if all errors are empty
             if (empty($data['name_err']) && empty($data['email_err']) 
-                && empty($data['password_err']) && empty($data['confirm_password_err'])) {
+                && empty($data['password_err']) && empty($data['confirm_password_err'])
+                && empty($data['userType_err'])) {
+
                 
                 // Hash the password
                 $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
                 // Register user
-                if ($this->userModel->register($data)) {
+                if ($this->userModel->register($data, $data['userType'])) {
+
                     die('register_success,You are now registered and can log in');
                 } else {
                     die('register_error,Something went wrong');
@@ -88,11 +102,14 @@ class Users extends Controller {
                 'email' => '',
                 'password' => '',
                 'confirm_password' => '',
+                'userType' => 'member', // Default to member
                 'name_err' => '',
                 'email_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => ''
+                'confirm_password_err' => '',
+                'userType_err' => ''
             ];
+
 
             $this->view('users/v_register', $data);
         }
@@ -227,8 +244,9 @@ class Users extends Controller {
             if (empty($data['email'])) {
                 $data['email_err'] = 'Please enter an email.';
             } else {
-                $existingUser = $this->userModel->findUserByEmail($data['email']);
-                if ($existingUser['exists'] && $data['email'] != $userData->email) {
+                $existingUser = $this->userModel->findUserByEmail($data['email'], $userType);
+                if ($existingUser && $data['email'] != $userData->email) {
+
                     $data['email_err'] = 'Email is already registered.';
                 }
             }
@@ -296,4 +314,3 @@ class Users extends Controller {
         }
     }
 }
-?>

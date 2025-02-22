@@ -30,7 +30,7 @@ body {
 
 .illustration-side {
     flex: 1;
-    background: linear-gradient(45deg, #4e54c8, #8f94fb);
+    background: linear-gradient(45deg,rgb(87, 204, 153), #6F73CE);
     padding: 40px;
     display: flex;
     flex-direction: column;
@@ -149,14 +149,14 @@ body {
 }
 
 .forgot-password {
-    color: #4e54c8;
+    color: #6F73CE;
     text-decoration: none;
 }
 
 button {
     width: 100%;
     padding: 12px;
-    background: #4e54c8;
+    background: #6F73CE;
     border: none;
     border-radius: 8px;
     color: white;
@@ -177,7 +177,7 @@ button:hover {
 }
 
 .register-link a {
-    color: #4e54c8;
+    color: #6F73CE;
     text-decoration: none;
     font-weight: bold;
 }
