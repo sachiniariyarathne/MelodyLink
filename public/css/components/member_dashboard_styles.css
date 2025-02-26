@@ -1,26 +1,31 @@
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #ffffff;
-  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7fc; /* Light background for better readability */
+  color: #333; /* Dark text for better contrast */
   margin: 0;
-  padding: 0;
+  padding-top: 80px; /* Increased padding to avoid header overlap */
   line-height: 1.6;
 }
 
 .dashboard-container {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 .sidebar {
   width: 250px;
-  background-color: #1e1e1e;
+  background-color: #ffffff; /* White background for sidebar */
   padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow to sidebar */
   display: flex;
   flex-direction: column;
 }
 
 .profile-section {
+  color: #1e1e1e;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -36,6 +41,7 @@ body {
 .dashboard-nav ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .dashboard-nav ul li {
@@ -43,24 +49,32 @@ body {
 }
 
 .dashboard-nav ul li a {
-  color: #a0a0a0;
+  color: #4a4a4a;
+  font-weight: 600; /* Bold font for better visibility */
   text-decoration: none;
   transition: color 0.3s ease;
+  font-size: 16px; /* Adjusted font size */
+  padding: 10px;
+  border-radius: 5px;
 }
 
-.dashboard-nav ul li.active a,
-.dashboard-nav ul li a:hover {
-  color: #1db954;
+.dashboard-nav ul li a:hover,
+.dashboard-nav ul li.active a {
+  background-color: rgb(87, 205, 154); /* Highlight on hover and active state */
+  color: #fff;
 }
 
 .main-content {
   flex-grow: 1;
-  padding: 30px;
+  padding: 40px;
   background-color: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Light shadow for main content */
 }
 
-.member-info {
-  margin-bottom: 30px;
+.member-info h1 {
+  color: #333;
+  font-size: 24px; /* Increased font size */
+  margin-bottom: 20px;
 }
 
 .quick-stats {
@@ -69,11 +83,23 @@ body {
 }
 
 .stat-card {
-  background-color: #1e1e1e;
-  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  padding: 20px;
   border-radius: 10px;
   text-align: center;
   flex: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow for cards */
+}
+
+.stat-card h3 {
+  font-size: 18px; /* Standardized font size */
+  margin-bottom: 10px;
+}
+
+.stat-card p {
+  font-size: 22px; /* Larger font for stats */
+  font-weight: bold;
 }
 
 .section-header {
@@ -84,11 +110,13 @@ body {
 }
 
 .btn-create {
-  background-color: #1db954;
+  background-color: #6F73CE;
   color: white;
-  padding: 10px 15px;
+  padding: 12px 18px;
   text-decoration: none;
   border-radius: 5px;
+  font-size: 16px; /* Adjusted font size */
+  font-weight: 600;
 }
 
 .playlist-grid {
@@ -98,9 +126,10 @@ body {
 }
 
 .playlist-card {
-  background-color: #1e1e1e;
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow for cards */
 }
 
 .activity-list {
@@ -112,9 +141,10 @@ body {
 .activity-item {
   display: flex;
   align-items: center;
-  background-color: #1e1e1e;
+  background-color: #ffffff;
   padding: 15px;
   border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Light shadow */
 }
 
 .music-grid {
@@ -124,9 +154,10 @@ body {
 }
 
 .music-card {
-  background-color: #1e1e1e;
+  background-color: #ffffff;
   border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
 }
 
 .music-card img {
