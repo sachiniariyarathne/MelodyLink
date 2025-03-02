@@ -1,11 +1,20 @@
 <?php
-class Merchandise extends Controller {
-    private $merchandiseModel;
+class Cart extends Controller {
     private $cartModel;
+    private $merchandiseModel;
+    private $orderModel;
 
     public function __construct() {
-        $this->merchandiseModel = $this->model('m_Merchandise');
+        // Initialize models
         $this->cartModel = $this->model('m_cart');
+        $this->merchandiseModel = $this->model('m_Merchandise');
+        
+        // Load order model if available (for checkout process)
+        if (file_exists('../app/models/m_order.php')) {
+            $this->orderModel = $this->model('m_order');
+        }
+        
+        // Ensure session is started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -15,24 +24,29 @@ class Merchandise extends Controller {
         return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
     }
 
+    // Main cart page
     public function index() {
-        $merchandise = $this->merchandiseModel->getAllMerchandise();
-        
+        // Initialize cart if not exists
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
         
+        // If user is logged in, sync with database cart
+        if ($this->isAuthenticated()) {
+            $this->syncCart();
+        }
+        
         $data = [
-            'merchandise' => $merchandise,
             'isLoggedIn' => $this->isAuthenticated(),
             'cartItems' => $_SESSION['cart'] ?? [],
             'user_id' => $_SESSION['user_id'] ?? null
         ];
     
-        $this->view('v_merchandise', $data);
+        $this->view('users/v_cart', $data);
     }
-
-    public function addToCart() {
+    
+    // Add item to cart
+    public function add() {
         // Set proper content type for JSON responses
         header('Content-Type: application/json');
         
@@ -117,7 +131,8 @@ class Merchandise extends Controller {
         header('Location: ' . URLROOT . '/merchandise');
     }
 
-    public function removeFromCart() {
+    // Remove item from cart
+    public function remove() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $merchId = isset($_POST['merch_id']) ? $_POST['merch_id'] : null;
             
@@ -141,48 +156,8 @@ class Merchandise extends Controller {
         exit;
     }
     
-    public function getCartCount() {
-        header('Content-Type: application/json');
-        $totalItems = 0;
-        
-        if (isset($_SESSION['cart'])) {
-            $totalItems = array_sum(array_column($_SESSION['cart'], 'quantity'));
-        }
-        
-        echo json_encode(['cartCount' => $totalItems]);
-    }
-    
-    // Method to debug the current user session
-    public function debugSession() {
-        if (!$this->isAuthenticated()) {
-            echo "Not logged in";
-            return;
-        }
-        
-        echo "User ID: " . $_SESSION['user_id'] . " (Type: " . gettype($_SESSION['user_id']) . ")<br>";
-        echo "Session cart items: " . count($_SESSION['cart'] ?? []);
-    }
-
-    public function cart() {
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-        
-        // If user is logged in, sync with database cart
-        if ($this->isAuthenticated()) {
-            $this->syncCart();
-        }
-        
-        $data = [
-            'isLoggedIn' => $this->isAuthenticated(),
-            'cartItems' => $_SESSION['cart'] ?? [],
-            'user_id' => $_SESSION['user_id'] ?? null
-        ];
-    
-        $this->view('users/v_cart', $data);
-    }
-    
-    public function updateQuantity() {
+    // Update item quantity in cart
+    public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $merchId = isset($_POST['merch_id']) ? $_POST['merch_id'] : null;
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
@@ -207,12 +182,12 @@ class Merchandise extends Controller {
             }
         }
         
-        header('Location: ' . URLROOT . '/merchandise/cart');
+        header('Location: ' . URLROOT . '/cart');
         exit;
     }
     
     // Clear all items from cart
-    public function clearCart() {
+    public function clear() {
         // Clear session cart
         $_SESSION['cart'] = [];
         
@@ -223,8 +198,20 @@ class Merchandise extends Controller {
         }
         
         $_SESSION['cart_message'] = 'Cart cleared successfully';
-        header('Location: ' . URLROOT . '/merchandise/cart');
+        header('Location: ' . URLROOT . '/cart');
         exit;
+    }
+    
+    // Get cart count for AJAX requests
+    public function count() {
+        header('Content-Type: application/json');
+        $totalItems = 0;
+        
+        if (isset($_SESSION['cart'])) {
+            $totalItems = array_sum(array_column($_SESSION['cart'], 'quantity'));
+        }
+        
+        echo json_encode(['cartCount' => $totalItems]);
     }
     
     // Sync session cart with database cart
@@ -294,7 +281,7 @@ class Merchandise extends Controller {
         // Verify cart is not empty
         if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
             $_SESSION['cart_error'] = 'Your cart is empty';
-            header('Location: ' . URLROOT . '/merchandise/cart');
+            header('Location: ' . URLROOT . '/cart');
             exit;
         }
         
@@ -338,214 +325,4 @@ class Merchandise extends Controller {
         
         $this->view('users/v_checkout', $data);
     }
-
-
-
-
-// Process order and send confirmation email
-public function processOrder() {
-    // Check if user is logged in
-    if (!$this->isAuthenticated()) {
-        redirect('users/login');
-        return;
-    }
-    
-    // Verify form submission
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        redirect('merchandise/checkout');
-        return;
-    }
-    
-    // Validate cart is not empty
-    if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-        $_SESSION['checkout_error'] = 'Your cart is empty';
-        redirect('merchandise/checkout');
-        return;
-    }
-    
-    // Get user information
-    $userId = $_SESSION['user_id'];
-    $firstName = trim($_POST['firstName']);
-    $lastName = trim($_POST['lastName']);
-    $email = trim($_POST['email']);
-    $address = trim($_POST['address']);
-    $address2 = trim($_POST['address2'] ?? '');
-    $country = trim($_POST['country']);
-    $state = trim($_POST['state']);
-    $zip = trim($_POST['zip']);
-    $paymentMethod = trim($_POST['paymentMethod']);
-    
-    // Get cart information
-    $cartItems = $_SESSION['cart'];
-    $subtotal = 0;
-    
-    foreach ($cartItems as $item) {
-        $subtotal += $item['price'] * $item['quantity'];
-    }
-    
-    // Calculate tax and shipping
-    $taxRate = 0.08;
-    $tax = $subtotal * $taxRate;
-    $shipping = 5.99;
-    $total = $subtotal + $tax + $shipping;
-    
-    // Generate order ID (you can modify this to use your order table)
-    $orderId = 'ORD-' . time() . '-' . $userId;
-    
-    // Send confirmation email
-    $emailSent = $this->sendOrderConfirmationEmail($email, $orderId, $firstName, $lastName, $cartItems, $subtotal, $tax, $shipping, $total);
-    
-    if (!$emailSent) {
-        // Log the error but continue with order processing
-        error_log('Failed to send order confirmation email to ' . $email);
-    }
-    
-    // In a real application, you would save the order to your database here
-    // $this->orderModel->createOrder($userId, $orderId, $cartItems, $total, etc.);
-    
-    // Clear the cart after successful order
-    $this->clearCart();
-    
-    // Store order data in session for the thank you page
-    $_SESSION['order_details'] = [
-        'order_id' => $orderId,
-        'name' => $firstName . ' ' . $lastName,
-        'email' => $email,
-        'total' => $total,
-        'items' => $cartItems
-    ];
-    
-    // Redirect to thank you page
-    redirect('merchandise/thankyou');
-}
-
-// Send order confirmation email
-private function sendOrderConfirmationEmail($email, $orderId, $firstName, $lastName, $cartItems, $subtotal, $tax, $shipping, $total) {
-    // Set up PHPMailer
-    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-    
-    try {
-        // Server settings
-        $mail->SMTPDebug = 0;
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'IndipaPerera5@gmail.com';
-        $mail->Password = 'mxpt ybvk rgcb sbtv'; // Your app password
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-        $mail->setFrom('MelodyLink.noreply@gmail.com', 'MelodyLink');
-        
-        // Recipients
-        $mail->addAddress($email, $firstName . ' ' . $lastName);
-        
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = 'Your MelodyLink Order #' . $orderId;
-        
-        // Create HTML email body
-        $emailBody = "
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; }
-                .order-container { max-width: 600px; margin: 0 auto; }
-                .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
-                .content { padding: 20px; }
-                .item { display: flex; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-                .item-image { width: 80px; margin-right: 15px; }
-                .item-details { flex-grow: 1; }
-                .total-section { background-color: #f8f9fa; padding: 15px; margin-top: 20px; }
-                .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; }
-            </style>
-        </head>
-        <body>
-            <div class='order-container'>
-                <div class='header'>
-                    <h2>Thank You for Your Purchase!</h2>
-                    <p>Order #$orderId</p>
-                </div>
-                <div class='content'>
-                    <p>Dear $firstName $lastName,</p>
-                    <p>Thank you for your purchase from MelodyLink. We're excited to confirm your order.</p>
-                    
-                    <h3>Order Summary:</h3>";
-        
-        // Add each item to the email
-        foreach ($cartItems as $item) {
-            $itemTotal = $item['price'] * $item['quantity'];
-            $imagePath = URLROOT . '/public/images/' . $item['image']; // Adjust path based on your structure
-            
-            $emailBody .= "
-                    <div class='item'>
-                        <div class='item-image'>
-                            <img src='$imagePath' alt='{$item['name']}' style='max-width: 80px;'>
-                        </div>
-                        <div class='item-details'>
-                            <strong>{$item['name']}</strong><br>
-                            Quantity: {$item['quantity']}<br>
-                            Price: $" . number_format($item['price'], 2) . "<br>
-                            Subtotal: $" . number_format($itemTotal, 2) . "
-                        </div>
-                    </div>";
-        }
-        
-        // Add total section
-        $emailBody .= "
-                    <div class='total-section'>
-                        <p><strong>Subtotal:</strong> $" . number_format($subtotal, 2) . "</p>
-                        <p><strong>Tax:</strong> $" . number_format($tax, 2) . "</p>
-                        <p><strong>Shipping:</strong> $" . number_format($shipping, 2) . "</p>
-                        <p><strong>Total:</strong> $" . number_format($total, 2) . "</p>
-                    </div>
-                    
-                    <p>Your items will be shipped soon. We'll send you another email with tracking information when your order ships.</p>
-                    
-                    <p>If you have any questions about your order, please contact our customer service team.</p>
-                    
-                    <p>Thank you for shopping with MelodyLink!</p>
-                </div>
-                <div class='footer'>
-                    <p>© " . date('Y') . " MelodyLink. All rights reserved.</p>
-                </div>
-            </div>
-        </body>
-        </html>";
-        
-        $mail->Body = $emailBody;
-        $mail->AltBody = "Thank you for your order #$orderId. Your total is $" . number_format($total, 2); // Plain text version
-        
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        error_log("Error sending order confirmation email: " . $e->getMessage());
-        return false;
-    }
-}
-
-// Thank you page after successful order
-public function thankyou() {
-    // Check if order details exist in session
-    if (!isset($_SESSION['order_details'])) {
-        redirect('merchandise');
-        return;
-    }
-    
-    $data = [
-        'order_details' => $_SESSION['order_details'],
-        'isLoggedIn' => $this->isAuthenticated()
-    ];
-    
-    // Clear order details from session after displaying the page
-    // You might want to comment this out during testing
-    // unset($_SESSION['order_details']);
-    
-    $this->view('users/v_thankyou', $data);
-}
-
-// You will need to add a route in your Order controller or create a method to handle order processing
-public function process() {
-    $this->processOrder();
-}
-
 }
