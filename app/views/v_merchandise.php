@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php';?>
+<?php require APPROOT . '/views/inc/header1.php';?>
 
 <div class="background-overlay"></div>
 
@@ -18,7 +18,7 @@
             <?php else: ?>
                 <a href="<?php echo URLROOT; ?>/users/logout" class="login-btn">Logout</a>
             <?php endif; ?>
-            <button class="cart-btn" onclick="toggleCart()">
+            <a href="<?php echo URLROOT; ?>/cart" class="cart-btn">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="9" cy="21" r="1"/>
                     <circle cx="20" cy="21" r="1"/>
@@ -28,10 +28,25 @@
                     <?php echo isset($data['cartItems']) ? array_sum(array_column($data['cartItems'], 'quantity')) : 0; ?>
                 </span>
                 <span class="cart-tooltip">View Cart</span>
-            </button>
+            </a>
         </div>
     </div>
 </nav>
+
+<!-- Display success/error messages -->
+<?php if(isset($_SESSION['cart_message'])): ?>
+    <div class="notification success">
+        <?php echo $_SESSION['cart_message']; ?>
+        <?php unset($_SESSION['cart_message']); ?>
+    </div>
+<?php endif; ?>
+
+<?php if(isset($_SESSION['cart_error'])): ?>
+    <div class="notification error">
+        <?php echo $_SESSION['cart_error']; ?>
+        <?php unset($_SESSION['cart_error']); ?>
+    </div>
+<?php endif; ?>
 
 <main class="main-content">
     <div class="merch-grid">
@@ -53,17 +68,20 @@
                             <span class="merch-price">$<?= number_format($item->Price ?? 0, 2); ?></span>
                         </div>
                         <p class="merch-description"><?= htmlspecialchars($item->Description ?? ''); ?></p>
-                        <button 
-                            class="add-to-cart-btn"
-                            data-merch-id="<?= $item->merch_id ?>"
-                            onclick="addToCart(<?= $item->merch_id ?>)"
-                            <?= !$data['isLoggedIn'] ? 'disabled' : '' ?>
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            <?= !$data['isLoggedIn'] ? 'Login to Add' : 'Add to Cart' ?>
-                        </button>
+                        
+                        <form action="<?php echo URLROOT; ?>/merchandise/addToCart" method="POST">
+                            <input type="hidden" name="merch_id" value="<?= htmlspecialchars($item->merch_id ?? ''); ?>">
+                            <button 
+                                type="submit"
+                                class="add-to-cart-btn"
+                                <?= !$data['isLoggedIn'] ? 'disabled' : '' ?>
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <?= !$data['isLoggedIn'] ? 'Login to Add' : 'Add to Cart' ?>
+                            </button>
+                        </form>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -118,9 +136,46 @@
     </div>
 </footer>
 
+<style>
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 4px;
+        z-index: 1000;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+    }
+    
+    .success {
+        background-color: #4CAF50;
+    }
+    
+    .error {
+        background-color: #f44336;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-20px); }
+    }
+</style>
+
 <script>
-    const URLROOT = '<?php echo URLROOT; ?>';
+    // Auto-hide notifications after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        });
+    });
 </script>
-
-<script src="<?php echo URLROOT; ?>/js/cart.js"></script>
-
