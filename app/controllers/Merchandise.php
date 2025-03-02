@@ -158,4 +158,53 @@ class Merchandise extends Controller {
         echo "User ID: " . $_SESSION['user_id'] . " (Type: " . gettype($_SESSION['user_id']) . ")<br>";
         echo "Session cart items: " . count($_SESSION['cart'] ?? []);
     }
+
+
+    public function cart() {
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+        
+        $data = [
+            'isLoggedIn' => $this->isAuthenticated(),
+            'cartItems' => $_SESSION['cart'] ?? [],
+            'user_id' => $_SESSION['user_id'] ?? null
+        ];
+    
+        $this->view('users/v_cart', $data);
+    }
+    
+    public function updateQuantity() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $merchId = isset($_POST['merch_id']) ? $_POST['merch_id'] : null;
+            $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
+            
+            // Ensure quantity is at least 1
+            $quantity = max(1, $quantity);
+            
+            if ($merchId && isset($_SESSION['cart'][$merchId])) {
+                // Update session cart quantity
+                $_SESSION['cart'][$merchId]['quantity'] = $quantity;
+                
+                // Update database if user is logged in
+                if ($this->isAuthenticated()) {
+                    $userId = (int)$_SESSION['user_id'];
+                    $merchId = (int)$merchId;
+                    $this->cartModel->updateCartQuantity($userId, $merchId, $quantity);
+                }
+                
+                $_SESSION['cart_message'] = 'Cart updated successfully';
+            } else {
+                $_SESSION['cart_error'] = 'Failed to update cart';
+            }
+        }
+        
+        header('Location: ' . URLROOT . '/merchandise/cart');
+        exit;
+    }
+
+
+
+
+
 }
