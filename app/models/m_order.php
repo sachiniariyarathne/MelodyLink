@@ -7,7 +7,7 @@ class m_order {
     }
     
     /**
-     * Create a new order
+     * Create a new order (modified to work without transactions)
      * 
      * @param int $userId The user ID
      * @param string $orderId The order ID
@@ -18,10 +18,7 @@ class m_order {
      */
     public function createOrder($userId, $orderId, $items, $total, $addressInfo) {
         try {
-            // Begin transaction
-            $this->db->beginTransaction();
-            
-            // Insert order into orders table
+            // Insert order into orders table without transaction
             $this->db->query('INSERT INTO orders (order_id, user_id, total_amount, shipping_address, 
                              billing_address, payment_method, order_status, created_at) 
                              VALUES (:order_id, :user_id, :total_amount, :shipping_address, 
@@ -49,11 +46,11 @@ class m_order {
             $result = $this->db->execute();
             
             if (!$result) {
-                $this->db->rollBack();
                 return false;
             }
             
             // Insert order items
+            $allItemsInserted = true;
             foreach ($items as $item) {
                 $this->db->query('INSERT INTO order_items (order_id, merch_id, quantity, price, subtotal) 
                                  VALUES (:order_id, :merch_id, :quantity, :price, :subtotal)');
@@ -64,19 +61,16 @@ class m_order {
                 $this->db->bind(':price', $item['price']);
                 $this->db->bind(':subtotal', $item['price'] * $item['quantity']);
                 
-                $result = $this->db->execute();
+                $itemResult = $this->db->execute();
                 
-                if (!$result) {
-                    $this->db->rollBack();
-                    return false;
+                if (!$itemResult) {
+                    $allItemsInserted = false;
+                    break;
                 }
             }
             
-            // Commit transaction
-            $this->db->commit();
-            return true;
+            return $allItemsInserted;
         } catch (Exception $e) {
-            $this->db->rollBack();
             error_log('Error creating order: ' . $e->getMessage());
             return false;
         }

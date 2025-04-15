@@ -67,21 +67,21 @@
                     <h4 class="mb-0">Billing Address</h4>
                 </div>
                 <div class="card-body">
-                    <form action="<?php echo URLROOT; ?>/order/process" method="POST">
+                    <form action="<?php echo URLROOT; ?>/merchandise/process" method="POST">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="firstName">First name</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo isset($data['user']->firstName) ? $data['user']->firstName : ''; ?>" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="lastName">Last name</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo isset($data['user']->lastName) ? $data['user']->lastName : ''; ?>" required>
                             </div>
                         </div>
                         
                         <div class="mb-3">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" value="<?php echo isset($data['user']->email) ? $data['user']->email : ''; ?>" required>
                         </div>
                         
                         <div class="mb-3">
@@ -138,26 +138,29 @@
                             </div>
                         </div>
                         
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="cc-name">Name on card</label>
-                                <input type="text" class="form-control" id="cc-name" name="cc-name" required>
-                                <small class="text-muted">Full name as displayed on card</small>
+                        <!-- Credit card information (shown conditionally based on payment method) -->
+                        <div id="creditCardInfo">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cc-name">Name on card</label>
+                                    <input type="text" class="form-control" id="cc-name" name="cc-name">
+                                    <small class="text-muted">Full name as displayed on card</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cc-number">Credit card number</label>
+                                    <input type="text" class="form-control" id="cc-number" name="cc-number">
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="cc-number">Credit card number</label>
-                                <input type="text" class="form-control" id="cc-number" name="cc-number" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label for="cc-expiration">Expiration</label>
-                                <input type="text" class="form-control" id="cc-expiration" name="cc-expiration" placeholder="MM/YY" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="cc-cvv">CVV</label>
-                                <input type="text" class="form-control" id="cc-cvv" name="cc-cvv" required>
+                            
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="cc-expiration">Expiration</label>
+                                    <input type="text" class="form-control" id="cc-expiration" name="cc-expiration" placeholder="MM/YY">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="cc-cvv">CVV</label>
+                                    <input type="text" class="form-control" id="cc-cvv" name="cc-cvv">
+                                </div>
                             </div>
                         </div>
                         
@@ -172,4 +175,38 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Simple script to toggle credit card fields based on payment method
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
+        const creditCardInfo = document.getElementById('creditCardInfo');
+        
+        function toggleCreditCardFields() {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            
+            if (selectedMethod === 'credit' || selectedMethod === 'debit') {
+                creditCardInfo.style.display = 'block';
+                document.getElementById('cc-name').required = true;
+                document.getElementById('cc-number').required = true;
+                document.getElementById('cc-expiration').required = true;
+                document.getElementById('cc-cvv').required = true;
+            } else {
+                creditCardInfo.style.display = 'none';
+                document.getElementById('cc-name').required = false;
+                document.getElementById('cc-number').required = false;
+                document.getElementById('cc-expiration').required = false;
+                document.getElementById('cc-cvv').required = false;
+            }
+        }
+        
+        // Initialize
+        toggleCreditCardFields();
+        
+        // Add event listeners
+        paymentMethods.forEach(method => {
+            method.addEventListener('change', toggleCreditCardFields);
+        });
+    });
+</script>
 
