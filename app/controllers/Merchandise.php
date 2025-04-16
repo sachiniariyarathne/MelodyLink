@@ -19,7 +19,8 @@ class Merchandise extends Controller {
             session_start();
         }
         $this->mail = new PHPMailer(true);
-        $this->sendOrderConfirmationEmail();
+        // Remove or comment out this line:
+        // $this->sendOrderConfirmationEmail();
     }
 
     private function isAuthenticated() {
@@ -448,108 +449,109 @@ class Merchandise extends Controller {
     }
 
     // Send order confirmation email
-    private function sendOrderConfirmationEmail($email, $orderId, $firstName, $lastName, $cartItems, $subtotal, $tax, $shipping, $total) {
-        // Set up PHPMailer
-        // $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    // Send order confirmation email
+private function sendOrderConfirmationEmail($email, $orderId, $firstName, $lastName, $cartItems, $subtotal, $tax, $shipping, $total) {
+    // Create a new PHPMailer instance within this method
+    $mail = new PHPMailer(true);
+    
+    try {
+        // Server settings
+        $mail->SMTPDebug = 0;
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'IndipaPerera5@gmail.com';
+        $mail->Password = 'mxpt ybvk rgcb sbtv'; // Your app password
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        $mail->setFrom('MelodyLink.noreply@gmail.com', 'MelodyLink');
         
-        try {
-            // Server settings
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'IndipaPerera5@gmail.com';
-            $mail->Password = 'mxpt ybvk rgcb sbtv'; // Your app password
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->setFrom('MelodyLink.noreply@gmail.com', 'MelodyLink');
-            
-            // Recipients
-            $mail->addAddress($email, $firstName . ' ' . $lastName);
-            
-            // Content
-            $mail->isHTML(true);
-            $mail->Subject = 'Your MelodyLink Order #' . $orderId;
-            
-            // Create HTML email body
-            $emailBody = "
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; }
-                    .order-container { max-width: 600px; margin: 0 auto; }
-                    .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
-                    .content { padding: 20px; }
-                    .item { display: flex; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-                    .item-image { width: 80px; margin-right: 15px; }
-                    .item-details { flex-grow: 1; }
-                    .total-section { background-color: #f8f9fa; padding: 15px; margin-top: 20px; }
-                    .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class='order-container'>
-                    <div class='header'>
-                        <h2>Thank You for Your Purchase!</h2>
-                        <p>Order #$orderId</p>
-                    </div>
-                    <div class='content'>
-                        <p>Dear $firstName $lastName,</p>
-                        <p>Thank you for your purchase from MelodyLink. We're excited to confirm your order.</p>
-                        
-                        <h3>Order Summary:</h3>";
-            
-            // Add each item to the email
-            foreach ($cartItems as $item) {
-                $itemTotal = $item['price'] * $item['quantity'];
-                $imagePath = URLROOT . '/public/images/' . $item['image']; // Adjust path based on your structure
-                
-                $emailBody .= "
-                        <div class='item'>
-                            <div class='item-image'>
-                                <img src='$imagePath' alt='{$item['name']}' style='max-width: 80px;'>
-                            </div>
-                            <div class='item-details'>
-                                <strong>{$item['name']}</strong><br>
-                                Quantity: {$item['quantity']}<br>
-                                Price: $" . number_format($item['price'], 2) . "<br>
-                                Subtotal: $" . number_format($itemTotal, 2) . "
-                            </div>
-                        </div>";
-            }
-            
-            // Add total section
-            $emailBody .= "
-                        <div class='total-section'>
-                            <p><strong>Subtotal:</strong> $" . number_format($subtotal, 2) . "</p>
-                            <p><strong>Tax:</strong> $" . number_format($tax, 2) . "</p>
-                            <p><strong>Shipping:</strong> $" . number_format($shipping, 2) . "</p>
-                            <p><strong>Total:</strong> $" . number_format($total, 2) . "</p>
-                        </div>
-                        
-                        <p>Your items will be shipped soon. We'll send you another email with tracking information when your order ships.</p>
-                        
-                        <p>If you have any questions about your order, please contact our customer service team.</p>
-                        
-                        <p>Thank you for shopping with MelodyLink!</p>
-                    </div>
-                    <div class='footer'>
-                        <p>© " . date('Y') . " MelodyLink. All rights reserved.</p>
-                    </div>
+        // Recipients
+        $mail->addAddress($email, $firstName . ' ' . $lastName);
+        
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Your MelodyLink Order #' . $orderId;
+        
+        // Create HTML email body
+        $emailBody = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                .order-container { max-width: 600px; margin: 0 auto; }
+                .header { background-color: #f8f9fa; padding: 20px; text-align: center; }
+                .content { padding: 20px; }
+                .item { display: flex; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+                .item-image { width: 80px; margin-right: 15px; }
+                .item-details { flex-grow: 1; }
+                .total-section { background-color: #f8f9fa; padding: 15px; margin-top: 20px; }
+                .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; }
+            </style>
+        </head>
+        <body>
+            <div class='order-container'>
+                <div class='header'>
+                    <h2>Thank You for Your Purchase!</h2>
+                    <p>Order #$orderId</p>
                 </div>
-            </body>
-            </html>";
+                <div class='content'>
+                    <p>Dear $firstName $lastName,</p>
+                    <p>Thank you for your purchase from MelodyLink. We're excited to confirm your order.</p>
+                    
+                    <h3>Order Summary:</h3>";
+        
+        // Add each item to the email
+        foreach ($cartItems as $item) {
+            $itemTotal = $item['price'] * $item['quantity'];
+            $imagePath = URLROOT . '/public/images/' . $item['image']; // Adjust path based on your structure
             
-            $mail->Body = $emailBody;
-            $mail->AltBody = "Thank you for your order #$orderId. Your total is $" . number_format($total, 2); // Plain text version
-            
-            $mail->send();
-            return true;
-        } catch (Exception $e) {
-            error_log("Error sending order confirmation email: " . $e->getMessage());
-            return false;
+            $emailBody .= "
+                    <div class='item'>
+                        <div class='item-image'>
+                            <img src='$imagePath' alt='{$item['name']}' style='max-width: 80px;'>
+                        </div>
+                        <div class='item-details'>
+                            <strong>{$item['name']}</strong><br>
+                            Quantity: {$item['quantity']}<br>
+                            Price: $" . number_format($item['price'], 2) . "<br>
+                            Subtotal: $" . number_format($itemTotal, 2) . "
+                        </div>
+                    </div>";
         }
+        
+        // Add total section
+        $emailBody .= "
+                    <div class='total-section'>
+                        <p><strong>Subtotal:</strong> $" . number_format($subtotal, 2) . "</p>
+                        <p><strong>Tax:</strong> $" . number_format($tax, 2) . "</p>
+                        <p><strong>Shipping:</strong> $" . number_format($shipping, 2) . "</p>
+                        <p><strong>Total:</strong> $" . number_format($total, 2) . "</p>
+                    </div>
+                    
+                    <p>Your items will be shipped soon. We'll send you another email with tracking information when your order ships.</p>
+                    
+                    <p>If you have any questions about your order, please contact our customer service team.</p>
+                    
+                    <p>Thank you for shopping with MelodyLink!</p>
+                </div>
+                <div class='footer'>
+                    <p>© " . date('Y') . " MelodyLink. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+        
+        $mail->Body = $emailBody;
+        $mail->AltBody = "Thank you for your order #$orderId. Your total is $" . number_format($total, 2); // Plain text version
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Error sending order confirmation email: " . $e->getMessage());
+        return false;
     }
+}
 
     // Thank you page after successful order
     public function thankyou() {
