@@ -1,11 +1,17 @@
 <?php require APPROOT.'/views/inc/header.php';?>
-<!-- TOP NAVIGATION -->
-<?php require APPROOT .'/views/inc/components/topnavbar.php'; ?>
-<!-- REGISTER-CONTAINER -->
+
 <body background>
 <div class="register-container">
+    <div class="illustration-side">
+    <div class="circles">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
     <h2>Register</h2>
-    <form action="<?php echo URLROOT; ?>/users/register" method="POST">
+    </div>  
+    <div class="form-side">
+    <form class="register-form" action="<?php echo URLROOT; ?>/users/register" method="POST">
         <div class="form-group">
             <label for="fullname">Full Name</label>
             <input type="text" id="fullname" name="name" value="<?php echo $data['name']; ?>" required>
@@ -58,9 +64,10 @@
     </div>
 
     <button type="submit">Register</button>
-</form>
+ </form>
+
+ </div>
 </div>
 
-<script src="<?php echo URLROOT; ?>/js/register.js"></script>
+<!-- <script src="<?php echo URLROOT; ?>/js/register.js"></script> -->
 </body>
-<?php require APPROOT.'/views/inc/footer.php';?>

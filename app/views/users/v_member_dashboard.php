@@ -1,4 +1,5 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/header.php'; ?> 
+<?php require APPROOT . '/views/inc/components/topnavbar.php'; ?>
 
 <div class="dashboard-container">
     <div class="sidebar">
@@ -82,4 +83,4 @@
     </main>
 </div>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+
