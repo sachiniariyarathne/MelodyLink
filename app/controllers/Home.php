@@ -10,13 +10,13 @@ public function index(){
 
 
 }
-public function about(){
-    $users=$this->pagesModel->getUsers();
-$data=[
-    'users'=>$users
-];
+public function Home(){
+//     $users=$this->pagesModel->getUsers();
+// $data=[
+//     'users'=>$users
+// ];
 
-$this->view('v_about',$data);
+$this->view('users/v_landing_page');
 
 }
 
