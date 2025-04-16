@@ -13,7 +13,7 @@
   /* Hero Section */
   .hero {
     background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(83, 0, 105, 0.6)),
-                url('public/css/img/concert1.jpg') no-repeat center center/cover;
+               url('../../img/concert1.jpg') no-repeat center center/cover;
     height: 100vh;
     position: relative;
     padding: 20px 50px;
