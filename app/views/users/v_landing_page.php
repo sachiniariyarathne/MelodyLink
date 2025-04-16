@@ -11,7 +11,7 @@
   <header class="hero">
     <nav class="navbar">
       <div class="logo">
-        <img src="<?php echo URLROOT; ?>public/css/img/logo.png" alt="MelodyLink Logo" />
+        <img src="<?php echo URLROOT; ?>public/img/logo.png" alt="MelodyLink Logo" />
         <span>MelodyLink</span>
       </div>
       <ul class="nav-links">
