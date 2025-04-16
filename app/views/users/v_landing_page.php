@@ -67,7 +67,7 @@
     <div class="testimonial-cards">
       <div class="testimonial-card">
         <div class="user">
-          <img src="<?php echo URLROOT; ?>public/css/img/user1.png" alt="Mike Johnson"/>
+          <img src="<?php echo URLROOT; ?>public/img/user1.png" alt="Mike Johnson"/>
           <div>
             <strong>Mike Johnson</strong><br />
             <span>Event Organizer</span>
@@ -77,7 +77,7 @@
       </div>
       <div class="testimonial-card">
         <div class="user">
-          <img src="<?php echo URLROOT; ?>public/css/img/user2.jpg"  alt="Sarah Chen"/>
+          <img src="<?php echo URLROOT; ?>public/img/user2.jpg"  alt="Sarah Chen"/>
           <div>
             <strong>Sarah Chen</strong><br />
             <span>Artist</span>
@@ -87,7 +87,7 @@
       </div>
       <div class="testimonial-card">
         <div class="user">
-          <img src="<?php echo URLROOT; ?>public/css/img/user3.jpeg" alt="David Smith"/>
+          <img src="<?php echo URLROOT; ?>public/img/user3.jpeg" alt="David Smith"/>
           <div>
             <strong>David Smith</strong><br />
             <span>Equipment Supplier</span>
@@ -110,7 +110,7 @@
           <div class="footer-content">
             <div class="footer-brand">
               <div class="logo">
-                <img src="<?php echo URLROOT; ?>public/css/img/logo.png" alt="MelodyLink Logo" />
+                <img src="<?php echo URLROOT; ?>public/img/logo.png" alt="MelodyLink Logo" />
                 <span>MelodyLink</span>
               </div>
               <br>
@@ -141,10 +141,10 @@
               <div class="links-column">
                 <h4>Follow Us</h4>
                 <div class="social-icons">
-                  <a href="#"> <img src="<?php echo URLROOT; ?>public/css/img/fb.png" alt="Facebook" width="30px" /></a>
-                  <a href="#"><img src="<?php echo URLROOT; ?>public/css/img/inst.png" alt="Instagram" width="30px" /></a>
-                  <a href="#"><img src="<?php echo URLROOT; ?>public/css/img/tw.png" alt="Twitter" width="30px" /></a>
-                  <a href="#"><img src="<?php echo URLROOT; ?>public/css/img/yt.png" alt="Youtube" width="30px" /></a>
+                  <a href="#"> <img src="<?php echo URLROOT; ?>public/img/fb.png" alt="Facebook" width="30px" /></a>
+                  <a href="#"><img src="<?php echo URLROOT; ?>public/img/inst.png" alt="Instagram" width="30px" /></a>
+                  <a href="#"><img src="<?php echo URLROOT; ?>public/img/tw.png" alt="Twitter" width="30px" /></a>
+                  <a href="#"><img src="<?php echo URLROOT; ?>public/img/yt.png" alt="Youtube" width="30px" /></a>
                 </div>
               </div>
             </div>
