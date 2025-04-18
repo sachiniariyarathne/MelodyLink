@@ -4,16 +4,23 @@ class EventManagement extends Controller {
     private $userModel;
 
     public function __construct() {
-        if(!isLoggedIn()) {
+        // Start session if not already started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
             redirect('users/login');
         }
         
-        if(!isOrganizer()) {
+        // Check if user is an organizer
+        if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'organizer') {
             redirect('events');
         }
 
         $this->eventModel = $this->model('Event');
-        $this->userModel = $this->model('User');
+        $this->userModel = $this->model('m_users');
     }
 
     public function index() {
@@ -25,74 +32,102 @@ class EventManagement extends Controller {
     }
 
     public function create() {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
+                'organiser_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
                 'description' => trim($_POST['description']),
                 'event_date' => trim($_POST['event_date']),
                 'event_time' => trim($_POST['event_time']),
                 'venue' => trim($_POST['venue']),
-                'image' => $_FILES['image'],
-                'ticket_types' => $_POST['ticket_types'],
+                'image' => '',
+                'ticket_types' => [],
                 'title_err' => '',
                 'description_err' => '',
                 'event_date_err' => '',
                 'event_time_err' => '',
                 'venue_err' => '',
-                'image_err' => ''
+                'image_err' => '',
+                'ticket_types_err' => ''
             ];
 
-            // Validate data
-            if(empty($data['title'])) {
+            // Validate ticket types
+            if (isset($_POST['ticket_name']) && is_array($_POST['ticket_name'])) {
+                foreach ($_POST['ticket_name'] as $index => $name) {
+                    if (empty($name) || empty($_POST['ticket_price'][$index]) || empty($_POST['ticket_quantity'][$index])) {
+                        $data['ticket_types_err'] = 'Please fill in all ticket type fields';
+                        break;
+                    }
+                    $data['ticket_types'][] = [
+                        'name' => $name,
+                        'price' => $_POST['ticket_price'][$index],
+                        'quantity' => $_POST['ticket_quantity'][$index]
+                    ];
+                }
+            } else {
+                $data['ticket_types_err'] = 'At least one ticket type is required';
+            }
+
+            // Validate image
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                $filename = $_FILES['image']['name'];
+                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+                if (!in_array($ext, $allowed)) {
+                    $data['image_err'] = 'Only JPG, JPEG, PNG & GIF files are allowed';
+                } else {
+                    $newFilename = uniqid() . '.' . $ext;
+                    $uploadPath = 'uploads/events/' . $newFilename;
+                    
+                    if (!is_dir('uploads/events')) {
+                        mkdir('uploads/events', 0777, true);
+                    }
+
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+                        $data['image'] = $uploadPath;
+                    } else {
+                        $data['image_err'] = 'Failed to upload image';
+                    }
+                }
+            } else {
+                $data['image_err'] = 'Please select an image';
+            }
+
+            // Validate other fields
+            if (empty($data['title'])) {
                 $data['title_err'] = 'Please enter event title';
             }
-
-            if(empty($data['description'])) {
+            if (empty($data['description'])) {
                 $data['description_err'] = 'Please enter event description';
             }
-
-            if(empty($data['event_date'])) {
+            if (empty($data['event_date'])) {
                 $data['event_date_err'] = 'Please enter event date';
             }
-
-            if(empty($data['event_time'])) {
+            if (empty($data['event_time'])) {
                 $data['event_time_err'] = 'Please enter event time';
             }
-
-            if(empty($data['venue'])) {
-                $data['venue_err'] = 'Please enter event venue';
-            }
-
-            if(empty($data['image']['name'])) {
-                $data['image_err'] = 'Please select an event image';
+            if (empty($data['venue'])) {
+                $data['venue_err'] = 'Please enter venue';
             }
 
             // Make sure no errors
-            if(empty($data['title_err']) && empty($data['description_err']) && 
-               empty($data['event_date_err']) && empty($data['event_time_err']) && 
-               empty($data['venue_err']) && empty($data['image_err'])) {
+            if (empty($data['title_err']) && empty($data['description_err']) && 
+                empty($data['event_date_err']) && empty($data['event_time_err']) && 
+                empty($data['venue_err']) && empty($data['image_err']) && 
+                empty($data['ticket_types_err'])) {
                 
-                // Upload image
-                $imageName = time() . '_' . $data['image']['name'];
-                $targetDir = "public/img/events/";
-                $targetFile = $targetDir . $imageName;
-                
-                if(move_uploaded_file($data['image']['tmp_name'], $targetFile)) {
-                    $data['image'] = $imageName;
-                    
-                    // Create event
-                    if($this->eventModel->createEvent($data, $_SESSION['user_id'])) {
-                        flash('event_message', 'Event created successfully');
-                        redirect('eventmanagement');
-                    } else {
-                        die('Something went wrong');
-                    }
+                if ($this->eventModel->createEvent($data)) {
+                    flash('event_message', 'Event created successfully');
+                    redirect('eventmanagement');
                 } else {
-                    $data['image_err'] = 'Failed to upload image';
+                    die('Something went wrong');
                 }
+            } else {
+                $this->view('users/event_management/create', $data);
             }
         } else {
             $data = [
@@ -108,15 +143,16 @@ class EventManagement extends Controller {
                 'event_date_err' => '',
                 'event_time_err' => '',
                 'venue_err' => '',
-                'image_err' => ''
+                'image_err' => '',
+                'ticket_types_err' => ''
             ];
-        }
 
-        $this->view('users/event_management/create', $data);
+            $this->view('users/event_management/create', $data);
+        }
     }
 
     public function edit($id) {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -134,7 +170,8 @@ class EventManagement extends Controller {
                 'event_date_err' => '',
                 'event_time_err' => '',
                 'venue_err' => '',
-                'image_err' => ''
+                'image_err' => '',
+                'ticket_types_err' => ''
             ];
 
             // Validate data
@@ -199,21 +236,24 @@ class EventManagement extends Controller {
                 redirect('eventmanagement');
             }
 
+            $ticketTypes = $this->eventModel->getEventTicketTypes($id);
+
             $data = [
-                'id' => $id,
+                'event_id' => $id,
                 'title' => $event->title,
                 'description' => $event->description,
                 'event_date' => $event->event_date,
                 'event_time' => $event->event_time,
                 'venue' => $event->venue,
                 'image' => $event->image,
-                'ticket_types' => $event->ticket_types,
+                'ticket_types' => $ticketTypes,
                 'title_err' => '',
                 'description_err' => '',
                 'event_date_err' => '',
                 'event_time_err' => '',
                 'venue_err' => '',
-                'image_err' => ''
+                'image_err' => '',
+                'ticket_types_err' => ''
             ];
         }
 
