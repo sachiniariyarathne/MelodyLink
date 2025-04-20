@@ -15,7 +15,7 @@
         <span>MelodyLink</span>
       </div>
       <ul class="nav-links">
-        <li><a href="#">Events</a></li>
+        <li><a href="<?php echo URLROOT; ?>/events">Events</a></li>
         <li><a href="#">Marketplace</a></li>
         <li><a href="#">Suppliers</a></li>
         <li><a href="#">Artists</a></li>
