@@ -37,7 +37,7 @@
                         <input type="checkbox" id="remember">
                         <label for="remember">Remember me</label>
                     </div>
-                    <a href="<?php echo URLROOT; ?>/users/forgotpassword" class="forgot-password">Forgot Password?</a>
+                    <a href="<?php echo URLROOT; ?>/passwordReset/forgot" class="forgot-password">Forgot Password?</a>
                 </div>
                 
                 <button type="submit">Login</button>

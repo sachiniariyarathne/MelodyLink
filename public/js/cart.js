@@ -1,10 +1,7 @@
-// cart.js
 document.addEventListener('DOMContentLoaded', function() {
-    // Get initial cart count
     const cartCountElement = document.getElementById('cartCount');
     let currentCount = parseInt(cartCountElement?.textContent) || 0;
 
-    // Function to update cart count
     function updateCartCount(newCount) {
         if (cartCountElement) {
             cartCountElement.textContent = newCount;
@@ -15,8 +12,74 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to add item to cart
+    // Test functions for debugging
+    window.testEndpoint = async function() {
+        try {
+            const response = await fetch(`${URLROOT}/merchandise/debug`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const rawResponse = await response.text();
+            console.log('Debug raw response:', rawResponse);
+            
+            if (rawResponse.trim().startsWith('{')) {
+                const result = JSON.parse(rawResponse);
+                console.log('Debug parsed response:', result);
+                alert('Debug endpoint working: ' + result.message);
+            } else {
+                console.error('Debug endpoint returned non-JSON:', rawResponse);
+                alert('Debug endpoint error: Non-JSON response');
+            }
+        } catch (error) {
+            console.error('Debug error:', error);
+            alert('Debug error: ' + error.message);
+        }
+    };
+
+    // Test the add to cart with minimal code
+    window.testAddToCart = async function(merchId) {
+        try {
+            const payload = JSON.stringify({
+                merch_id: merchId,
+                quantity: 1
+            });
+            
+            console.log('Test payload:', payload);
+            
+            const response = await fetch(`${URLROOT}/merchandise/testAdd`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: payload
+            });
+            
+            const rawResponse = await response.text();
+            console.log('Test raw response:', rawResponse);
+            
+            if (rawResponse.trim().startsWith('{')) {
+                const result = JSON.parse(rawResponse);
+                console.log('Test parsed response:', result);
+                alert('Test successful: ' + JSON.stringify(result));
+            } else {
+                console.error('Test endpoint returned non-JSON:', rawResponse);
+                alert('Test error: Non-JSON response');
+            }
+        } catch (error) {
+            console.error('Test error:', error);
+            alert('Test error: ' + error.message);
+        }
+    };
+
+    // Fixed addToCart function
     window.addToCart = async function(merchId) {
+        console.log('addToCart called with merchId:', merchId);
+        
         if (!merchId) {
             showNotification('Invalid product selected.', 'error');
             return;
@@ -28,12 +91,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            // Create the request payload
+            // Convert to number if needed
+            const merchIdValue = Number(merchId) || merchId;
+            
             const payload = JSON.stringify({
-                merchId: merchId
+                merch_id: merchIdValue, // This is the key for the PHP controller
+                quantity: 1
             });
 
-            // Log the payload for debugging
             console.log('Sending payload:', payload);
 
             const response = await fetch(`${URLROOT}/merchandise/addToCart`, {
@@ -46,19 +111,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: payload
             });
 
-            // Log the raw response for debugging
             const rawResponse = await response.text();
             console.log('Raw response:', rawResponse);
 
-            // Try to parse the response as JSON
             let result;
-            try {
+            // Check if the response is actually JSON before trying to parse it
+            if (rawResponse.trim().startsWith('{') || rawResponse.trim().startsWith('[')) {
                 result = JSON.parse(rawResponse);
-            } catch (parseError) {
-                console.error('JSON Parse Error:', parseError);
-                throw new Error('Invalid JSON response from server');
+            } else {
+                console.error('Server returned non-JSON response:', rawResponse);
+                throw new Error('Server returned invalid response format');
             }
-
+            
             if (response.ok && result.success) {
                 updateCartCount(result.cartCount);
                 showNotification('Item added to cart successfully!', 'success');
@@ -75,19 +139,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Function to show notification
     function showNotification(message, type) {
-        // Remove existing notifications
         const existingNotifications = document.querySelectorAll('.notification');
-        existingNotifications.forEach(notification => {
-            notification.remove();
-        });
+        existingNotifications.forEach(notification => notification.remove());
 
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.textContent = message;
 
-        // Style the notification
         Object.assign(notification.style, {
             position: 'fixed',
             top: '20px',
@@ -103,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.body.appendChild(notification);
 
-        // Remove notification after 3 seconds
         setTimeout(() => {
             notification.style.animation = 'slideOut 0.3s ease-out';
             setTimeout(() => {
@@ -112,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // Add CSS animations if they don't exist
     if (!document.querySelector('#cart-animations')) {
         const style = document.createElement('style');
         style.id = 'cart-animations';
@@ -145,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Function to toggle cart visibility
 function toggleCart() {
     window.location.href = `${URLROOT}/cart`;
 }
