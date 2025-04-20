@@ -1,5 +1,7 @@
-
-    <body>
+<?php require APPROOT . '/views/inc/header.php'; ?> 
+<?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
+    
+    <div class = "homepage_container">
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
@@ -202,7 +204,7 @@
                 }
             }
         </script>
-    </body>
+    </div>
 
 
 

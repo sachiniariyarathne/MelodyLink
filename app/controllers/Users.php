@@ -140,7 +140,7 @@ class Users extends Controller {
                 // Redirect based on user type
                 switch($_SESSION['user_type']) {
                     case 'member':
-                        redirect('/users/dashboard');
+                        redirect('/Member_Homepage/Homepage');
                         break;
                     case 'artist':
                         redirect('/artist/dashboard');

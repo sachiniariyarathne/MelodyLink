@@ -1,54 +1,39 @@
- <nav class="navbar">
+<head>
+    <meta charset="UTF-8">
+    <title>Member Home Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 
-        <div class="logo-container">
-            <img src="../public/img/logo.png" alt="MelodyLink Logo" class="logoimg">
-            <span class="logo">MelodyLink</span>
+<nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <span class="logo"><i class="fa fa-music"></i> MelodyLink</span>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Upcoming Events</a></li>
+                    <li><a href="#">Store</a></li>
+                    <li><a href="#">Music</a></li>
+                    <li><a href="#">Contact us</a></li>
+                </ul>
+            </div>
+            <div class="navbar-right">
+                <button class="notif-btn" aria-label="Notifications">
+                    <i class="fa fa-bell"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown()" aria-label="Profile">
+                        <i class="fa fa-user-circle"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#">Profile</a>
+                        <a href="#">Settings</a>
+                        <a href="#">Logout</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <ul class="nav-links">
-            <li class="dropdown">
-                <a href="../login/login.php" class="btn1">Login</a>
-            </li>
-            <li class="dropdown">
-                <a href="#">Home</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Trending</a></li>
-                    <li><a href="#">New Releases</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="../Music Page/music.html">Music</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Genres</a></li>
-                    <li><a href="#">Top Charts</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="../Artists Page/artists.html">Artists</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Popular Artists</a></li>
-                    <li><a href="#">New Talents</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#">Explore</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Playlists</a></li>
-                    <li><a href="#">Live Shows</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="../merch/mercha.html">Merchandise</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">T-Shirts</a></li>
-                    <li><a href="#">Accessories</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#">Contact</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Support</a></li>
-                    <li><a href="#">Feedback</a></li>
-                </ul>
-            </li>
-        </ul>
     </nav>
