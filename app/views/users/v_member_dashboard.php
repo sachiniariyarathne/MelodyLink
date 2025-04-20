@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?> 
-<?php require APPROOT . '/views/inc/components/topnavbar.php'; ?>
+<?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
 
 <div class="dashboard-container">
     <div class="sidebar">
