@@ -118,43 +118,54 @@ class Users extends Controller {
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    
+
             $data = [
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
                 'email_err' => '',
                 'password_err' => ''
             ];
-    
+
             if (empty($data['email'])) {
                 $data['email_err'] = 'Please enter email';
             }
-    
+
             if (empty($data['password'])) {
                 $data['password_err'] = 'Please enter password';
             }
-    
+
+            // Check if user exists
             $loggedInUser = $this->userModel->loginAcrossAllTables($data['email'], $data['password']);
-    
+
             if ($loggedInUser) {
-                // Redirect based on user type
+                // Create session variables based on user type
                 switch($_SESSION['user_type']) {
+                    case 'organizer':
+                        // Set organizer specific session data
+                        $_SESSION['user_id'] = $loggedInUser->organiser_id;
+                        $_SESSION['user_type'] = 'organizer';
+                        $_SESSION['username'] = $loggedInUser->username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('eventmanagement');
+                        break;
                     case 'member':
                         redirect('/Member_Homepage/Homepage');
                         break;
                     case 'artist':
-                        redirect('/artist/dashboard');
-                        break;
-                    case 'organizer':
-                        redirect('/organizer/dashboard');
+                        $_SESSION['user_id'] = $loggedInUser->artist_id;
+                        $_SESSION['user_type'] = 'artist';
+                        $_SESSION['username'] = $loggedInUser->username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('artist/dashboard');
                         break;
                     case 'supplier':
-                        redirect('/supplier/dashboard');
+                        $_SESSION['user_id'] = $loggedInUser->supplier_id;
+                        $_SESSION['user_type'] = 'supplier';
+                        $_SESSION['username'] = $loggedInUser->username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('supplier/dashboard');
                         break;
-                    default:
-                        redirect('/pages/index');
                 }
-                exit;
             } else {
                 $data['password_err'] = 'Invalid credentials';
                 $this->view('users/v_login', $data);
@@ -166,7 +177,7 @@ class Users extends Controller {
                 'email_err' => '',
                 'password_err' => ''
             ];
-    
+
             $this->view('users/v_login', $data);
         }
     }

@@ -1,0 +1,182 @@
+.event-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+}
+
+.event-details-content {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-image {
+    height: 400px;
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-info {
+    padding: 30px;
+}
+
+.event-info h1 {
+    font-size: 2.2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.event-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.meta-item i {
+    color: #8f44fd;
+    font-size: 1.2rem;
+}
+
+.meta-item span {
+    color: #666;
+    font-size: 1rem;
+}
+
+.event-description {
+    margin-bottom: 30px;
+}
+
+.event-description h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.event-description p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.event-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-book, .btn-back {
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-book {
+    background-color: #8f44fd;
+    color: white;
+}
+
+.btn-back {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-book:hover {
+    background-color: #7a3ad9;
+}
+
+.btn-back:hover {
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .event-image {
+        height: 300px;
+    }
+    
+    .event-meta {
+        grid-template-columns: 1fr;
+    }
+    
+    .event-actions {
+        flex-direction: column;
+    }
+    
+    .btn-book, .btn-back {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.ticket-types-section {
+    margin: 30px 0;
+}
+
+.ticket-types-section h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.ticket-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.ticket-type-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ticket-type-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.ticket-price {
+    font-size: 1.5rem;
+    color: #8f44fd;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.ticket-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.ticket-availability {
+    font-size: 0.9rem;
+}
+
+.ticket-availability .available {
+    color: #28a745;
+}
+
+.ticket-availability .sold-out {
+    color: #dc3545;
+} 
