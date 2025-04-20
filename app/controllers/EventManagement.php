@@ -9,6 +9,9 @@ class EventManagement extends Controller {
             session_start();
         }
 
+        // Load helpers
+        require_once '../app/helpers/flash_helper.php';
+
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             redirect('users/login');
@@ -24,11 +27,28 @@ class EventManagement extends Controller {
     }
 
     public function index() {
+        // Get dashboard data
+        $data = [
+            'total_bookings' => $this->eventModel->getTotalBookings(),
+            'total_revenue' => $this->eventModel->getTotalRevenue(),
+            'active_events' => $this->eventModel->getActiveEventsCount(),
+            'ending_soon' => $this->eventModel->getEndingSoonCount(),
+            'total_customers' => $this->eventModel->getTotalCustomers(),
+            'recent_bookings' => $this->eventModel->getRecentBookings()
+        ];
+
+        $this->view('users/event_management/index', $data);
+    }
+
+    public function events() {
+        // Get all events for the current organizer
         $events = $this->eventModel->getOrganizerEvents($_SESSION['user_id']);
+        
         $data = [
             'events' => $events
         ];
-        $this->view('users/event_management/index', $data);
+
+        $this->view('users/event_management/events', $data);
     }
 
     public function create() {
@@ -74,27 +94,98 @@ class EventManagement extends Controller {
             // Validate image
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                $allowed_mime = ['image/jpeg', 'image/png', 'image/gif'];
+                $max_size = 5 * 1024 * 1024; // 5MB
                 $filename = $_FILES['image']['name'];
+                $filesize = $_FILES['image']['size'];
+                $filetype = $_FILES['image']['type'];
                 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-                if (!in_array($ext, $allowed)) {
-                    $data['image_err'] = 'Only JPG, JPEG, PNG & GIF files are allowed';
-                } else {
-                    $newFilename = uniqid() . '.' . $ext;
-                    $uploadPath = 'uploads/events/' . $newFilename;
+                // Validate file size
+                if ($filesize > $max_size) {
+                    $data['image_err'] = 'File size must be less than 5MB';
+                    error_log('File size too large: ' . $filesize . ' bytes');
+                    $this->view('users/event_management/create', $data);
+                    return;
+                }
+
+                // Validate file type
+                if (!in_array($ext, $allowed) || !in_array($filetype, $allowed_mime)) {
+                    $data['image_err'] = 'Invalid file type. Only JPG, JPEG, PNG & GIF files are allowed';
+                    error_log('Invalid file type: ' . $filetype);
+                    $this->view('users/event_management/create', $data);
+                    return;
+                }
+
+                // Generate a more secure filename with limited entropy
+                $newFilename = bin2hex(random_bytes(6)) . '.' . $ext;
+                $uploadDir = dirname(APPROOT) . '/public/uploads/events/';
+                
+                // Create directory if it doesn't exist with proper permissions
+                if (!is_dir($uploadDir)) {
+                    if (!mkdir($uploadDir, 0775, true)) {
+                        $error = error_get_last();
+                        $data['image_err'] = 'Failed to create upload directory';
+                        error_log('Failed to create directory: ' . $uploadDir . ' - Error: ' . ($error ? $error['message'] : 'Unknown error'));
+                        $this->view('users/event_management/create', $data);
+                        return;
+                    }
+                    // Set proper ownership
+                    chown($uploadDir, 'daemon');
+                    chgrp($uploadDir, 'daemon');
+                }
+
+                $uploadPath = $uploadDir . $newFilename;
+
+                // Verify MIME type using FileInfo
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_type = finfo_file($finfo, $_FILES['image']['tmp_name']);
+                finfo_close($finfo);
+
+                if (!in_array($mime_type, $allowed_mime)) {
+                    $data['image_err'] = 'Invalid file type detected';
+                    error_log('Invalid MIME type detected: ' . $mime_type);
+                    $this->view('users/event_management/create', $data);
+                    return;
+                }
+
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+                    // Set proper permissions for the uploaded file
+                    chmod($uploadPath, 0664);
                     
-                    if (!is_dir('uploads/events')) {
-                        mkdir('uploads/events', 0777, true);
+                    // Optimize image if possible
+                    if (extension_loaded('gd')) {
+                        $image = null;
+                        if ($ext === 'jpg' || $ext === 'jpeg') {
+                            $image = imagecreatefromjpeg($uploadPath);
+                            imagejpeg($image, $uploadPath, 85); // Compress JPEG
+                        } elseif ($ext === 'png') {
+                            $image = imagecreatefrompng($uploadPath);
+                            imagepng($image, $uploadPath, 8); // Compress PNG
+                        }
+                        if ($image) {
+                            imagedestroy($image);
+                        }
                     }
 
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                        $data['image'] = $uploadPath;
-                    } else {
-                        $data['image_err'] = 'Failed to upload image';
-                    }
+                    // Store relative path in database
+                    $data['image'] = 'uploads/events/' . $newFilename;
+                    
+                    // Log successful upload
+                    error_log('Successfully uploaded file: ' . $newFilename . ' (size: ' . $filesize . ' bytes, type: ' . $mime_type . ')');
+                } else {
+                    $error = error_get_last();
+                    $data['image_err'] = 'Failed to upload image';
+                    error_log('Upload error: ' . ($error ? $error['message'] : 'Unknown error'));
+                    error_log('Upload path: ' . $uploadPath);
+                    error_log('Temp file: ' . $_FILES['image']['tmp_name']);
+                    $this->view('users/event_management/create', $data);
+                    return;
                 }
             } else {
-                $data['image_err'] = 'Please select an image';
+                $upload_error = isset($_FILES['image']) ? $_FILES['image']['error'] : 'No file uploaded';
+                $data['image_err'] = 'Please select a valid image file';
+                error_log('File upload error: ' . $upload_error);
             }
 
             // Validate other fields
@@ -122,7 +213,7 @@ class EventManagement extends Controller {
                 
                 if ($this->eventModel->createEvent($data)) {
                     flash('event_message', 'Event created successfully');
-                    redirect('eventmanagement');
+                    redirect('eventmanagement/events');
                 } else {
                     die('Something went wrong');
                 }
@@ -149,6 +240,22 @@ class EventManagement extends Controller {
 
             $this->view('users/event_management/create', $data);
         }
+    }
+
+    public function viewEvent($id) {
+        $event = $this->eventModel->getEventById($id);
+        
+        if (!$event || $event->organiser_id != $_SESSION['user_id']) {
+            redirect('eventmanagement/events');
+        }
+
+        $data = [
+            'event' => $event,
+            'ticket_types' => $this->eventModel->getEventTicketTypes($id),
+            'bookings' => $this->eventModel->getEventBookings($id)
+        ];
+
+        $this->view('users/event_management/view', $data);
     }
 
     public function edit($id) {
@@ -222,7 +329,7 @@ class EventManagement extends Controller {
                 // Update event
                 if($this->eventModel->updateEvent($data)) {
                     flash('event_message', 'Event updated successfully');
-                    redirect('eventmanagement');
+                    redirect('eventmanagement/events');
                 } else {
                     die('Something went wrong');
                 }
@@ -231,53 +338,39 @@ class EventManagement extends Controller {
             // Get existing event
             $event = $this->eventModel->getEventById($id);
             
-            // Check for owner
-            if($event->organizer_id != $_SESSION['user_id']) {
-                redirect('eventmanagement');
+            if (!$event || $event->organiser_id != $_SESSION['user_id']) {
+                redirect('eventmanagement/events');
             }
 
-            $ticketTypes = $this->eventModel->getEventTicketTypes($id);
-
             $data = [
-                'event_id' => $id,
-                'title' => $event->title,
-                'description' => $event->description,
-                'event_date' => $event->event_date,
-                'event_time' => $event->event_time,
-                'venue' => $event->venue,
-                'image' => $event->image,
-                'ticket_types' => $ticketTypes,
-                'title_err' => '',
-                'description_err' => '',
-                'event_date_err' => '',
-                'event_time_err' => '',
-                'venue_err' => '',
-                'image_err' => '',
-                'ticket_types_err' => ''
+                'event' => $event,
+                'ticket_types' => $this->eventModel->getEventTicketTypes($id)
             ];
-        }
 
-        $this->view('users/event_management/edit', $data);
+            $this->view('users/event_management/edit', $data);
+        }
     }
 
     public function delete($id) {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Get existing event
             $event = $this->eventModel->getEventById($id);
             
-            // Check for owner
-            if($event->organizer_id != $_SESSION['user_id']) {
-                redirect('eventmanagement');
+            if (!$event || $event->organiser_id != $_SESSION['user_id']) {
+                flash('event_message', 'You are not authorized to delete this event', 'alert alert-danger');
+                redirect('eventmanagement/events');
+                return;
             }
 
-            if($this->eventModel->deleteEvent($id)) {
-                flash('event_message', 'Event removed');
-                redirect('eventmanagement');
+            if ($this->eventModel->deleteEvent($id)) {
+                flash('event_message', 'Event deleted successfully');
+                redirect('eventmanagement/events');
             } else {
-                die('Something went wrong');
+                flash('event_message', 'Something went wrong while deleting the event', 'alert alert-danger');
+                redirect('eventmanagement/events');
             }
         } else {
-            redirect('eventmanagement');
+            redirect('eventmanagement/events');
         }
     }
 
@@ -286,7 +379,7 @@ class EventManagement extends Controller {
         
         // Check for owner
         if($event->organizer_id != $_SESSION['user_id']) {
-            redirect('eventmanagement');
+            redirect('eventmanagement/events');
         }
 
         $bookings = $this->eventModel->getEventBookings($id);
@@ -303,7 +396,7 @@ class EventManagement extends Controller {
         
         // Check for owner
         if($event->organizer_id != $_SESSION['user_id']) {
-            redirect('eventmanagement');
+            redirect('eventmanagement/events');
         }
 
         $income = $this->eventModel->getEventIncome($id);
