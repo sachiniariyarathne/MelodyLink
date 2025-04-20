@@ -1,4 +1,3 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
 
 <div class="events-container">
     <div class="events-header">
@@ -11,7 +10,7 @@
             <?php foreach($data['events'] as $event): ?>
                 <div class="event-card">
                     <div class="event-image">
-                        <img src="<?php echo URLROOT . '/public/img/events/' . $event->image; ?>" alt="<?php echo $event->title; ?>">
+                        <img src="<?php echo URLROOT . '/public/' . $event->image; ?>" alt="<?php echo $event->title; ?>">
                     </div>
                     <div class="event-details">
                         <h3><?php echo $event->title; ?></h3>
@@ -35,9 +34,9 @@
                         </div>
                         <p class="event-description"><?php echo substr($event->description, 0, 100) . '...'; ?></p>
                         <div class="event-actions">
-                            <a href="<?php echo URLROOT; ?>/events/details/<?php echo $event->id; ?>" class="btn-view">View Details</a>
+                            <a href="<?php echo URLROOT; ?>/events/details/<?php echo $event->event_id; ?>" class="btn-view">View Details</a>
                             <?php if(isset($_SESSION['user_id'])): ?>
-                                <a href="<?php echo URLROOT; ?>/events/book/<?php echo $event->id; ?>" class="btn-book">Book Now</a>
+                                <a href="<?php echo URLROOT; ?>/events/book/<?php echo $event->event_id; ?>" class="btn-book">Book Now</a>
                             <?php else: ?>
                                 <a href="<?php echo URLROOT; ?>/users/login" class="btn-book">Login to Book</a>
                             <?php endif; ?>
@@ -52,5 +51,3 @@
         <?php endif; ?>
     </div>
 </div>
-
-<?php require APPROOT . '/views/inc/footer.php'; ?> 

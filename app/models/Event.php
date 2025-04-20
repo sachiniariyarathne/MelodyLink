@@ -6,62 +6,89 @@ class Event {
         $this->db = new Database();
     }
 
-    // Get all events
+    // Dashboard Methods
+    public function getTotalBookings() {
+        $this->db->query('SELECT COUNT(*) as total FROM event_bookings WHERE status = "confirmed"');
+        $result = $this->db->single();
+        return $result->total ?? 0;
+    }
+
+    public function getTotalRevenue() {
+        $this->db->query('SELECT SUM(total_price) as total FROM event_bookings WHERE status = "confirmed"');
+        $result = $this->db->single();
+        return $result->total ?? 0;
+    }
+
+    public function getActiveEventsCount() {
+        $this->db->query('SELECT COUNT(*) as total FROM events WHERE event_date >= CURDATE()');
+        $result = $this->db->single();
+        return $result->total ?? 0;
+    }
+
+    public function getEndingSoonCount() {
+        $this->db->query('SELECT COUNT(*) as total FROM events WHERE event_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)');
+        $result = $this->db->single();
+        return $result->total ?? 0;
+    }
+
+    public function getTotalCustomers() {
+        $this->db->query('SELECT COUNT(DISTINCT user_id) as total FROM event_bookings');
+        $result = $this->db->single();
+        return $result->total ?? 0;
+    }
+
+    public function getRecentBookings($limit = 10) {
+        $this->db->query('
+            SELECT eb.*, e.title as event_title, m.Username as customer_name, m.profile_pic as user_avatar 
+            FROM event_bookings eb
+            JOIN events e ON eb.event_id = e.event_id
+            JOIN member m ON eb.user_id = m.member_id
+            ORDER BY eb.created_at DESC
+            LIMIT :limit
+        ');
+        $this->db->bind(':limit', $limit);
+        return $this->db->resultSet();
+    }
+
+    // Event Methods
     public function getAllEvents() {
         $this->db->query('SELECT * FROM events ORDER BY event_date DESC');
         return $this->db->resultSet();
     }
 
-    // Get all events for a specific organizer
     public function getOrganizerEvents($organizerId) {
-        $this->db->query('SELECT * FROM events WHERE organiser_id = :organiser_id ORDER BY event_date DESC');
+        $this->db->query('
+            SELECT e.*, 
+                   COUNT(DISTINCT eb.booking_id) as total_bookings,
+                   SUM(CASE WHEN eb.status = "confirmed" THEN eb.total_price ELSE 0 END) as total_income,
+                   CASE 
+                       WHEN e.event_date < CURDATE() THEN "ended"
+                       ELSE "active"
+                   END as status
+            FROM events e
+            LEFT JOIN event_bookings eb ON e.event_id = eb.event_id
+            WHERE e.organiser_id = :organiser_id
+            GROUP BY e.event_id
+            ORDER BY e.event_date DESC
+        ');
         $this->db->bind(':organiser_id', $organizerId);
-        
-        $results = $this->db->resultSet();
-        
-        // Calculate total bookings and income for each event
-        foreach($results as $event) {
-            $event->total_bookings = $this->getTotalBookings($event->event_id);
-            $event->total_income = $this->getTotalIncome($event->event_id);
-        }
-        
-        return $results;
+        return $this->db->resultSet();
     }
 
-    // Get total bookings for an event
-    private function getTotalBookings($eventId) {
-        $this->db->query('SELECT COUNT(*) as total FROM bookings WHERE event_id = :event_id AND status = "confirmed"');
-        $this->db->bind(':event_id', $eventId);
-        
-        $result = $this->db->single();
-        return $result->total;
-    }
-
-    // Get total income for an event
-    private function getTotalIncome($eventId) {
-        $this->db->query('SELECT SUM(total_price) as total FROM bookings WHERE event_id = :event_id AND status = "confirmed"');
-        $this->db->bind(':event_id', $eventId);
-        
-        $result = $this->db->single();
-        return $result->total ?? 0;
-    }
-
-    // Get event by ID
     public function getEventById($id) {
-        $this->db->query('SELECT * FROM events WHERE event_id = :id');
+        $this->db->query('
+            SELECT e.*, 
+                   COUNT(DISTINCT eb.booking_id) as total_bookings,
+                   SUM(CASE WHEN eb.status = "confirmed" THEN eb.total_price ELSE 0 END) as total_income
+            FROM events e
+            LEFT JOIN event_bookings eb ON e.event_id = eb.event_id
+            WHERE e.event_id = :id
+            GROUP BY e.event_id
+        ');
         $this->db->bind(':id', $id);
-        
-        $event = $this->db->single();
-        
-        if($event) {
-            $event->total_bookings = $this->getTotalBookings($id);
-            $event->total_income = $this->getTotalIncome($id);
-        }
-        
-        return $event;
+        return $this->db->single();
     }
 
-    // Create new event
     public function createEvent($data) {
         $this->db->beginTransaction();
 
@@ -83,7 +110,7 @@ class Event {
 
             // Insert ticket types
             foreach ($data['ticket_types'] as $ticket) {
-                $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity) 
+                $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity_available) 
                                 VALUES (:event_id, :name, :price, :quantity)');
                 
                 $this->db->bind(':event_id', $eventId);
@@ -98,11 +125,11 @@ class Event {
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
+            error_log('Error creating event: ' . $e->getMessage());
             return false;
         }
     }
 
-    // Update event
     public function updateEvent($data) {
         $this->db->beginTransaction();
 
@@ -130,7 +157,7 @@ class Event {
 
             // Insert new ticket types
             foreach ($data['ticket_types'] as $ticket) {
-                $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity) 
+                $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity_available) 
                                 VALUES (:event_id, :name, :price, :quantity)');
                 
                 $this->db->bind(':event_id', $data['event_id']);
@@ -145,36 +172,39 @@ class Event {
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
+            error_log('Error updating event: ' . $e->getMessage());
             return false;
         }
     }
 
-    // Delete event
     public function deleteEvent($id) {
+        // Delete event (ticket types will be deleted by foreign key cascade)
         $this->db->query('DELETE FROM events WHERE event_id = :id');
         $this->db->bind(':id', $id);
         return $this->db->execute();
     }
 
-    public function bookEvent($data) {
-        $this->db->query('INSERT INTO event_bookings (event_id, user_id, tickets, total_price) VALUES (:event_id, :user_id, :tickets, :total_price)');
-        
-        // Bind values
-        $this->db->bind(':event_id', $data['event_id']);
-        $this->db->bind(':user_id', $data['user_id']);
-        $this->db->bind(':tickets', $data['tickets']);
-        $this->db->bind(':total_price', $data['total_price']);
-
-        // Execute
-        if($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+    public function getEventTicketTypes($eventId) {
+        $this->db->query('
+            SELECT t.*, 
+                   (t.quantity_available - COALESCE(SUM(CASE WHEN b.status = "confirmed" THEN JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id)) ELSE 0 END), 0)) as available_quantity
+            FROM ticket_types t
+            LEFT JOIN event_bookings b ON t.event_id = b.event_id
+            WHERE t.event_id = :event_id
+            GROUP BY t.ticket_type_id
+        ');
+        $this->db->bind(':event_id', $eventId);
+        return $this->db->resultSet();
     }
 
-    public function getEventTicketTypes($eventId) {
-        $this->db->query('SELECT * FROM ticket_types WHERE event_id = :event_id');
+    public function getEventBookings($eventId) {
+        $this->db->query('
+            SELECT eb.*, m.Username as customer_name, m.email, m.Phone_number
+            FROM event_bookings eb
+            JOIN member m ON eb.user_id = m.member_id
+            WHERE eb.event_id = :event_id
+            ORDER BY eb.created_at DESC
+        ');
         $this->db->bind(':event_id', $eventId);
         return $this->db->resultSet();
     }
