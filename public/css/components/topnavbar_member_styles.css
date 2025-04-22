@@ -10,7 +10,7 @@
 .navbar-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 0 -10px;
     height: 64px;
     display: flex;
     align-items: center;
@@ -27,7 +27,7 @@
 }
 
 .logo {
-    font-size: 1.25em;
+    font-size: 1.35em;
     font-weight: bold;
     color: #3f3d56;
     margin-right: 36px;
@@ -47,7 +47,7 @@
     display: flex;
     gap: 22px;
     margin: 0;
-    padding: 0;
+    padding-right: 2;
     flex-wrap: wrap;
 }
 
@@ -55,7 +55,7 @@
     color: #3f3d56;
     text-decoration: none;
     font-weight: 500;
-    font-size: 1em;
+    font-size: 1.2em;
     padding: 8px 0;
     transition: color 0.2s;
 }

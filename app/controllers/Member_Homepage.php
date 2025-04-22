@@ -9,7 +9,6 @@ public function index(){
     
 
 
-
 }
 public function Homepage(){
 //     $users=$this->pagesModel->getUsers();

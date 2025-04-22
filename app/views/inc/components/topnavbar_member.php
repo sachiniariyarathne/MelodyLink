@@ -6,14 +6,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
+<div>
 <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-left">
                 <span class="logo"><i class="fa fa-music"></i> MelodyLink</span>
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="">Dashboard</a></li>
                     <li><a href="#">Upcoming Events</a></li>
                     <li><a href="#">Store</a></li>
                     <li><a href="#">Music</a></li>
@@ -37,3 +37,4 @@
             </div>
         </div>
     </nav>
+</div>

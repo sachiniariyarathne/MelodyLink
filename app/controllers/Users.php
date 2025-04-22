@@ -182,6 +182,9 @@ class Users extends Controller {
         }
     }
 
+
+            
+
     public function dashboard() {
         // Check if user is logged in and is a member
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'member') {
