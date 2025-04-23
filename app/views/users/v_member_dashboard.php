@@ -43,7 +43,7 @@
             <div class="md_profile-role">Premium Member</div>
           </div>
         </div>
-        <button class="md_edit-profile-btn"><i class="fa fa-edit"></i> Edit Profile</button>
+        <!-- <button class="md_edit-profile-btn"><i class="fa fa-edit"></i> Edit Profile</button> -->
         <div class="md_profile-stats">
           <div>
             <div class="md_stat-number"><?php echo count($data['playlists']); ?></div>
@@ -210,3 +210,4 @@
     </main>
   </div>
 </body>
+<?php require APPROOT . '/views/inc/footer.php'; ?> 

@@ -12,8 +12,8 @@
             <div class="navbar-left">
                 <span class="logo"><i class="fa fa-music"></i> MelodyLink</span>
                 <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="">Dashboard</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/Member_Homepage/Homepage">Home</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/users/dashboard">Dashboard</a></li>
                     <li><a href="#">Upcoming Events</a></li>
                     <li><a href="#">Store</a></li>
                     <li><a href="#">Music</a></li>
@@ -29,12 +29,31 @@
                         <i class="fa fa-user-circle"></i>
                     </button>
                     <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="#">Profile</a>
+                        <a href="<?php echo URLROOT; ?>/Member_Profile/profile">Profile</a>
                         <a href="#">Settings</a>
                         <a href="#">Logout</a>
                     </div>
                 </div>
             </div>
+            <script>
+                function toggleDropdown() {
+                    document.getElementById("dropdownMenu").classList.toggle("show");
+                }
+
+                // Close the dropdown if clicked outside
+                window.onclick = function(event) {
+                    if (!event.target.closest('.profile-dropdown')) {
+                        var dropdowns = document.getElementsByClassName("dropdown-menu");
+                        for (var i = 0; i < dropdowns.length; i++) {
+                            var openDropdown = dropdowns[i];
+                            if (openDropdown.classList.contains('show')) {
+                                openDropdown.classList.remove('show');
+                            }
+                        }
+                    }
+                }
+            </script>
+
         </div>
     </nav>
 </div>

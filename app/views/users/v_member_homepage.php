@@ -1,7 +1,6 @@
-
 <?php require APPROOT . '/views/inc/header3.php'; ?> 
 <?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
-    
+   
 
 <body>
 <div class = "hp_homepage-container">
@@ -153,38 +152,6 @@
         <a class="hp_explore-btn" href="songs.html">Explore</a>
     </section>
 
-    <footer>
-        <div class="hp_footer-container">
-            <div>
-                <h4>MelodyLink</h4>
-                <p>© 2025 MelodyLink. All rights reserved.</p>
-            </div>
-            <div>
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Events</a></li>
-                    <li><a href="#">Store</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4>Follow Us</h4>
-                <div class="hp_socials">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div>
-                <h4>Newsletter</h4>
-                <form class="hp_newsletter-form">
-                    <input type="email" placeholder="Your email">
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
-        </div>
-    </footer>
-
     <script>
         // Dropdown toggle for profile icon
         function toggleDropdown() {
@@ -204,6 +171,7 @@
     </script>
 </div>
 </body>
+<?php require APPROOT . '/views/inc/footer.php'; ?> 
 
 
 

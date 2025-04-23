@@ -55,7 +55,7 @@
     color: #3f3d56;
     text-decoration: none;
     font-weight: 500;
-    font-size: 1.2em;
+    font-size: 1em;
     padding: 8px 0;
     transition: color 0.2s;
 }
@@ -137,4 +137,54 @@
 .dropdown-menu a:hover {
     background: #f6f7fb;
     color: #7c3aed;
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .navbar-container {
+        padding: 0 10px;
+    }
+    .nav-links {
+        gap: 14px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 700px) {
+    .navbar-container {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 10px;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .navbar-left {
+        width: 100%;
+        justify-content: flex-start;
+        margin-right: 0;
+    }
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 0.95em;
+    }
+    .navbar-right {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+    }
+    .notif-btn {
+        font-size: 1.4em;
+        margin-right: 0;
+    }
+    .profile-btn {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links {
+        gap: 8px;
+        font-size: 0.9em;
+    }
 }
