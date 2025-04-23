@@ -149,11 +149,7 @@ class Users extends Controller {
                         redirect('eventmanagement');
                         break;
                     case 'member':
-                        $_SESSION['user_id'] = $loggedInUser->member_id;
-                        $_SESSION['user_type'] = 'member';
-                        $_SESSION['username'] = $loggedInUser->Username;
-                        $_SESSION['email'] = $loggedInUser->email;
-                        redirect('users/dashboard');
+                        redirect('/Member_Homepage/Homepage');
                         break;
                     case 'artist':
                         $_SESSION['user_id'] = $loggedInUser->artist_id;
@@ -185,6 +181,9 @@ class Users extends Controller {
             $this->view('users/v_login', $data);
         }
     }
+
+
+            
 
     public function dashboard() {
         // Check if user is logged in and is a member
