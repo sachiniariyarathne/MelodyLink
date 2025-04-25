@@ -30,8 +30,8 @@
                     </button>
                     <div class="dropdown-menu" id="dropdownMenu">
                         <a href="<?php echo URLROOT; ?>/Member_Profile/profile">Profile</a>
-                        <a href="#">Settings</a>
-                        <a href="#">Logout</a>
+                        <a href="<?php echo URLROOT; ?>/Member_Profile/update">Settings</a>
+                        <a href="<?php echo URLROOT; ?>/Home/home">Logout</a>
                     </div>
                 </div>
             </div>
