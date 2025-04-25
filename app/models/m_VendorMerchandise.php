@@ -1,89 +1,95 @@
 <?php
 class m_VendorMerchandise {
     private $db;
-
+    
     public function __construct() {
-        $this->db = new Database();
+        $this->db = new Database;
     }
     
+    // Get all merchandise for a specific supplier
+    public function getMerchandiseBySupplier($supplierId) {
+        // Changed column name from supplier_id to user_id
+        $this->db->query('SELECT * FROM merchandise WHERE user_id = :user_id ORDER BY merch_id DESC');
+        $this->db->bind(':user_id', $supplierId);
+        
+        return $this->db->resultSet();
+    }
+    
+    // Get merchandise by ID
+    public function getMerchandiseById($id) {
+        $this->db->query('SELECT * FROM merchandise WHERE merch_id = :id');
+        $this->db->bind(':id', $id);
+        
+        return $this->db->single();
+    }
+    
+    // Add new merchandise
     public function addMerchandise($data) {
-        $this->db->query('INSERT INTO Merchandise (Name, Price, Description, image, supplier_id) 
-                          VALUES (:name, :price, :description, :image, :supplier_id)');
+        // Changed supplier_id to user_id in the column list
+        $this->db->query('INSERT INTO merchandise (Name, Price, Description, image, user_id) 
+                        VALUES (:name, :price, :description, :image, :user_id)');
         
         // Bind values
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':price', $data['price']);
         $this->db->bind(':description', $data['description']);
         $this->db->bind(':image', $data['image']);
-        $this->db->bind(':supplier_id', $data['supplier_id']);
+        $this->db->bind(':user_id', $data['user_id']); // Changed from supplier_id to user_id
         
         // Execute
-        if($this->db->execute()) {
+        if($this->db->execute()){
             return true;
         } else {
             return false;
         }
     }
     
+    // Update merchandise
     public function updateMerchandise($data) {
-        // If there's a new image
+        // If image is provided, update with new image
         if(!empty($data['image'])) {
-            $this->db->query('UPDATE Merchandise SET Name = :name, Price = :price, 
-                            Description = :description, image = :image 
+            $this->db->query('UPDATE merchandise SET 
+                            Name = :name, 
+                            Price = :price, 
+                            Description = :description, 
+                            image = :image 
                             WHERE merch_id = :id');
+            
             $this->db->bind(':image', $data['image']);
         } else {
-            // No new image provided
-            $this->db->query('UPDATE Merchandise SET Name = :name, Price = :price, 
-                            Description = :description WHERE merch_id = :id');
+            // If no new image, don't update the image field
+            $this->db->query('UPDATE merchandise SET 
+                            Name = :name, 
+                            Price = :price, 
+                            Description = :description 
+                            WHERE merch_id = :id');
         }
         
-        // Bind other values
+        // Bind values
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':price', $data['price']);
         $this->db->bind(':description', $data['description']);
         $this->db->bind(':id', $data['id']);
         
         // Execute
-        if($this->db->execute()) {
+        if($this->db->execute()){
             return true;
         } else {
             return false;
         }
     }
     
+    // Delete merchandise
     public function deleteMerchandise($id) {
-        $this->db->query('DELETE FROM Merchandise WHERE merch_id = :id');
+        $this->db->query('DELETE FROM merchandise WHERE merch_id = :id');
         $this->db->bind(':id', $id);
         
-        if($this->db->execute()) {
+        // Execute
+        if($this->db->execute()){
             return true;
         } else {
             return false;
         }
-    }
-    
-    public function getMerchandiseBySupplier($supplierId) {
-        $this->db->query('SELECT merch_id, Name, Price, Description, image FROM Merchandise 
-                        WHERE supplier_id = :supplier_id');
-        $this->db->bind(':supplier_id', $supplierId);
-        return $this->db->resultSet();
-    }
-    
-    public function getMerchandiseById($id) {
-        $this->db->query('SELECT merch_id, Name, Price, Description, image, supplier_id FROM Merchandise 
-                        WHERE merch_id = :id');
-        $this->db->bind(':id', $id);
-        return $this->db->single();
-    }
-    
-    public function isOwner($merchId, $supplierId) {
-        $this->db->query('SELECT COUNT(*) as count FROM Merchandise 
-                        WHERE merch_id = :merch_id AND supplier_id = :supplier_id');
-        $this->db->bind(':merch_id', $merchId);
-        $this->db->bind(':supplier_id', $supplierId);
-        
-        $row = $this->db->single();
-        return ($row->count > 0);
     }
 }
+?>

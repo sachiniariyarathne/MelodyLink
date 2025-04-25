@@ -3,12 +3,18 @@ class VendorMerchandise extends Controller {
     private $vendorMerchandiseModel;
     
     public function __construct() {
-        // Check if user is authenticated and is a supplier
-        if (session_status() === PHP_SESSION_NONE) {
+        // Start session if not already started
+        if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         
-        if (!$this->isAuthenticated() && !$this->isSupplier()) {
+        // Check if supplier by looking directly at supplier table
+        $this->forceCheckSupplier();
+        
+        // Now check if user is a supplier
+        if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'supplier') {
+            error_log('VendorMerchandise: User is not a supplier - ID: ' . ($_SESSION['user_id'] ?? 'none'));
+            flash('access_denied', 'You must be a supplier to access this area', 'alert alert-danger');
             redirect('users/login');
             return;
         }
@@ -16,12 +22,23 @@ class VendorMerchandise extends Controller {
         $this->vendorMerchandiseModel = $this->model('m_VendorMerchandise');
     }
     
-    private function isAuthenticated() {
-        return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
-    }
-    
-    private function isSupplier() {
-        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'supplier';
+    // This function bypasses the normal role check by directly checking supplier table
+    // and setting the role appropriately
+    private function forceCheckSupplier() {
+        if (isset($_SESSION['user_id'])) {
+            $db = new Database();
+            $db->query("SELECT * FROM supplier WHERE user_id = :user_id");
+            $db->bind(':user_id', $_SESSION['user_id']);
+            $result = $db->single();
+            
+            if ($result) {
+                // User exists in supplier table, force set role
+                $_SESSION['user_type'] = 'supplier'; // Changed from user_role to user_type
+                error_log('VendorMerchandise: User found in supplier table, setting type to supplier');
+            } else {
+                error_log('VendorMerchandise: User NOT found in supplier table');
+            }
+        }
     }
     
     // Vendor dashboard to manage products
@@ -49,7 +66,7 @@ class VendorMerchandise extends Controller {
                 'name' => trim($_POST['name']),
                 'price' => trim($_POST['price']),
                 'description' => trim($_POST['description']),
-                'supplier_id' => $_SESSION['user_id'],
+                'user_id' => $_SESSION['user_id'], // Changed from supplier_id to user_id
                 'name_err' => '',
                 'price_err' => '',
                 'description_err' => '',
@@ -102,7 +119,7 @@ class VendorMerchandise extends Controller {
             }
             
             // Make sure no errors
-            if (empty($data['name_err']) && empty($data['price_err']) && 
+            if (empty($data['name_err']) && empty($data['price_err']) &&
                 empty($data['description_err']) && empty($data['image_err'])) {
                 
                 // Upload image
@@ -113,7 +130,7 @@ class VendorMerchandise extends Controller {
                         'price' => $data['price'],
                         'description' => $data['description'],
                         'image' => $imageName,
-                        'supplier_id' => $data['supplier_id']
+                        'user_id' => $data['user_id'] // Changed from supplier_id to user_id
                     ];
                     
                     if ($this->vendorMerchandiseModel->addMerchandise($productData)) {
@@ -158,7 +175,7 @@ class VendorMerchandise extends Controller {
         }
         
         // Check if the supplier owns this product
-        if ($merchandise->supplier_id != $_SESSION['user_id']) {
+        if ($merchandise->user_id != $_SESSION['user_id']) { // Changed from supplier_id to user_id
             redirect('vendorMerchandise');
             return;
         }
@@ -229,7 +246,7 @@ class VendorMerchandise extends Controller {
             }
             
             // Make sure no errors
-            if (empty($data['name_err']) && empty($data['price_err']) && 
+            if (empty($data['name_err']) && empty($data['price_err']) &&
                 empty($data['description_err']) && empty($data['image_err'])) {
                 
                 // If new image is provided, upload it
@@ -247,7 +264,7 @@ class VendorMerchandise extends Controller {
                     'name' => $data['name'],
                     'price' => $data['price'],
                     'description' => $data['description'],
-                    'image' => $newImage ? $data['image'] : ''
+                    'image' => $newImage ? $data['image'] : $data['current_image']
                 ];
                 
                 // Update merchandise
@@ -291,7 +308,7 @@ class VendorMerchandise extends Controller {
         $merchandise = $this->vendorMerchandiseModel->getMerchandiseById($id);
         
         // Check if merchandise exists and belongs to the logged-in supplier
-        if (!$merchandise || $merchandise->supplier_id != $_SESSION['user_id']) {
+        if (!$merchandise || $merchandise->user_id != $_SESSION['user_id']) { // Changed from supplier_id to user_id
             redirect('vendorMerchandise');
             return;
         }
@@ -312,3 +329,4 @@ class VendorMerchandise extends Controller {
         redirect('vendorMerchandise');
     }
 }
+?>
