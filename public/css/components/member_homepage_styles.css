@@ -1,0 +1,533 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f6f7fb;
+    color: #222;
+}
+
+.hp_homepage_container {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f6f7fb;
+    color: #222;
+    
+}
+
+/* Hero Section */
+.hp_hero {
+    background: linear-gradient(90deg, #7c3aed 0%, #5f2eea 100%);
+    color: #fff;
+    text-align: center;
+    padding: 44px 0 54px 0;
+}
+
+.hp_hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hp_hero h2 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.hp_hero p {
+    font-size: 1.1em;
+    margin-bottom: 28px;
+    font-weight: 400;
+}
+
+.hp_search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 4px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.hp_search-bar input {
+    border: none;
+    padding: 13px 18px;
+    font-size: 1em;
+    flex: 1;
+    outline: none;
+    background: transparent;
+    color: #222;
+}
+
+.hp_search-btn {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 0 22px;
+    font-size: 1.3em;
+    cursor: pointer;
+    border-radius: 0 25px 25px 0;
+    transition: background 0.2s;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hp_search-btn:hover {
+    background: #5f2eea;
+}
+
+/* Events Section */
+.hp_events-section {
+    background: #120e23;
+    padding: 36px 0 0 0;
+    width: 100%;
+    height: 70vh;
+    margin: 0 auto;
+    }
+.hp_events-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 32px;
+    /* justify-content: left; */
+    flex-wrap: wrap;
+    }
+.hp_event-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    color: #222;
+    width: 270px;
+    box-shadow: 0 4px 24px rgba(44, 34, 84, 0.13);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+    }
+.hp_event-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    }
+.hp_event-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: #eee;
+    }
+.hp_event-info {
+    padding: 20px 18px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    }
+.hp_event-info h4 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 700;
+    }
+.hp_event-info p {
+    margin: 0;
+    color: #888;
+    font-size: 0.98em;
+    }
+.hp_event-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+.hp_event-info span {
+    font-weight: bold;
+    color: #7c3aed;
+    font-size: 1.1em;
+    }
+.hp_event-info button {
+    padding: 7px 20px;
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1em;
+    }
+.hp_event-info button:hover {
+    background: #5f2eea;
+}
+
+/* Section Headings */
+.hp_section {
+    padding: 36px 0 0 0;
+    width: 96%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+.hp_section h3 {
+    margin-bottom: 18px;
+    color: #222;
+    font-size: 1.35em;
+    font-weight: 700;
+}
+/* Merchandise */
+.hp_merch-list {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+.hp_merch-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(44, 34, 84, 0.07);
+    padding: 18px 14px 16px 14px;
+    text-align: center;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hp_merch-card img {
+    width: 140px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: #eee;
+}
+
+.hp_merch-card p {
+    margin: 0 0 6px 0;
+    font-weight: 600;
+    color: #222;
+    font-size: 1em;
+}
+
+.hp_merch-card span {
+    color: #7c3aed;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.hp_merch-card button {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 0;
+    width: 100%;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1em;
+    margin-top: 8px;
+}
+
+.hp_merch-card button:hover {
+    background: #5f2eea;
+}
+
+.hp_explore-btn {
+    display: inline-block;
+    padding: 9px 22px;
+    background: #7c3aed;
+    color: #fff;
+    border-radius: 24px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 34, 84, 0.10);
+    border: none;
+    outline: none;
+}
+
+.hp_explore-btn:hover {
+    background: #5f2eea;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(44, 34, 84, 0.16);
+}
+
+.hp_explore-btn {
+    margin-top: 40px; 
+    align-self: center;
+}
+
+.hp_songs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: flex-start;
+  }
+  
+  .hp_song-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(44,34,84,0.08);
+    width: 260px;
+    padding: 24px 18px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+  }
+  
+  .hp_song-card:hover {
+    box-shadow: 0 8px 32px rgba(44,34,84,0.15);
+    transform: translateY(-4px) scale(1.03);
+  }
+  
+  .hp_song-img-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hp_song-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+  }
+  
+  .hp_play-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(44,34,84,0.13);
+    transition: background 0.2s;
+    opacity: 0.95;
+  }
+  
+  .hp_play-btn:hover {
+    background: #5f2eea;
+  }
+  
+  .hp_song-info {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .hp_song-title {
+    font-size: 1.08em;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .hp_song-artist {
+    font-size: 0.98em;
+    color: #888;
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 900px) {
+    .hp_songs-list {
+      gap: 16px;
+      justify-content: center;
+    }
+    .hp_song-card {
+      width: 90vw;
+      max-width: 340px;
+    }
+    .hp_song-img-wrapper {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+.hp_section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+}
+
+.hp_section-header h3 {
+    margin: 0;
+    font-size: 1.35em;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-left: 10%;
+}
+
+.hp_see-more-btn {
+    display: inline-block;
+    padding: 9px 22px;
+    background: #7c3aed;
+    color: #fff;
+    border-radius: 24px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 34, 84, 0.10);
+    margin-top: 7px;
+
+}
+
+.hp_see-more-btn:hover {
+    background: #5f2eea;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(44, 34, 84, 0.16);
+}
+
+
+/* Responsive Styles */
+@media (max-width: 1300px) {
+    .hp_navbar-container, .hp_footer-container, .hp_events-container, .hp_section {
+        max-width: 98vw;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .hp_events-container {
+        gap: 18px;
+    }
+    .hp_merch-list, .hp_songs-list {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .hp_footer-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+    .hp_events-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .hp_merch-list, .hp_songs-list {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    .hp_navbar-left .hp_nav-links {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 900px) {
+    .hp_navbar-container {
+        padding: 0 8px;
+    }
+    .hp_section {
+        width: 100%;
+    }
+    .hp_events-container, .hp_merch-list, .hp_songs-list {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 700px) {
+    .hp_navbar-container {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 4px;
+        height: auto;
+        gap: 0;
+    }
+    .hp_navbar-left {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-right: 0;
+    }
+    .hp_logo {
+        margin: 8px 0 8px 0;
+    }
+    .hp_nav-links {
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.98em;
+        margin-bottom: 8px;
+    }
+    .hp_navbar-right {
+        margin-left: 0;
+        justify-content: flex-end;
+        width: 100%;
+    }
+    .hp_events-container, .hp_merch-list, .hp_songs-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+    .hp_event-card, .hp_merch-card, .hp_song-card {
+        width: 98vw;
+        max-width: 350px;
+    }
+    .hp_section {
+        width: 100%;
+        padding: 24px 0 0 0;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .hp_navbar-container {
+        padding: 0 2px;
+    }
+    .hp_logo {
+        font-size: 1.08em;
+        min-width: 100px;
+    }
+    .hp_footer-container > div {
+        min-width: 120px;
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 900px) {
+    .hp_merch-list {
+        justify-content: center;
+        gap: 16px;
+    }
+    .hp_explore-btn {
+        margin-top: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    .hp_merch-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    .hp_explore-btn {
+        margin-top: 20px;
+        width: 90%;
+    }
+}
+
