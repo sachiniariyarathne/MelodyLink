@@ -21,7 +21,7 @@
         </div>
         <div class="hp_events-container">
             <div class="hp_event-card">
-                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Summer Vibes Festival">
+                <img src="" alt="Summer Vibes Festival">
                 <div class="hp_event-info">
                     <h4>Summer Vibes Festival</h4>
                     <p>July 10, 2025 · Central Park</p>

@@ -72,4 +72,76 @@ class Events extends Controller {
             $this->view('users/v_event_booking', $data);
         }
     }
+
+    // public function save($id) {
+    //     // Check if user is logged in
+    //     if(!isLoggedIn()) {
+    //         if($this->isAjaxRequest()) {
+    //             header('Content-Type: application/json');
+    //             echo json_encode(['success' => false, 'message' => 'Please log in to save events']);
+    //             return;
+    //         }
+    //         redirect('users/login');
+    //     }
+    
+    //     $userId = $_SESSION['user_id'];
+        
+    //     // Save the event
+    //     if($this->eventModel->saveEvent($userId, $id)) {
+    //         if($this->isAjaxRequest()) {
+    //             header('Content-Type: application/json');
+    //             echo json_encode(['success' => true, 'message' => 'Event saved to your list']);
+    //             return;
+    //         }
+    //         flash('event_message', 'Event saved to your list', 'alert alert-success');
+    //         redirect('events/details/' . $id);
+    //     } else {
+    //         if($this->isAjaxRequest()) {
+    //             header('Content-Type: application/json');
+    //             echo json_encode(['success' => false, 'message' => 'Something went wrong']);
+    //             return;
+    //         }
+    //         flash('event_message', 'Something went wrong', 'alert alert-danger');
+    //         redirect('events/details/' . $id);
+    //     }
+    // }
+    
+    // public function unsave($id) {
+    //     // Check if user is logged in
+    //     if(!isLoggedIn()) {
+    //         if($this->isAjaxRequest()) {
+    //             header('Content-Type: application/json');
+    //             echo json_encode(['success' => false, 'message' => 'Please log in to manage saved events']);
+    //             return;
+    //         }
+    //         redirect('users/login');
+    //     }
+    
+    //     $userId = $_SESSION['user_id'];
+        
+    //     // Unsave the event
+    //     if($this->eventModel->unsaveEvent($userId, $id)) {
+    //         if($this->isAjaxRequest()) {
+    //             header('Content-Type: application/json');
+    //             echo json_encode(['success' => true, 'message' => 'Event removed from your saved list']);
+    //             return;
+    //         }
+    //         flash('event_message', 'Event removed from your saved list', 'alert alert-success');
+    //         redirect('my_tickets');
+    //     } else {
+    //         if($this->isAjaxRequest()) {
+    //             header('Content-Type: application/json');
+    //             echo json_encode(['success' => false, 'message' => 'Something went wrong']);
+    //             return;
+    //         }
+    //         flash('event_message', 'Something went wrong', 'alert alert-danger');
+    //         redirect('my_tickets');
+    //     }
+    // }
+    
+    // private function isAjaxRequest() {
+    //     return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+    //            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    // }
+    
 } 
