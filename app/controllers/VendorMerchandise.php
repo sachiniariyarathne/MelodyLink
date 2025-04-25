@@ -8,7 +8,7 @@ class VendorMerchandise extends Controller {
             session_start();
         }
         
-        if (!$this->isAuthenticated() || !$this->isSupplier()) {
+        if (!$this->isAuthenticated() && !$this->isSupplier()) {
             redirect('users/login');
             return;
         }
