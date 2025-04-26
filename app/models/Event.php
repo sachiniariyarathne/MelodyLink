@@ -208,56 +208,55 @@ class Event {
         $this->db->bind(':event_id', $eventId);
         return $this->db->resultSet();
     }
-    public function getSavedEvents($userId) {
-        // Assuming you have a saved_events table
-        $this->db->query('
-            SELECT e.* FROM events e
-            JOIN saved_events se ON e.event_id = se.event_id
-            WHERE se.user_id = :user_id
-            ORDER BY e.event_date ASC
-        ');
-        
-        $this->db->bind(':user_id', $userId);
-        return $this->db->resultSet();
+
+    public function getTicketTypeById($id) {
+        $this->db->query('SELECT * FROM ticket_types WHERE ticket_type_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
     }
-    
-    public function saveEvent($userId, $eventId) {
-        // Check if already saved
-        if($this->isEventSaved($userId, $eventId)) {
+
+    public function getUserById($id) {
+        $this->db->query('SELECT * FROM member WHERE member_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function createBooking($data) {
+        $this->db->beginTransaction();
+
+        try {
+            // Insert booking
+            $this->db->query('INSERT INTO event_bookings (event_id, user_id, tickets, total_price, payment_status, payment_method, card_last_four, secret_code) 
+                            VALUES (:event_id, :user_id, :tickets, :total_price, :payment_status, :payment_method, :card_last_four, :secret_code)');
+            
+            $tickets = json_encode([$data['ticket_type_id'] => $data['quantity']]);
+            
+            $this->db->bind(':event_id', $data['event_id']);
+            $this->db->bind(':user_id', $data['user_id']);
+            $this->db->bind(':tickets', $tickets);
+            $this->db->bind(':total_price', $data['total_price']);
+            $this->db->bind(':payment_status', $data['payment_status']);
+            $this->db->bind(':payment_method', $data['payment_method']);
+            $this->db->bind(':card_last_four', $data['card_last_four']);
+            $this->db->bind(':secret_code', $data['secret_code']);
+
+            $this->db->execute();
+
+            // Update available quantity
+            $this->db->query('UPDATE ticket_types SET quantity_available = quantity_available - :quantity 
+                            WHERE ticket_type_id = :ticket_type_id');
+            
+            $this->db->bind(':quantity', $data['quantity']);
+            $this->db->bind(':ticket_type_id', $data['ticket_type_id']);
+            
+            $this->db->execute();
+
+            $this->db->commit();
             return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log('Error creating booking: ' . $e->getMessage());
+            return false;
         }
-        
-        $this->db->query('
-            INSERT INTO saved_events (user_id, event_id, created_at) 
-            VALUES (:user_id, :event_id, NOW())
-        ');
-        
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':event_id', $eventId);
-        return $this->db->execute();
     }
-    
-    public function unsaveEvent($userId, $eventId) {
-        $this->db->query('
-            DELETE FROM saved_events 
-            WHERE user_id = :user_id AND event_id = :event_id
-        ');
-        
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':event_id', $eventId);
-        return $this->db->execute();
-    }
-    
-    public function isEventSaved($userId, $eventId) {
-        $this->db->query('
-            SELECT * FROM saved_events 
-            WHERE user_id = :user_id AND event_id = :event_id
-        ');
-        
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':event_id', $eventId);
-        $row = $this->db->single();
-        return $row ? true : false;
-    }
-    
 } 

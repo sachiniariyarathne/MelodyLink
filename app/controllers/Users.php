@@ -150,7 +150,7 @@ class Users extends Controller {
                         break;
                         
                     case 'member':
-                        $_SESSION['user_id'] = $loggedInUser->user_id;
+                        $_SESSION['user_id'] = $loggedInUser->member_id;
                         $_SESSION['user_type'] = 'member';
                         $_SESSION['username'] = $loggedInUser->Username;
                         $_SESSION['email'] = $loggedInUser->email;
