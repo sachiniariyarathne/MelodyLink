@@ -1,80 +1,108 @@
 <?php
-class M_Equipment {
+class m_equipment {
     private $db;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct() {
+        $this->db = new Database();
     }
 
-    // Get all equipment items
+    // Get all equipment
     public function getAllEquipment() {
-        $result = $this->db->query("SELECT * FROM h_equipment");
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $this->db->query("SELECT * FROM h_equipment ORDER BY id DESC");
+        
+        return $this->db->resultSet();
     }
 
     // Get equipment by ID
     public function getEquipmentById($id) {
-        $stmt = $this->db->prepare("SELECT * FROM h_equipment WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
-    }
-
-    // Get equipment by category
-    public function getEquipmentByCategory($category) {
-        $stmt = $this->db->prepare("SELECT * FROM h_equipment WHERE category = ?");
-        $stmt->bind_param("s", $category);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $this->db->query("SELECT * FROM h_equipment WHERE id = :id");
+        $this->db->bind(':id', $id);
+        
+        return $this->db->single();
     }
 
     // Add new equipment
     public function addEquipment($data) {
-        $stmt = $this->db->prepare("INSERT INTO h_equipment (name, description, price, category, image_url, rating, reviews, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssdssdis", 
-            $data['name'], 
-            $data['description'], 
-            $data['price'], 
-            $data['category'], 
-            $data['image_url'], 
-            $data['rating'], 
-            $data['reviews'], 
-            $data['status']
-        );
-        return $stmt->execute();
+        $this->db->query("INSERT INTO h_equipment (name, description, price, category, image_url, rating, reviews, status) 
+                          VALUES (:name, :description, :price, :category, :image_url, :rating, :reviews, :status)");
+        
+        // Bind values
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':description', $data['description']);
+        $this->db->bind(':price', $data['price']);
+        $this->db->bind(':category', $data['category']);
+        $this->db->bind(':image_url', $data['image_url']);
+        $this->db->bind(':rating', $data['rating']);
+        $this->db->bind(':reviews', $data['reviews']);
+        $this->db->bind(':status', $data['status']);
+        
+        // Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Update equipment
-    public function updateEquipment($id, $data) {
-        $stmt = $this->db->prepare("UPDATE h_equipment SET name = ?, description = ?, price = ?, category = ?, image_url = ?, rating = ?, reviews = ?, status = ? WHERE id = ?");
-        $stmt->bind_param("ssdssdisd", 
-            $data['name'], 
-            $data['description'], 
-            $data['price'], 
-            $data['category'], 
-            $data['image_url'], 
-            $data['rating'], 
-            $data['reviews'], 
-            $data['status'],
-            $id
-        );
-        return $stmt->execute();
+    public function updateEquipment($data) {
+        $this->db->query("UPDATE h_equipment 
+                          SET name = :name, description = :description, price = :price, 
+                              category = :category, image_url = :image_url, 
+                              rating = :rating, reviews = :reviews, status = :status 
+                          WHERE id = :id");
+        
+        // Bind values
+        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':description', $data['description']);
+        $this->db->bind(':price', $data['price']);
+        $this->db->bind(':category', $data['category']);
+        $this->db->bind(':image_url', $data['image_url']);
+        $this->db->bind(':rating', $data['rating']);
+        $this->db->bind(':reviews', $data['reviews']);
+        $this->db->bind(':status', $data['status']);
+        
+        // Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Delete equipment
     public function deleteEquipment($id) {
-        $stmt = $this->db->prepare("DELETE FROM h_equipment WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        return $stmt->execute();
+        $this->db->query("DELETE FROM h_equipment WHERE id = :id");
+        $this->db->bind(':id', $id);
+        
+        // Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    
-    // Update equipment status
-    public function updateStatus($id, $status) {
-        $stmt = $this->db->prepare("UPDATE h_equipment SET status = ? WHERE id = ?");
-        $stmt->bind_param("si", $status, $id);
-        return $stmt->execute();
+
+    // Get equipment by category
+    public function getEquipmentByCategory($category) {
+        $this->db->query("SELECT * FROM h_equipment WHERE category = :category ORDER BY id DESC");
+        $this->db->bind(':category', $category);
+        
+        return $this->db->resultSet();
+    }
+
+    // Get available equipment
+    public function getAvailableEquipment() {
+        $this->db->query("SELECT * FROM h_equipment WHERE status = 'available' ORDER BY id DESC");
+        
+        return $this->db->resultSet();
+    }
+
+    // Get booked equipment
+    public function getBookedEquipment() {
+        $this->db->query("SELECT * FROM h_equipment WHERE status = 'booked' ORDER BY id DESC");
+        
+        return $this->db->resultSet();
     }
 }
-?>
