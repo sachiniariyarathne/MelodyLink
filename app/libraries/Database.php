@@ -27,6 +27,25 @@ catch(PDOException $e){
     echo $this->error;
 }
 }
+
+// Transaction methods
+public function beginTransaction() {
+    return $this->dnh->beginTransaction();
+}
+
+public function commit() {
+    return $this->dnh->commit();
+}
+
+public function rollBack() {
+    return $this->dnh->rollBack();
+}
+
+// Get last inserted ID
+public function lastInsertId() {
+    return $this->dnh->lastInsertId();
+}
+
 //prepared statement
 public function query($sql){
     $this->statement=$this->dnh->prepare($sql);

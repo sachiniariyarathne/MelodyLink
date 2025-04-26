@@ -1,0 +1,139 @@
+:root {
+    --primary: #7c3aed;
+    --primary-dark: #5f2eea;
+    --card-bg: #fff;
+    --border-radius: 16px;
+    --shadow: 0 4px 16px rgba(44,34,84,0.08);
+}
+
+body {
+    margin: 0;
+    background: #f7f8fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #232323;
+}
+
+.artist-add-release-container {
+    max-width: 520px;
+    margin: 40px auto;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 32px 24px 24px 24px;
+}
+
+.artist-add-title {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.artist-add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.artist-add-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.artist-add-field label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    color: #444;
+}
+.artist-add-field label span {
+    color: #dc2626;
+    font-size: 1em;
+    margin-left: 2px;
+}
+
+.artist-add-field input[type="text"],
+.artist-add-field input[type="date"],
+.artist-add-field input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e3e3e3;
+    border-radius: 7px;
+    font-size: 1em;
+    margin-bottom: 2px;
+    background: #f9f9ff;
+    color: #232323;
+}
+
+.artist-add-field input[type="file"] {
+    padding: 7px 10px;
+    background: #fff;
+}
+
+.artist-add-hint {
+    font-size: 0.97em;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.artist-add-error {
+    color: #dc2626;
+    font-size: 0.95em;
+    margin-top: 2px;
+    min-height: 18px;
+}
+
+.artist-add-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.artist-add-cancel {
+    background: #f3f4f6;
+    color: #333;
+    border-radius: 7px;
+    padding: 10px 22px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    transition: background 0.2s;
+}
+
+.artist-add-cancel:hover {
+    background: #e5e7eb;
+}
+
+.artist-add-submit {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.2s;
+}
+
+.artist-add-submit:hover {
+    background: var(--primary-dark);
+}
+
+@media (max-width: 700px) {
+    .artist-add-release-container {
+        max-width: 98vw;
+        padding: 18px 4vw;
+    }
+    .artist-add-title {
+        font-size: 1.15em;
+    }
+}

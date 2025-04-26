@@ -13,7 +13,7 @@ body {
     background: linear-gradient(135deg, #f5f7ff 0%, #c3e3ff 100%);
 }
 
-.register-container {
+.reg-container {
     display: flex;
     width: 1000px;
     height: 600px;
@@ -23,8 +23,7 @@ body {
     overflow: hidden;
 }
 
-
-.illustration-side {
+.reg-illustration {
     flex: 1;
     background: linear-gradient(45deg,rgb(87, 205, 154), #6F73CE);
     padding: 40px;
@@ -36,7 +35,7 @@ body {
     color: white;
 }
 
-.circles {
+.reg-circles {
     position: absolute;
     top: 0;
     left: 0;
@@ -46,77 +45,62 @@ body {
     opacity: 0.2;
 }
 
-.circles div {
+.reg-circles div {
     position: absolute;
     border: 4px solid white;
     border-radius: 50%;
 }
 
-.circles div:nth-child(1) {
+.reg-circles div:nth-child(1) {
     width: 200px;
     height: 200px;
     top: 10%;
     left: 60%;
 }
 
-.circles div:nth-child(2) {
+.reg-circles div:nth-child(2) {
     width: 150px;
     height: 150px;
     top: 60%;
     left: 20%;
 }
 
-.circles div:nth-child(3) {
+.reg-circles div:nth-child(3) {
     width: 100px;
     height: 100px;
     top: 40%;
     left: 40%;
 }
 
-.illustration-text {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-}
-
-.illustration-text h2 {
-    font-size: 36px;
-    margin-bottom: 20px;
-}
-
-.illustration-text p {
-    font-size: 18px;
-    opacity: 0.8;
-}
-
-.form-side {
+.reg-form-side {
     flex: 1;
     padding: 50px;
 }
 
-.register-form {
+.reg-form {
     max-width: 320px;
     margin: 0 auto;
 }
 
-.register-form h2 {
+.reg-form h2 {
     font-size: 24px;
     color: #333;
     margin-bottom: 30px;
 }
 
-.form-group {
+.reg-form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.reg-form-group label {
     display: block;
     margin-bottom: 5px;
     color: #666;
     font-size: 14px;
 }
 
-.form-group input {
+.reg-form-group input,
+.reg-form-group select {
     width: 100%;
     padding: 12px;
     border: 2px solid #e1e1e1;
@@ -125,17 +109,10 @@ body {
     transition: border-color 0.3s ease;
 }
 
-.form-group input:focus {
+.reg-form-group input:focus,
+.reg-form-group select:focus {
     outline: none;
     border-color: #4e54c8;
-}
-
-.form-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
-    font-size: 14px;
 }
 
 button {
@@ -155,17 +132,17 @@ button:hover {
 }
 
 @media (max-width: 768px) {
-    .register-container {
+    .reg-container {
         flex-direction: column;
         width: 90%;
         height: auto;
     }
-    
-    .illustration-side {
+
+    .reg-illustration {
         display: none;
     }
-    
-    .form-side {
+
+    .reg-form-side {
         padding: 30px;
     }
 }

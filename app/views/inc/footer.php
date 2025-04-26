@@ -1,39 +1,55 @@
+<head>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
 <footer>
     <div class="footer-container">
-        <!-- About Section -->
-        <div class="footer-about">
-            <h4>About MelodyLink</h4>
-            <p>MelodyLink is an innovative web application designed to revolutionize theway we engage with music by offering a comprehensive, all-in-one platformfor artists, fans, event organizers, merchandise vendors and eventequipment renters.</p>
-            <img src="../public/img/logo.png" alt="MelodyLink Logo">
+        <div class="footer-brand">
+                <div class="footer_logo">
+                    <img src="<?php echo URLROOT; ?>public/img/logo.png" alt="MelodyLink Logo" />
+                    <span>MelodyLink</span>
+                </div>
+                <br>
+                <p>Connecting the music community worldwide</p>
         </div>
         
         <!-- Quick Links -->
-        <div class="footer-links">
+        <div>
             <h4>Quick Links</h4>
             <ul>
                 <li><a href="#home">Home</a></li>
-                <li><a href="#artists">Music</a></li>
-                <li><a href="#artists">Artists</a></li>
                 <li><a href="#albums">Events</a></li>
                 <li><a href="#genres">Store</a></li>
-                <li><a href="#artists">Communities</a></li>
+                <li><a href="#artists">Music</a></li>
+                <li><a href="#artists">Artists</a></li>
                 <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </div>
+
+        
+        <div>
+            <h4>Support</h4>
+            <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
             </ul>
         </div>
         
         <!-- Social Media Section -->
-        <div class="footer-social">
+        <div>
             <h4>Follow Us</h4>
-            <div class="social-icons">
-                <a href="#"><img src="../public/img/facebook-icon.png" alt="Facebook"></a>
-                <a href="#"><img src="../public/img/twitter-icon.png" alt="Twitter"></a>
-                <a href="#"><img src="../public/img/instagram-icon.png" alt="Instagram"></a>
-                <a href="#"><img src="../public/img/youtube-icon.png" alt="YouTube"></a>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
+
     </div>
-    <!-- Copyright Section -->
     <div class="footer-bottom">
-        <p>&copy; 2024 MelodyLink. All Rights Reserved.</p>
+        <p>© 2025 MelodyLink. All rights reserved.</p>
     </div>
 </footer>

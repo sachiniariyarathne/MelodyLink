@@ -88,7 +88,7 @@ class m_users {
                 break;
             case 'artist':
                 $table = 'artist';
-                $columns = '(username, email, Password, Specialty)';
+                $columns = '(Username, Email, Password, Genre)';
                 break;
             case 'organizer':
                 $table = 'event_organiser';
@@ -113,7 +113,7 @@ class m_users {
         // Add extra field based on user type
         switch($userType) {
             case 'artist':
-                $this->db->bind(':extra', $data['specialty'] ?? '');
+                $this->db->bind(':extra', $data['genre'] ?? '');
                 break;
             case 'organizer':
                 $this->db->bind(':extra', $data['organization'] ?? '');
