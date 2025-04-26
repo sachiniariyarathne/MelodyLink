@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/header3.php'; ?>
 
 <div class="container mt-4">
     <div class="row">
