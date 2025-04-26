@@ -208,4 +208,55 @@ class Event {
         $this->db->bind(':event_id', $eventId);
         return $this->db->resultSet();
     }
+
+    public function getTicketTypeById($id) {
+        $this->db->query('SELECT * FROM ticket_types WHERE ticket_type_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function getUserById($id) {
+        $this->db->query('SELECT * FROM member WHERE member_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function createBooking($data) {
+        $this->db->beginTransaction();
+
+        try {
+            // Insert booking
+            $this->db->query('INSERT INTO event_bookings (event_id, user_id, tickets, total_price, payment_status, payment_method, card_last_four, secret_code) 
+                            VALUES (:event_id, :user_id, :tickets, :total_price, :payment_status, :payment_method, :card_last_four, :secret_code)');
+            
+            $tickets = json_encode([$data['ticket_type_id'] => $data['quantity']]);
+            
+            $this->db->bind(':event_id', $data['event_id']);
+            $this->db->bind(':user_id', $data['user_id']);
+            $this->db->bind(':tickets', $tickets);
+            $this->db->bind(':total_price', $data['total_price']);
+            $this->db->bind(':payment_status', $data['payment_status']);
+            $this->db->bind(':payment_method', $data['payment_method']);
+            $this->db->bind(':card_last_four', $data['card_last_four']);
+            $this->db->bind(':secret_code', $data['secret_code']);
+
+            $this->db->execute();
+
+            // Update available quantity
+            $this->db->query('UPDATE ticket_types SET quantity_available = quantity_available - :quantity 
+                            WHERE ticket_type_id = :ticket_type_id');
+            
+            $this->db->bind(':quantity', $data['quantity']);
+            $this->db->bind(':ticket_type_id', $data['ticket_type_id']);
+            
+            $this->db->execute();
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log('Error creating booking: ' . $e->getMessage());
+            return false;
+        }
+    }
 } 
