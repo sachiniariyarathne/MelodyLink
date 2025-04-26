@@ -26,7 +26,7 @@ class VendorMerchandise extends Controller {
     // and setting the role appropriately
     private function forceCheckSupplier() {
         if (isset($_SESSION['user_id'])) {
-            $db = new Database();
+            $db = new ();
             $db->query("SELECT * FROM supplier WHERE user_id = :user_id");
             $db->bind(':user_id', $_SESSION['user_id']);
             $result = $db->single();
