@@ -35,7 +35,7 @@ class Users extends Controller {
             // Add optional fields if they exist
 
             if (isset($_POST['specialty'])) {
-                $data['specialty'] = trim($_POST['specialty']);
+                $data['genre'] = trim($_POST['genre']);
             }
             if (isset($_POST['organization'])) {
                 $data['organization'] = trim($_POST['organization']);
@@ -152,11 +152,11 @@ class Users extends Controller {
                         redirect('/Member_Homepage/Homepage');
                         break;
                     case 'artist':
-                        $_SESSION['user_id'] = $loggedInUser->artist_id;
+                        $_SESSION['user_id'] = $loggedInUser->Artist_id;
                         $_SESSION['user_type'] = 'artist';
                         $_SESSION['username'] = $loggedInUser->username;
                         $_SESSION['email'] = $loggedInUser->email;
-                        redirect('artist/dashboard');
+                        redirect('Artist_Home/artist_home');
                         break;
                     case 'supplier':
                         $_SESSION['user_id'] = $loggedInUser->supplier_id;

@@ -1,0 +1,187 @@
+body {
+    background: #f6f9f8;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    color: #232323;
+}
+
+.artist-manage-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+.artist-manage-title {
+    font-size: 2.2em;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #232323;
+}
+
+.artist-manage-desc {
+    color: #6b7280;
+    margin-bottom: 28px;
+}
+
+.artist-profile-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(44,34,84,0.07);
+    padding: 28px 22px 22px 22px;
+    margin-bottom: 32px;
+}
+
+.artist-photo-card {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 22px;
+}
+
+.artist-photo-upload-section {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+}
+
+.artist-photo-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.artist-profile-avatar {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #7c3aed;
+    background: #f3f3f3;
+}
+
+.artist-photo-label {
+    font-size: 1em;
+    color: #444;
+    margin-top: 4px;
+}
+
+.artist-photo-upload-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.artist-upload-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #7c3aed;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 2px;
+    border: none;
+}
+.artist-upload-btn:hover {
+    background: #5f2eea;
+}
+.artist-profile-photo-hint {
+    font-size: 0.97em;
+    color: #888;
+    margin-left: 2px;
+}
+
+.artist-section-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #232323;
+}
+
+.artist-profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 24px;
+    margin-bottom: 20px;
+}
+
+.artist-profile-grid label {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 4px;
+    color: #444;
+}
+
+.artist-profile-grid input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 7px;
+    border: 1px solid #e0e0e0;
+    font-size: 1em;
+    transition: border 0.2s;
+    margin-bottom: 6px;
+}
+
+.artist-profile-grid input:focus {
+    border: 1.5px solid #7c3aed;
+    outline: none;
+}
+
+.artist-save-btn {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 0;
+    width: 100%;
+    font-weight: 700;
+    font-size: 1.08em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+.artist-save-btn:hover {
+    background: #5f2eea;
+}
+
+.artist-error-msg {
+    color: #e53e3e;
+    font-size: 0.97em;
+    margin-top: 2px;
+}
+
+.artist-success-msg {
+    color: #10b981;
+    font-size: 1em;
+    margin-top: 12px;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .artist-manage-container {
+        max-width: 98vw;
+        padding: 0 4px;
+    }
+    .artist-profile-card {
+        padding: 16px 8px 14px 8px;
+    }
+    .artist-profile-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .artist-profile-avatar {
+        width: 64px;
+        height: 64px;
+    }
+    .artist-photo-upload-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
