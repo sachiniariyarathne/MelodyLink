@@ -91,7 +91,7 @@ class VendorMerchandise extends Controller {
             }
             
             // Handle file upload
-            $uploadDir = APPROOT . '/public/images/';
+            $uploadDir = APPROOT . '\..\public\img\\';
             $imageName = '';
             
             if (!empty($_FILES['image']['name'])) {
@@ -217,7 +217,7 @@ class VendorMerchandise extends Controller {
             }
             
             // Handle file upload if a new image is provided
-            $uploadDir = APPROOT . '/public/images/';
+            $uploadDir = APPROOT . '\..\public\images\\';
             $newImage = false;
             
             if (!empty($_FILES['image']['name'])) {
@@ -316,7 +316,7 @@ class VendorMerchandise extends Controller {
         // Delete the merchandise
         if ($this->vendorMerchandiseModel->deleteMerchandise($id)) {
             // Delete the image file
-            $imagePath = APPROOT . '/public/images/' . $merchandise->image;
+            $imagePath = APPROOT . '\..\public\images\\' . $merchandise->image;
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
