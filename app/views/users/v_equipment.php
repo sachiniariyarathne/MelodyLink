@@ -1,12 +1,9 @@
-<?php
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EventGear Pro - My Equipment</title>
+  <title>MelodyLink - My Equipment</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -70,7 +67,6 @@
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       transition: transform 0.2s;
-      position: relative;
     }
     .card:hover {
       transform: translateY(-5px);
@@ -151,9 +147,6 @@
     .delete-btn {
       background: #ef4444;
       color: white;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
     }
     .add-btn {
       background: #a78bfa;
@@ -170,6 +163,11 @@
     .add-btn:hover {
       background: #8c6cf5;
     }
+    .card.hidden {
+      display: none;
+    }
+    
+    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -181,6 +179,8 @@
       z-index: 1000;
       justify-content: center;
       align-items: center;
+      overflow-y: auto;
+      padding: 2rem 0;
     }
     .modal-content {
       background: #1e153a;
@@ -188,12 +188,34 @@
       border-radius: 12px;
       width: 90%;
       max-width: 500px;
+      max-height: 90vh;
       box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      position: relative;
     }
     .modal-title {
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
       color: #a78bfa;
+      position: sticky;
+      top: 0;
+      background: #1e153a;
+      padding-bottom: 1rem;
+      z-index: 1;
+    }
+    .form-container {
+      max-height: calc(80vh - 150px);
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    .form-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .form-container::-webkit-scrollbar-track {
+      background: #1e153a;
+    }
+    .form-container::-webkit-scrollbar-thumb {
+      background: #a78bfa;
+      border-radius: 3px;
     }
     .form-group {
       margin-bottom: 1.25rem;
@@ -215,27 +237,60 @@
       color: white;
       font-family: 'Inter', sans-serif;
     }
+    .form-group input:focus, 
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #a78bfa;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
     .form-actions {
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
       margin-top: 1.5rem;
+      position: sticky;
+      bottom: 0;
+      background: #1e153a;
+      padding-top: 1rem;
+      z-index: 1;
+    }
+    .form-actions button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .form-actions button:hover {
+      opacity: 0.9;
     }
     .cancel-btn {
       background: #2e1e5c;
       color: white;
       border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      cursor: pointer;
     }
     .submit-btn {
       background: #a78bfa;
       color: white;
       border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+      }
+      .filters {
+        gap: 0.5rem;
+      }
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -243,8 +298,8 @@
   <div class="navbar">
     <div><strong style="color:white">MelodyLink </strong></div>
     <div>
-      <a href="/" class="active">Dashboard</a>
-      <a href="/equipment">Equipment</a>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Equipment</a>
       <a href="#">Bookings</a>
       <a href="#">Calendar</a>
     </div>
@@ -277,7 +332,7 @@
             </div>
             <div class="actions">
               <button class="btn edit-btn">Edit</button>
-              <a href="/equipment/delete?id=<?= $item['id'] ?>" class="btn delete-btn">Delete</a>
+              <a href="?delete=<?= $item['id'] ?>" class="btn delete-btn">Delete</a>
             </div>
           </div>
         </div>
@@ -289,53 +344,56 @@
   <div class="modal" id="addEquipmentModal">
     <div class="modal-content">
       <h3 class="modal-title">Add New Equipment</h3>
-      <form id="equipmentForm" method="POST" action="/equipment/add">
-        <div class="form-group">
-          <label for="equipmentName">Equipment Name</label>
-          <input type="text" id="equipmentName" name="name" required placeholder="Enter equipment name">
-        </div>
-        <div class="form-group">
-          <label for="equipmentDesc">Description</label>
-          <textarea id="equipmentDesc" name="description" rows="3" required placeholder="Describe the equipment features"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="equipmentPrice">Price per day ($)</label>
-          <input type="number" id="equipmentPrice" name="price" required placeholder="Enter daily rate" step="0.01">
-        </div>
-        <div class="form-group">
-          <label for="equipmentCategory">Category</label>
-          <select id="equipmentCategory" name="category" required>
-            <option value="">Select a category</option>
-            <option value="sound">Sound System</option>
-            <option value="lighting">Lighting</option>
-            <option value="stage">Stage Equipment</option>
-            <option value="dj">DJ Gear</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="equipmentImage">Image URL</label>
-          <input type="url" id="equipmentImage" name="image_url" required placeholder="https://example.com/image.jpg">
-        </div>
-        <div class="form-group">
-          <label for="equipmentRating">Rating (1-5)</label>
-          <input type="number" id="equipmentRating" name="rating" min="1" max="5" step="0.1" value="4.5" required>
-        </div>
-        <div class="form-group">
-          <label for="equipmentReviews">Number of Reviews</label>
-          <input type="number" id="equipmentReviews" name="reviews" min="0" value="0" required>
-        </div>
-        <div class="form-group">
-          <label for="equipmentStatus">Status</label>
-          <select id="equipmentStatus" name="status" required>
-            <option value="available">Available</option>
-            <option value="booked">Booked</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
-          <button type="submit" class="submit-btn">Add Equipment</button>
-        </div>
-      </form>
+      <div class="form-container">
+        <form id="equipmentForm" method="POST">
+          <input type="hidden" name="add_equipment" value="1">
+          <div class="form-group">
+            <label for="equipmentName">Equipment Name</label>
+            <input type="text" id="equipmentName" name="name" required placeholder="Enter equipment name">
+          </div>
+          <div class="form-group">
+            <label for="equipmentDesc">Description</label>
+            <textarea id="equipmentDesc" name="description" rows="3" required placeholder="Describe the equipment features"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="equipmentPrice">Price per day ($)</label>
+            <input type="number" id="equipmentPrice" name="price" required placeholder="Enter daily rate" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="equipmentCategory">Category</label>
+            <select id="equipmentCategory" name="category" required>
+              <option value="">Select a category</option>
+              <option value="sound">Sound System</option>
+              <option value="lighting">Lighting</option>
+              <option value="stage">Stage Equipment</option>
+              <option value="dj">DJ Gear</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="equipmentImage">Image URL</label>
+            <input type="url" id="equipmentImage" name="image_url" required placeholder="https://example.com/image.jpg">
+          </div>
+          <div class="form-group">
+            <label for="equipmentRating">Rating (1-5)</label>
+            <input type="number" id="equipmentRating" name="rating" min="1" max="5" step="0.1" value="4.5" required>
+          </div>
+          <div class="form-group">
+            <label for="equipmentReviews">Number of Reviews</label>
+            <input type="number" id="equipmentReviews" name="reviews" min="0" value="0" required>
+          </div>
+          <div class="form-group">
+            <label for="equipmentStatus">Status</label>
+            <select id="equipmentStatus" name="status" required>
+              <option value="available">Available</option>
+              <option value="booked">Booked</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+        <button type="submit" class="submit-btn" form="equipmentForm">Add Equipment</button>
+      </div>
     </div>
   </div>
 
@@ -388,12 +446,12 @@
           
           cards.forEach(card => {
             if (filter === 'all') {
-              card.style.display = 'block';
+              card.classList.remove('hidden');
             } else {
               if (card.getAttribute('data-category') === filter) {
-                card.style.display = 'block';
+                card.classList.remove('hidden');
               } else {
-                card.style.display = 'none';
+                card.classList.add('hidden');
               }
             }
           });

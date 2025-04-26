@@ -1,63 +1,85 @@
 <?php
-require_once 'EquipmentModel.php';
+require_once '../app/models/m_equipment.php';
 
-class EquipmentController {
-    private $model;
+class Equipment {
+    private $equipmentModel;
     private $db;
 
-    public function __construct() {
-        // Database connection
-        $this->db = new mysqli('localhost', 'root', '', 'event_gear_db');
-        if ($this->db->connect_error) {
-            die("Connection failed: " . $this->db->connect_error);
-        }
-        $this->model = new EquipmentModel($this->db);
+    public function __construct($db) {
+        $this->equipmentModel = new M_Equipment($db);
+        $this->db = $db; // Use the database connection passed in
     }
 
-    // Handle all equipment operations
-    public function handleRequest() {
-        // Add new equipment
-        if (isset($_POST['add_equipment'])) {
-            $this->addEquipment();
+    // Main view for equipment listing
+    public function index() {
+        $equipment = $this->equipmentModel->getAllEquipment();
+        require_once '../app/views/v_equipment.php';
+    }
+
+    // Handle adding new equipment
+    public function add() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_equipment'])) {
+            $data = [
+                'name' => $_POST['name'],
+                'description' => $_POST['description'],
+                'price' => $_POST['price'],
+                'category' => $_POST['category'],
+                'image_url' => $_POST['image_url'],
+                'rating' => $_POST['rating'],
+                'reviews' => $_POST['reviews'],
+                'status' => $_POST['status']
+            ];
+            
+            $this->equipmentModel->addEquipment($data);
+            header("Location: /equipment");
+            exit;
+        }
+    }
+
+    // Handle deleting equipment
+    public function delete($id) {
+        if (isset($id)) {
+            $this->equipmentModel->deleteEquipment($id);
+            header("Location: /equipment");
+            exit;
+        }
+    }
+    
+    // Process all form submissions
+    public function processRequest() {
+        // Process add equipment request
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_equipment'])) {
+            $this->add();
         }
         
-        // Delete equipment
+        // Process delete equipment request
         if (isset($_GET['delete'])) {
-            $this->deleteEquipment();
+            $this->delete($_GET['delete']);
         }
         
-        // Display all equipment
-        $this->showEquipment();
-    }
-
-    private function addEquipment() {
-        $this->model->addEquipment(
-            $_POST['name'],
-            $_POST['description'],
-            $_POST['price'],
-            $_POST['category'],
-            $_POST['image_url'],
-            $_POST['rating'],
-            $_POST['reviews'],
-            $_POST['status']
-        );
-        header("Location: ".$_SERVER['PHP_SELF']);
-        exit;
-    }
-
-    private function deleteEquipment() {
-        $this->model->deleteEquipment($_GET['delete']);
-        header("Location: ".$_SERVER['PHP_SELF']);
-        exit;
-    }
-
-    private function showEquipment() {
-        $equipment = $this->model->getAllEquipment();
-        include 'EquipmentView.php';
+        // Show equipment list
+        $this->index();
     }
 }
 
-// Create controller and handle request
-$controller = new EquipmentController();
-$controller->handleRequest();
+// Establish database connection - assuming this is done elsewhere in your project
+$db_host = 'localhost';
+$db_name = 'melodylink';
+$db_user = 'root';
+$db_pass = '';
+
+// Create connection
+$db = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+// Check connection
+if ($db->connect_error) {
+    die("Connection failed: " . $db->connect_error);
+}
+
+// Initialize and run controller, passing the database connection
+$controller = new Equipment($db);
+$controller->processRequest();
+
+// Clean up database connection
+$db->close();
 ?>
