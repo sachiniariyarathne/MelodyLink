@@ -12,7 +12,7 @@
     <!-- Sidebar (reuse your dashboard sidebar code here) -->
     <aside class="md_sidebar">
         <div class="md_profile-section">
-            <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $data['member_info']['profile_pic'] ?? 'default-avatar.png'; ?>" alt="Profile" class="md_profile-avatar">
+            <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $data['member_info']['profile_pic'] ?? 'default-avatar.png'; ?>" alt="Profile" class="md_profile-avatar">
             <h2><?php echo $data['member_info']['username']; ?></h2>
             <p><?php echo $data['member_info']['email']; ?></p>
         </div>
@@ -39,7 +39,7 @@
                 <?php foreach($data['albums'] as $album): ?>
                     <div class="album-card">
                         <div class="album-cover">
-                            <img src="<?php echo URLROOT; ?>/public/uploads/albums/<?php echo $album->album_cover ?? 'default-album.jpg'; ?>" alt="<?php echo htmlspecialchars($album->album_name); ?>">
+                            <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $album->album_cover ?? 'default-album.jpg'; ?>" alt="<?php echo htmlspecialchars($album->album_name); ?>">
                         </div>
                         <div class="album-info">
                             <h3><?php echo htmlspecialchars($album->album_name); ?></h3>

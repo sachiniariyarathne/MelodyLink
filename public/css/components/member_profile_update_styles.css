@@ -118,6 +118,22 @@ body {
     font-size: 0.97em;
     margin-top: 2px;
 }
+
+.success-msg {
+    background: #e3fcef;
+    color: #10b981;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #a7f3d0;
+}
+
+.error-msg {
+    color: #ef4444;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
 @media (max-width: 700px) {
     .profile-container {
         max-width: 98vw;
