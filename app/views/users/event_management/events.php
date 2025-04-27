@@ -1,5 +1,6 @@
 <?php require APPROOT . '/views/users/event_management/header.php'; ?>
 
+
 <div class="events-container">
     <div class="events-header">
         <h1>Events Management</h1>

@@ -215,10 +215,12 @@ class Event {
         return $this->db->single();
     }
 
-    public function getUserById($id) {
-        $this->db->query('SELECT * FROM member WHERE member_id = :id');
-        $this->db->bind(':id', $id);
-        return $this->db->single();
+    public function getUserById($userId) {
+        $this->db->query('SELECT * FROM member WHERE member_id = :user_id');
+        $this->db->bind(':user_id', $userId);
+        
+        $row = $this->db->single();
+        return $row;
     }
 
     public function createBooking($data) {
@@ -242,6 +244,9 @@ class Event {
 
             $this->db->execute();
 
+            // Get the booking ID
+            $bookingId = $this->db->lastInsertId();
+
             // Update available quantity
             $this->db->query('UPDATE ticket_types SET quantity_available = quantity_available - :quantity 
                             WHERE ticket_type_id = :ticket_type_id');
@@ -252,11 +257,21 @@ class Event {
             $this->db->execute();
 
             $this->db->commit();
-            return true;
+            return $bookingId; // Return the booking ID on success
         } catch (Exception $e) {
             $this->db->rollBack();
             error_log('Error creating booking: ' . $e->getMessage());
             return false;
         }
+    }
+
+    public function getBookingById($id) {
+        $this->db->query('SELECT * FROM event_bookings WHERE booking_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function lastInsertId() {
+        return $this->db->lastInsertId();
     }
 } 

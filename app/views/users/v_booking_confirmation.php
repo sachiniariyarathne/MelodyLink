@@ -1,67 +1,40 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/event_header.php'; ?>
 
 <div class="confirmation-container">
-    <div class="confirmation-card">
+    <div class="confirmation-content">
         <div class="confirmation-header">
             <i class="fas fa-check-circle"></i>
-            <h1>Booking Confirmed!</h1>
-            <p>Thank you for your purchase. Your tickets have been booked successfully.</p>
+            <h1>Booking Confirmation</h1>
+            <p>Thank you for booking with MelodyLink!</p>
         </div>
 
         <div class="confirmation-details">
-            <div class="detail-section">
+            <div class="event-info">
                 <h2>Event Details</h2>
-                <div class="detail-item">
-                    <span class="label">Event:</span>
-                    <span class="value"><?php echo $data['event']->title; ?></span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Date:</span>
-                    <span class="value"><?php echo date('F j, Y', strtotime($data['event']->event_date)); ?></span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Time:</span>
-                    <span class="value"><?php echo date('h:i A', strtotime($data['event']->event_time)); ?></span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Venue:</span>
-                    <span class="value"><?php echo $data['event']->venue; ?></span>
-                </div>
+                <p><strong>Event:</strong> <?php echo $data['event']->title; ?></p>
+                <p><strong>Date:</strong> <?php echo date('F j, Y', strtotime($data['event']->event_date)); ?></p>
+                <p><strong>Time:</strong> <?php echo date('g:i A', strtotime($data['event']->event_time)); ?></p>
+                <p><strong>Venue:</strong> <?php echo $data['event']->venue; ?></p>
             </div>
 
-            <div class="detail-section">
+            <div class="booking-info">
                 <h2>Booking Details</h2>
-                <div class="detail-item">
-                    <span class="label">Ticket Type:</span>
-                    <span class="value"><?php echo $data['ticket']->name; ?></span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Quantity:</span>
-                    <span class="value"><?php echo $data['quantity']; ?></span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Total Amount:</span>
-                    <span class="value">Rs.<?php echo number_format($data['total_price'], 2); ?></span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Booking Reference:</span>
-                    <span class="value"><?php echo $data['booking']->booking_id; ?></span>
-                </div>
+                <p><strong>Ticket Type:</strong> <?php echo $data['ticket']->name; ?></p>
+                <p><strong>Quantity:</strong> <?php echo $data['quantity']; ?></p>
+                <p><strong>Total Amount:</strong> Rs.<?php echo number_format($data['total_price']); ?></p>
+                <p><strong>Booking Reference:</strong> <?php echo $data['booking']->booking_id; ?></p>
             </div>
 
-            <div class="detail-section">
+            <div class="entry-info">
                 <h2>Entry Information</h2>
-                <div class="secret-code">
-                    <span class="label">Your Secret Code:</span>
-                    <span class="code"><?php echo $data['booking']->secret_code; ?></span>
-                </div>
-                <p class="note">Please present this code at the event entrance along with your ID.</p>
+                <p><strong>Secret Code:</strong> <?php echo $data['booking']->secret_code; ?></p>
+                <p class="note">Please present this code at the entrance.</p>
             </div>
         </div>
 
         <div class="confirmation-actions">
-            <a href="<?php echo URLROOT; ?>/users/dashboard" class="btn-dashboard">Go to Dashboard</a>
-            <a href="<?php echo URLROOT; ?>/events/details/<?php echo $data['event']->id; ?>" class="btn-event">View Event</a>
+            <a href="<?php echo URLROOT; ?>/users/dashboard" class="btn btn-primary">Go to Dashboard</a>
+            <a href="<?php echo URLROOT; ?>/events/details/<?php echo $data['event']->event_id; ?>" class="btn btn-secondary">View Event Details</a>
         </div>
     </div>
 </div>
@@ -71,13 +44,15 @@
     max-width: 800px;
     margin: 2rem auto;
     padding: 2rem;
-}
-
-.confirmation-card {
     background: var(--bg-primary);
     border-radius: 12px;
-    padding: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-content {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 8px;
 }
 
 .confirmation-header {
@@ -87,84 +62,40 @@
 
 .confirmation-header i {
     font-size: 4rem;
-    color: #48bb78;
+    color: #4CAF50;
     margin-bottom: 1rem;
 }
 
 .confirmation-header h1 {
     color: var(--text-primary);
     font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-.confirmation-header p {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
 }
 
 .confirmation-details {
+    margin-bottom: 2rem;
+}
+
+.event-info, .booking-info, .entry-info {
     background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-}
-
-.detail-section {
-    margin-bottom: 2rem;
-}
-
-.detail-section:last-child {
-    margin-bottom: 0;
-}
-
-.detail-section h2 {
-    color: var(--text-primary);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.detail-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-}
-
-.detail-item .label {
-    font-weight: 500;
-}
-
-.detail-item .value {
-    color: var(--text-primary);
-}
-
-.secret-code {
-    text-align: center;
-    margin: 2rem 0;
     padding: 1.5rem;
-    background: rgba(72, 187, 120, 0.1);
     border-radius: 8px;
+    margin-bottom: 1.5rem;
 }
 
-.secret-code .label {
-    display: block;
+.event-info h2, .booking-info h2, .entry-info h2 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.event-info p, .booking-info p, .entry-info p {
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 
-.secret-code .code {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #48bb78;
-    letter-spacing: 0.2em;
-}
-
-.note {
-    text-align: center;
+.entry-info .note {
+    font-style: italic;
     color: var(--text-secondary);
-    font-size: 0.9rem;
     margin-top: 1rem;
 }
 
@@ -174,7 +105,7 @@
     justify-content: center;
 }
 
-.btn-dashboard, .btn-event {
+.btn {
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     text-decoration: none;
@@ -182,42 +113,43 @@
     transition: all 0.3s ease;
 }
 
-.btn-dashboard {
+.btn-primary {
     background: var(--accent-primary);
     color: white;
 }
 
-.btn-event {
+.btn-primary:hover {
+    background: var(--accent-secondary);
+}
+
+.btn-secondary {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
 }
 
-.btn-dashboard:hover {
-    background: var(--accent-secondary);
-}
-
-.btn-event:hover {
+.btn-secondary:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
     .confirmation-container {
+        margin: 1rem;
         padding: 1rem;
     }
-    
-    .confirmation-card {
-        padding: 1.5rem;
+
+    .confirmation-content {
+        padding: 1rem;
     }
-    
+
     .confirmation-actions {
         flex-direction: column;
     }
-    
-    .btn-dashboard, .btn-event {
+
+    .btn {
         width: 100%;
         text-align: center;
     }
 }
 </style>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?> 
+<?php require APPROOT . '/views/inc/event_footer.php'; ?> 
