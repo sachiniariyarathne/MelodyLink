@@ -41,18 +41,20 @@
                 <label for="userType">Register as</label>
                 <select id="userType" name="userType" required>
                     <option value="" <?php echo empty($data['userType']) ? 'selected' : ''; ?>>Select User Type</option>
-                    <option value="member" <?php echo $data['userType'] == 'member' ? 'selected' : ''; ?>>Member (Subscriber)</option>
+                    <option value="member" <?php echo $data['userType'] == 'member' ? 'selected' : ''; ?>>Member</option>
                     <option value="artist" <?php echo $data['userType'] == 'artist' ? 'selected' : ''; ?>>Artist</option>
                     <option value="organizer" <?php echo $data['userType'] == 'organizer' ? 'selected' : ''; ?>>Event Organizer</option>
-                    <option value="supplier" <?php echo $data['userType'] == 'supplier' ? 'selected' : ''; ?>>Merchandise/Equipment Supplier</option>
+                    <option value="supplier" <?php echo $data['userType'] == 'supplier' ? 'selected' : ''; ?>>Event Equipment Supplier</option>
+                    <option value="merchandise_vendor"><?php echo $data['userType'] == 'merchandise_vendor' ? 'selected' : ''; ?>Merchandise Vendor</option>
+
                 </select>
                 <span class="form-invalid"><?php echo $data['userType_err']; ?></span>
             </div>
 
             <!-- Conditional fields -->
             <div id="reg-artistFields" class="reg-form-group" style="display: <?php echo $data['userType'] == 'artist' ? 'block' : 'none'; ?>">
-                <label for="specialty">Artist Specialty</label>
-                <input type="text" id="specialty" name="specialty" value="<?php echo $data['specialty'] ?? ''; ?>">
+                <label for="specialty">Artist Genre</label>
+                <input type="text" id="specialty" name="specialty" value="<?php echo $data['genre'] ?? ''; ?>">
             </div>
 
             <div id="reg-organizerFields" class="reg-form-group" style="display: <?php echo $data['userType'] == 'organizer' ? 'block' : 'none'; ?>">
@@ -65,6 +67,11 @@
                 <input type="text" id="business_type" name="business_type" value="<?php echo $data['business_type'] ?? ''; ?>">
             </div>
 
+            <div id="product_category_field" style="display: none;">
+                <label for="product_category">Product Category</label>
+                <input type="text" name="product_category" id="product_category">
+            </div>
+
             <button type="submit">Register</button>
         </form>
     </div>
@@ -72,3 +79,16 @@
 
 <!-- <script src="<?php echo URLROOT; ?>/js/register.js"></script> -->
 </body>
+<script>
+    document.getElementById('userType').addEventListener('change', function() {
+        // Hide all specific fields first
+        document.getElementById('product_category_field').style.display = 'none';
+        document.getElementById('business_type_field').style.display = 'none';
+        // Show relevant field based on selection
+        if (this.value === 'merchandise_vendor') {
+            document.getElementById('product_category_field').style.display = 'block';
+        } else if (this.value === 'supplier') {
+            document.getElementById('business_type_field').style.display = 'block';
+        }
+    });
+    </script>

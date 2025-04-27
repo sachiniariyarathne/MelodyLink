@@ -1,0 +1,317 @@
+/* Use existing dashboard variables */
+:root {
+    --md-primary: #7c3aed;
+    --md-primary-dark: #5f2eea;
+    --md-sidebar-bg: #2d1e5f;
+    --md-sidebar-gradient: linear-gradient(180deg, #7c3aed 0%, #2d1e5f 100%);
+    --md-card-bg: #fff;
+    --md-section-bg: #f7f8fa;
+    --md-border-radius: 18px;
+    --md-shadow: 0 4px 16px rgba(44,34,84,0.08);
+    --md-transition: 0.18s cubic-bezier(.4,0,.2,1);
+}
+
+/* Include base dashboard styles */
+.md_dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.md_sidebar {
+    width: 220px;
+    background: var(--md-sidebar-gradient);
+    color: #fff;
+    padding: 32px 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 400vh;
+}
+
+.md_profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.md_profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid #fff;
+}
+
+.md_profile-section h2 {
+    font-size: 1.12em;
+    margin: 0 0 4px 0;
+    color: #fff;
+}
+
+.md_profile-section p {
+    color: #e0d7ff;
+    font-size: 0.97em;
+    margin: 0;
+    text-align: center;
+}
+
+.md_sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.md_sidebar-nav li {
+    padding: 12px 34px;
+    margin-bottom: 8px;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    font-size: 1.06em;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: background var(--md-transition), color var(--md-transition);
+    color: #e0d7ff;
+}
+
+.md_sidebar-nav li a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.md_sidebar-nav .md_active,
+.md_sidebar-nav li:hover {
+    background: #fff;
+    color: var(--md-primary);
+}
+
+.md_sidebar-nav .md_active a,
+.md_sidebar-nav li:hover a {
+    color: var(--md-primary);
+}
+
+.md_sidebar-nav i {
+    min-width: 22px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* Main Content */
+.md_main-content {
+    flex: 1;
+    padding: 32px 38px 38px 38px;
+    background: var(--md-section-bg);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Bar */
+.md_topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 18px;
+}
+
+.md_topbar-title {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--md-primary-dark);
+    margin: 0;
+}
+
+.md_add-release-btn {
+    background: var(--md-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.md_add-release-btn:hover {
+    background: var(--md-primary-dark);
+}
+
+/* Releases Grid */
+.md_releases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.md_release-card {
+    background: var(--md-card-bg);
+    border-radius: var(--md-border-radius);
+    overflow: hidden;
+    box-shadow: var(--md-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.md_release-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(44,34,84,0.15);
+}
+
+.md_release-cover {
+    position: relative;
+    height: 180px;
+}
+
+.md_release-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.md_playlist-actions {
+    display: flex;
+    gap: 14px;
+    color: #bbb;
+    font-size: 1.08em;
+  }
+  
+  .md_playlist-actions i:hover {
+    color: #7c3aed;
+    cursor: pointer;
+  }
+  
+.md_edit-btn, .md_delete-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.md_edit-btn {
+    background: rgba(124, 58, 237, 0.8);
+}
+
+.md_delete-btn {
+    background: rgba(220, 38, 38, 0.8);
+}
+
+.md_edit-btn:hover {
+    background: #7c3aed;
+}
+
+.md_delete-btn:hover {
+    background: #dc2626;
+}
+
+.md_release-info {
+    padding: 16px;
+}
+
+.md_release-title {
+    margin: 0 0 8px 0;
+    font-size: 1.1em;
+    color: #232323;
+}
+
+.md_release-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.md_featured-artists {
+    font-size: 0.9em;
+    color: var(--md-primary);
+    font-style: italic;
+}
+
+.md_no-releases {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 0;
+    color: #888;
+}
+
+.md_no-releases i {
+    font-size: 3em;
+    margin-bottom: 16px;
+    color: #ccc;
+}
+
+.md_no-releases p {
+    margin: 0 0 24px 0;
+    font-size: 1.1em;
+}
+
+.md_add-first-btn {
+    background: var(--md-primary);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.md_add-first-btn:hover {
+    background: var(--md-primary-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .md_main-content {
+        padding: 20px;
+    }
+    
+    .md_releases-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .md_releases-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+    
+    .md_release-cover {
+        height: 150px;
+    }
+    
+    .md_release-title {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .md_topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .md_release-card {
+        max-width: 100%;
+    }
+}
