@@ -34,7 +34,7 @@ class Users extends Controller {
 
             // Add optional fields if they exist
 
-            if (isset($_POST['specialty'])) {
+            if (isset($_POST['genre'])) {
                 $data['genre'] = trim($_POST['genre']);
             }
             if (isset($_POST['organization'])) {
