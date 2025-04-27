@@ -19,11 +19,7 @@
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-image-container">
-                    <img 
-                        src="<?php echo !empty($data['profile_pic']) ? '/public/uploads/' . $data['profile_pic'] : '/images/default-avatar.png'; ?>" 
-                        alt="Profile Photo" 
-                        class="profile-image"
-                    >
+                <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo !empty($data['profile_pic']) ? $data['profile_pic'] : 'default-avatar.png'; ?>" alt="Profile Photo" class="profile-avatar"style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid #8b5cf6;">
                 </div>
                 <div class="profile-header-info">
                     <h2 class="profile-name"><?php echo htmlspecialchars($data['username']); ?></h2>

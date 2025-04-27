@@ -18,7 +18,7 @@
     <form class="artist-profile-card artist-photo-card" action="<?php echo URLROOT; ?>/Artist_Profile/update" method="POST" enctype="multipart/form-data">
         <div class="artist-photo-upload-section">
             <div class="artist-photo-avatar">
-                <img class="artist-profile-avatar" src="<?php echo URLROOT; ?>/public/uploads/artists/<?php echo $data['profile_pic'] ?? 'default-avatar.png'; ?>" alt="Profile Photo">
+            <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo !empty($data['profile_pic']) ? $data['profile_pic'] : 'default-avatar.png'; ?>" alt="Profile Photo" class="profile-avatar"style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid #8b5cf6;">
                 <div class="artist-photo-label">Profile Photo</div>
             </div>
             <div class="artist-photo-upload-actions">
