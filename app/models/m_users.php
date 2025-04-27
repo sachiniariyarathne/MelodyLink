@@ -22,6 +22,9 @@ class m_users {
             case 'supplier':
                 $table = 'supplier';
                 break;
+            case 'merchandise_vendor':
+                $table = 'merchandise_vendor';
+                break;    
             default:
                 return false;
         }
@@ -88,7 +91,7 @@ class m_users {
                 break;
             case 'artist':
                 $table = 'artist';
-                $columns = '(username, email, Password, Specialty)';
+                $columns = '(Username, Email, Password, Genre)';
                 break;
             case 'organizer':
                 $table = 'event_organiser';
@@ -98,6 +101,10 @@ class m_users {
                 $table = 'supplier';
                 $columns = '(username, email, Password, BusinessType)';
                 break;
+            case 'merchandise_vendor':
+                $table = 'merchandise_vendor';
+                $columns = '(Username, email, Password, ProductCategory)';
+                break;    
             default:
                 return false;
         }
@@ -113,13 +120,16 @@ class m_users {
         // Add extra field based on user type
         switch($userType) {
             case 'artist':
-                $this->db->bind(':extra', $data['specialty'] ?? '');
+                $this->db->bind(':extra', $data['genre'] ?? '');
                 break;
             case 'organizer':
                 $this->db->bind(':extra', $data['organization'] ?? '');
                 break;
             case 'supplier':
                 $this->db->bind(':extra', $data['business_type'] ?? '');
+                break;
+            case 'merchandise_vendor':
+                $this->db->bind(':extra', $data['product_category'] ?? '');
                 break;
             default:
                 $this->db->bind(':extra', $data['Phone_number'] ?? '');
@@ -269,7 +279,8 @@ class m_users {
             'member' => 'member',
             'artist' => 'artist',
             'event_organiser' => 'organizer',
-            'supplier' => 'supplier'
+            'supplier' => 'supplier',
+            'merchandise_vendor' => 'merchandise_vendor'
         ];
         
         // Try each table

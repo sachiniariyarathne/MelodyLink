@@ -25,12 +25,18 @@
                 
                 <div class="login-form-group">
                     <label for="login-email">Email Address</label>
-                    <input type="email" id="login-email" name="email" required>
+                    <input type="email" name="email" ... value="<?php echo $data['email']; ?>">
+                    <?php if(!empty($data['email_err'])): ?>
+                        <div class="error-message"><?php echo $data['email_err']; ?></div>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="login-form-group">
                     <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" required>
+                    <input type="password" name="password" ...>
+                    <?php if(!empty($data['password_err'])): ?>
+                        <div class="error-message"><?php echo $data['password_err']; ?></div>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="login-form-links">

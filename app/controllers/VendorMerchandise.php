@@ -1,6 +1,10 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 class VendorMerchandise extends Controller {
     private $vendorMerchandiseModel;
+    private $memberModel;
     
     public function __construct() {
         // Start session if not already started
@@ -20,13 +24,21 @@ class VendorMerchandise extends Controller {
         }
         
         $this->vendorMerchandiseModel = $this->model('m_VendorMerchandise');
+        
+        // Load member model to access member emails
+        $this->memberModel = $this->model('m_Member');
+        
+        // Include PHPMailer dependencies
+        require_once APPROOT . '\libraries\PHPMailer-master\src\Exception.php';
+        require_once APPROOT . '\libraries\PHPMailer-master\src\PHPMailer.php';
+        require_once APPROOT . '\libraries\PHPMailer-master\src\SMTP.php';
     }
     
     // This function bypasses the normal role check by directly checking supplier table
     // and setting the role appropriately
     private function forceCheckSupplier() {
         if (isset($_SESSION['user_id'])) {
-            $db = new ();
+            $db = new Database();
             $db->query("SELECT * FROM supplier WHERE user_id = :user_id");
             $db->bind(':user_id', $_SESSION['user_id']);
             $result = $db->single();
@@ -91,8 +103,13 @@ class VendorMerchandise extends Controller {
             }
             
             // Handle file upload
-            $uploadDir = APPROOT . '\..\public\img\\';
+            $uploadDir = APPROOT . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR;
             $imageName = '';
+            
+            // Make sure directory exists
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
             
             if (!empty($_FILES['image']['name'])) {
                 $imageName = time() . '_' . $_FILES['image']['name'];
@@ -134,6 +151,9 @@ class VendorMerchandise extends Controller {
                     ];
                     
                     if ($this->vendorMerchandiseModel->addMerchandise($productData)) {
+                        // Successfully added merchandise, now notify members
+                        $this->notifyMembersAboutNewMerchandise($productData);
+                        
                         flash('merchandise_message', 'Product added successfully');
                         redirect('vendorMerchandise');
                     } else {
@@ -160,6 +180,133 @@ class VendorMerchandise extends Controller {
             ];
             
             $this->view('vendors/v_add_merchandise', $data);
+        }
+    }
+    
+    // Get all active members' emails
+    private function getAllMemberEmails() {
+        return $this->memberModel->getAllMemberEmails();
+    }
+    
+    // Send notification to all members about new merchandise
+    private function notifyMembersAboutNewMerchandise($productData) {
+        // Get all member emails
+        $members = $this->getAllMemberEmails();
+        
+        if (empty($members)) {
+            error_log('No members found to notify about new merchandise');
+            return false;
+        }
+        
+        try {
+            // Create a new PHPMailer instance
+            $mail = new PHPMailer(true);
+            
+            // Server settings - Add more debugging
+            $mail->SMTPDebug = 2; // Change from 0 to 2 for detailed debug output
+            $mail->Debugoutput = function($str, $level) {
+                error_log("PHPMailer: $str");
+            };
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'IndipaPerera5@gmail.com';
+            $mail->Password = 'mxpt ybvk rgcb sbtv'; // Your app password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->setFrom('MelodyLink.noreply@gmail.com', 'MelodyLink');
+            
+            // Add a test email address to verify if emails are being sent
+            // Replace with your actual email for testing
+            $mail->addAddress('your-test-email@example.com'); 
+            
+            // Add BCC for all members 
+            $validEmails = 0;
+            foreach ($members as $member) {
+                if (filter_var($member->email, FILTER_VALIDATE_EMAIL)) {
+                    $mail->addBCC($member->email);
+                    $validEmails++;
+                } else {
+                    error_log('Invalid email address skipped: ' . $member->email);
+                }
+            }
+            
+            error_log("Adding $validEmails valid email addresses as BCC recipients");
+            
+            // Email content
+            $mail->isHTML(true);
+            $mail->Subject = 'New Merchandise Available at MelodyLink!';
+            
+            // Product image URL
+            $imageUrl = URLROOT . '/public/img/' . $productData['image'];
+            
+            // Format price with two decimal places
+            $formattedPrice = number_format($productData['price'], 2);
+            
+            // Create an attractive, non-spammy email
+            $emailBody = "
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; }
+                    .header { background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 2px solid #6c757d; }
+                    .content { padding: 20px; }
+                    .product { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 15px; }
+                    .product-image { text-align: center; margin-bottom: 15px; }
+                    .product-image img { max-width: 250px; border-radius: 5px; }
+                    .product-details { text-align: center; }
+                    .price { font-size: 18px; font-weight: bold; color: #28a745; }
+                    .button { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; 
+                              text-decoration: none; border-radius: 5px; margin-top: 15px; }
+                    .footer { background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #6c757d; margin-top: 20px; }
+                    .unsubscribe { font-size: 11px; margin-top: 10px; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h2>New at MelodyLink!</h2>
+                    </div>
+                    <div class='content'>
+                        <p>We're excited to announce a new item has been added to our collection!</p>
+                        
+                        <div class='product'>
+                            <div class='product-image'>
+                                <img src='$imageUrl' alt='{$productData['name']}'>
+                            </div>
+                            <div class='product-details'>
+                                <h3>{$productData['name']}</h3>
+                                <p>{$productData['description']}</p>
+                                <p class='price'>$" . $formattedPrice . "</p>
+                                <a href='" . URLROOT . "/merchandise' class='button'>Shop Now</a>
+                            </div>
+                        </div>
+                        
+                        <p style='margin-top: 20px;'>Thank you for being a valued MelodyLink member!</p>
+                    </div>
+                    <div class='footer'>
+                        <p>&copy; " . date('Y') . " MelodyLink. All rights reserved.</p>
+                        <p class='unsubscribe'>If you'd prefer not to receive these notifications, please update your preferences in your account settings.</p>
+                    </div>
+                </div>
+            </body>
+            </html>";
+            
+            $mail->Body = $emailBody;
+            $mail->AltBody = "New merchandise available at MelodyLink: {$productData['name']} - \${$formattedPrice}. Shop now at " . URLROOT . "/merchandise";
+            
+            // Send email and capture result
+            if ($mail->send()) {
+                error_log('Notification emails sent to all members about new merchandise: ' . $productData['name']);
+                return true;
+            } else {
+                error_log('Email sending failed: ' . $mail->ErrorInfo);
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log('Error sending merchandise notification emails: ' . $e->getMessage());
+            return false;
         }
     }
     
@@ -217,8 +364,13 @@ class VendorMerchandise extends Controller {
             }
             
             // Handle file upload if a new image is provided
-            $uploadDir = APPROOT . '\..\public\images\\';
+            $uploadDir = APPROOT . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR;
             $newImage = false;
+            
+            // Make sure directory exists
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
             
             if (!empty($_FILES['image']['name'])) {
                 $newImage = true;
@@ -316,7 +468,7 @@ class VendorMerchandise extends Controller {
         // Delete the merchandise
         if ($this->vendorMerchandiseModel->deleteMerchandise($id)) {
             // Delete the image file
-            $imagePath = APPROOT . '\..\public\images\\' . $merchandise->image;
+            $imagePath = APPROOT . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $merchandise->image;
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }

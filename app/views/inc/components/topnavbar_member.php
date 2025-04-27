@@ -15,7 +15,7 @@
                     <li><a href="<?php echo URLROOT; ?>/Member_Homepage/Homepage">Home</a></li>
                     <li><a href="<?php echo URLROOT; ?>/users/dashboard">Dashboard</a></li>
                     <li><a href="#">Upcoming Events</a></li>
-                    <li><a href="#">Store</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/Merchandise">Store</a></li>
                     <li><a href="#">Music</a></li>
                     <li><a href="#">Contact us</a></li>
                 </ul>
