@@ -20,7 +20,7 @@
             <ul>
                 <li><a href="<?php echo URLROOT; ?>/users/dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
                 <li><a href="<?php echo URLROOT; ?>/my_tickets/mytickets"><i class="fa fa-ticket-alt"></i> My Tickets</a></li>
-                <li><a href="#"><i class="fa fa-shopping-cart"></i> My Purchases</a></li>
+                <li><a href="<?php echo URLROOT; ?>/Member_Purchases"><i class="fa fa-shopping-cart"></i> My Purchases</a></li>
                 <li class="md_active"><a href="<?php echo URLROOT; ?>/music_library"><i class="fa fa-music"></i> Music Library</a></li>
             </ul>
         </nav>

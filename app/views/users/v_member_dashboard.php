@@ -14,7 +14,7 @@
       <ul>
           <li class="md_active"><i class="fa fa-home"></i> Dashboard</li>
           <li><i class="fa fa-ticket-alt"></i><a href="<?php echo URLROOT; ?>/my_tickets/mytickets">My Tickets</a></li>
-          <li><i class="fa fa-shopping-cart"></i> My Purchases</li>
+          <li><i class="fa fa-shopping-cart"></i><a href="<?php echo URLROOT; ?>/Member_Purchases"> My Purchases</a></li>
           <li><i class="fa fa-music"></i><a href="<?php echo URLROOT; ?>/music_library/musiclibrary">Music Library</a></li>
         </ul>
       </nav>
