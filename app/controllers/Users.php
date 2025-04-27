@@ -46,6 +46,9 @@ class Users extends Controller {
             if (isset($_POST['phone_number'])) {
                 $data['phone_number'] = trim($_POST['phone_number']);
             }
+            if (isset($_POST['product_category'])) {
+                $data['product_category'] = trim($_POST['product_category']);
+            }
 
             // Validate name
             if (empty($data['name'])) {
@@ -165,6 +168,13 @@ class Users extends Controller {
                         $_SESSION['email'] = $loggedInUser->email;
                         redirect('supplier/dashboard');
                         break;
+                        case 'merchandise_vendor':
+                            $_SESSION['user_id'] = $loggedInUser->user_id;
+                            $_SESSION['user_type'] = 'merchandise_vendor';
+                            $_SESSION['username'] = $loggedInUser->Username;
+                            $_SESSION['email'] = $loggedInUser->email;
+                            redirect('merchandise_vendor/dashboard');
+                            break;
                 }
             } else {
                 $data['password_err'] = 'Invalid credentials';
@@ -199,6 +209,9 @@ class Users extends Controller {
                         break;
                     case 'supplier':
                         redirect('/supplier/dashboard');
+                        break;
+                    case 'supplier':
+                        redirect('merchandise_vendor/dashboard');
                         break;
                 }
             } else {

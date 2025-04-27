@@ -22,6 +22,9 @@ class m_users {
             case 'supplier':
                 $table = 'supplier';
                 break;
+            case 'merchandise_vendor':
+                $table = 'merchandise_vendor';
+                break;    
             default:
                 return false;
         }
@@ -98,6 +101,10 @@ class m_users {
                 $table = 'supplier';
                 $columns = '(username, email, Password, BusinessType)';
                 break;
+            case 'merchandise_vendor':
+                $table = 'merchandise_vendor';
+                $columns = '(Username, email, Password, ProductCategory)';
+                break;    
             default:
                 return false;
         }
@@ -120,6 +127,9 @@ class m_users {
                 break;
             case 'supplier':
                 $this->db->bind(':extra', $data['business_type'] ?? '');
+                break;
+            case 'merchandise_vendor':
+                $this->db->bind(':extra', $data['product_category'] ?? '');
                 break;
             default:
                 $this->db->bind(':extra', $data['Phone_number'] ?? '');
@@ -269,7 +279,8 @@ class m_users {
             'member' => 'member',
             'artist' => 'artist',
             'event_organiser' => 'organizer',
-            'supplier' => 'supplier'
+            'supplier' => 'supplier',
+            'merchandise_vendor' => 'merchandise_vendor'
         ];
         
         // Try each table
