@@ -31,7 +31,7 @@ class My_Tickets extends Controller {
             ],
             'upcoming_bookings' => $this->ticketModel->getUpcomingBookings($userId),
             'past_bookings' => $this->ticketModel->getPastBookings($userId),
-            'saved_events' => $this->eventModel->getSavedEvents($userId)
+            'saved_events' => $this->ticketModel->getSavedEvents($userId)
         ];
 
         $this->view('users/v_member_my_tickets', $data);
