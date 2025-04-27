@@ -6,7 +6,12 @@
     <!-- Sidebar -->
     <aside class="md_sidebar">
       <div class="md_profile-section">
-        <img src="/images/default-avatar.png" alt="Profile" class="md_profile-avatar">
+      <!-- Sidebar profile image -->
+      <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo !empty($data['profile_pic']) ? $data['profile_pic'] : 'default-avatar.png'; ?>"
+        alt="Profile Photo"
+        class="profile-avatar"
+        style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:16px;">
+
         <h2><?php echo $data['member_info']['username']; ?></h2>
         <p><?php echo $data['member_info']['email']; ?></p>
       </div>
@@ -37,7 +42,6 @@
       <!-- Member Info and Stats -->
       <section class="md_profile-card">
         <div class="md_profile-left">
-          <img src="/images/default-avatar.png" alt="<?php echo $data['member_info']['username']; ?>">
           <div>
             <div class="md_profile-name"><?php echo $data['member_info']['username']; ?></div>
             <div class="md_profile-role">Premium Member</div>

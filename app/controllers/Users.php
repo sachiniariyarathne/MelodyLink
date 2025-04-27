@@ -234,9 +234,12 @@ class Users extends Controller {
         $userType = $_SESSION['user_type'];
     
         $data = $this->userModel->getDashboardData($userId, $userType);
+           // Fetch profile pic
+        $userData = $this->userModel->getUserData($userId);
+        $data['profile_pic'] = !empty($userData->profile_pic) ? $userData->profile_pic : 'default-avatar.png';
+
         $data['user_type'] = $userType;
         $data['username'] = $_SESSION['username'];
-    
         $this->view('users/v_member_dashboard', $data);
     }
 

@@ -21,7 +21,13 @@ class m_Member {
         
         return $results;
     }
+    public function getUserData($userId) {
+        $this->db->query("SELECT * FROM member WHERE member_id = :userId");
+        $this->db->bind(':userId', $userId);
     
+        return $this->db->single();
+    }
+
     // Get member by ID
     public function getMemberById($id) {
         $this->db->query("SELECT * FROM member WHERE member_id = :id");
@@ -90,6 +96,14 @@ class m_Member {
         // Execute
         return $this->db->execute();
     }
+
+    public function updateProfilePic($id, $profilePic) {
+    $this->db->query("UPDATE member SET profile_pic = :profile_pic WHERE member_id = :id");
+    $this->db->bind(':profile_pic', $profilePic);
+    $this->db->bind(':id', $id);
+    return $this->db->execute();
+    }
+
     
     // Update member password
     public function updatePassword($id, $password) {
@@ -108,12 +122,10 @@ class m_Member {
     public function findMemberByEmail($email) {
         $this->db->query("SELECT * FROM member WHERE email = :email");
         $this->db->bind(':email', $email);
-        
-        $row = $this->db->single();
-        
-        // Check if row is greater than 0
-        return ($row) ? true : false;
+        return $this->db->single(); // return the full row (object) or false
     }
+    
+    
     
     // Store password reset token
     public function storeResetToken($email, $token, $expires) {
