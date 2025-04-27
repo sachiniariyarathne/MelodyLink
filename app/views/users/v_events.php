@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header3.php'; ?> 
+<?php require APPROOT . '/views/inc/header6.php'; ?> 
 <?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
 
 <head>
