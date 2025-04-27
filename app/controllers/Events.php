@@ -9,7 +9,7 @@ class Events extends Controller {
         }
 
         // Load helpers
-        require_once '../app/helpers/flash_helper.php';
+        require_once '../app/helpers/session_helper.php';
 
         $this->eventModel = $this->model('Event');
     }
