@@ -150,14 +150,15 @@ class m_users {
         $data = [];
     
         // Fetch member-specific details
-        $this->db->query("SELECT Username, email, Phone_number FROM member WHERE member_id = :userId");
+        $this->db->query("SELECT Username, email, Phone_number,profile_pic FROM member WHERE member_id = :userId");
         $this->db->bind(':userId', $userId);
         $memberDetails = $this->db->single();
     
         $data['member_info'] = [
             'username' => $memberDetails->Username,
             'email' => $memberDetails->email,
-            'phone' => $memberDetails->Phone_number
+            'phone' => $memberDetails->Phone_number, 
+            'profile_pic' => $memberDetails->profile_pic, 
         ];
     
         // Fetch recent activities or interactions
