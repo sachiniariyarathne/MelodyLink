@@ -34,7 +34,7 @@ class Users extends Controller {
 
             // Add optional fields if they exist
 
-            if (isset($_POST['specialty'])) {
+            if (isset($_POST['genre'])) {
                 $data['genre'] = trim($_POST['genre']);
             }
             if (isset($_POST['organization'])) {
@@ -176,14 +176,14 @@ class Users extends Controller {
                         $_SESSION['email'] = $loggedInUser->email;
                         redirect('VendorMerchandise');
                         break;
-                        case 'merchandise_vendor':
-                            $_SESSION['user_id'] = $loggedInUser->user_id;
-                            $_SESSION['user_type'] = 'merchandise_vendor';
-                            $_SESSION['username'] = $loggedInUser->Username;
-                            $_SESSION['email'] = $loggedInUser->email;
-                            redirect('merchandise_vendor/dashboard');
-                            break;
-                }
+                    case 'merchandise_vendor':
+                        $_SESSION['user_id'] = $loggedInUser->user_id;
+                        $_SESSION['user_type'] = 'merchandise_vendor';
+                        $_SESSION['username'] = $loggedInUser->Username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('merchandise_vendor/dashboard');
+                        break;
+            }
             } else {
                 $data['password_err'] = 'Invalid credentials';
                 $this->view('users/v_login', $data);

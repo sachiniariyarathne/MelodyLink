@@ -53,8 +53,8 @@
 
             <!-- Conditional fields -->
             <div id="reg-artistFields" class="reg-form-group" style="display: <?php echo $data['userType'] == 'artist' ? 'block' : 'none'; ?>">
-                <label for="specialty">Artist Genre</label>
-                <input type="text" id="specialty" name="specialty" value="<?php echo $data['genre'] ?? ''; ?>">
+                <label for="genre">Artist Genre</label>
+                <input type="text" id="genre" name="genre" value="<?php echo $data['genre'] ?? ''; ?>">
             </div>
 
             <div id="reg-organizerFields" class="reg-form-group" style="display: <?php echo $data['userType'] == 'organizer' ? 'block' : 'none'; ?>">
