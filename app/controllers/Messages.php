@@ -4,10 +4,6 @@ class Messages extends Controller {
         $this->messageModel = $this->model('m_message');
         $this->equipmentModel = $this->model('m_equipment');
         
-        // Check if user is logged in
-      /*  if(!isset($_SESSION['user_id'])) {
-            redirect('users/login');
-        }*/
     }
 
     public function index() {
