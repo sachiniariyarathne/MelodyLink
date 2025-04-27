@@ -20,8 +20,8 @@
                 </button>
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="<?php echo URLROOT; ?>/Artist_Profile/artist_profile">Profile</a>
-                    <a href="<?php echo URLROOT; ?>/artist_settings">Settings</a>
-                    <a href="<?php echo URLROOT; ?>/logout">Logout</a>
+                    <a href="<?php echo URLROOT; ?>/Artist_Profile/update">Settings</a>
+                    <a href="<?php echo URLROOT; ?>/users/login">Logout</a>
                 </div>
             </div>
         </div>
