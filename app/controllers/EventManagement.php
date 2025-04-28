@@ -456,4 +456,74 @@ class EventManagement extends Controller {
 
         $this->view('users/event_management/income', $data);
     }
+
+    public function profile() {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+
+        $organizerId = $_SESSION['user_id'];
+        $organizer = $this->eventModel->getOrganizerById($organizerId);
+        
+        $data = [
+            'organizer' => $organizer
+        ];
+
+        $this->view('users/event_management/profile', $data);
+    }
+
+    public function editProfile() {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'organizer_id' => $_SESSION['user_id'],
+                'username' => trim($_POST['username']),
+                'organization' => trim($_POST['organization']),
+                'username_err' => '',
+                'organization_err' => ''
+            ];
+
+            // Validate username
+            if (empty($data['username'])) {
+                $data['username_err'] = 'Please enter username';
+            }
+
+            // Validate organization
+            if (empty($data['organization'])) {
+                $data['organization_err'] = 'Please enter organization name';
+            }
+
+            // Make sure no errors
+            if (empty($data['username_err']) && empty($data['organization_err'])) {
+                if ($this->eventModel->updateOrganizerProfile($data)) {
+                    flash('profile_message', 'Profile updated successfully');
+                    redirect('eventmanagement/profile');
+                } else {
+                    die('Something went wrong');
+                }
+            } else {
+                // Load view with errors
+                $this->view('users/event_management/profile', $data);
+            }
+        } else {
+            $organizerId = $_SESSION['user_id'];
+            $organizer = $this->eventModel->getOrganizerById($organizerId);
+            
+            $data = [
+                'organizer_id' => $organizer->organiser_id,
+                'username' => $organizer->username,
+                'organization' => $organizer->Organization,
+                'username_err' => '',
+                'organization_err' => ''
+            ];
+
+            $this->view('users/event_management/profile', $data);
+        }
+    }
 } 

@@ -341,4 +341,26 @@ class Event {
     public function lastInsertId() {
         return $this->db->lastInsertId();
     }
+
+    public function getOrganizerById($id) {
+        $this->db->query('SELECT * FROM event_organiser WHERE organiser_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function updateOrganizerProfile($data) {
+        $this->db->query('UPDATE event_organiser SET username = :username, Organization = :organization, updated_at = CURRENT_TIMESTAMP WHERE organiser_id = :id');
+        
+        // Bind values
+        $this->db->bind(':id', $data['organizer_id']);
+        $this->db->bind(':username', $data['username']);
+        $this->db->bind(':organization', $data['organization']);
+
+        // Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 } 

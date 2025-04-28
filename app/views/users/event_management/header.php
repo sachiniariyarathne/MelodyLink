@@ -152,11 +152,11 @@
                     Event Equipment
                 </a>
                 <div class="user-menu">
-                    <button class="user-button">
+                    <a href="<?php echo URLROOT; ?>/eventmanagement/profile" class="user-button" style="text-decoration: none; color: inherit;">
                         <img src="<?php echo URLROOT; ?>/public/img/avatars/default.png" alt="User Avatar" class="user-avatar">
-                        <span><?php echo $_SESSION['username']; ?></span>
+                        <span style="text-decoration: none;"><?php echo $_SESSION['username']; ?></span>
                         <i class="fas fa-chevron-down"></i>
-                    </button>
+                    </a>
                 </div>
             </nav>
         </div>
