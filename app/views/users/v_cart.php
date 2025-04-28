@@ -94,7 +94,7 @@
                 <div class="cart-actions">
                     <a href="<?php echo URLROOT; ?>/merchandise" class="btn btn-secondary">Continue Shopping</a>
                     <?php if($data['isLoggedIn']): ?>
-                        <a href="<?php echo URLROOT; ?>/checkout" class="btn btn-primary">Proceed to Checkout</a>
+                        <a href="<?php echo URLROOT; ?>merchandise/checkout" class="btn btn-primary">Proceed to Checkout</a>
                     <?php else: ?>
                         <div class="login-prompt">
                             <p>Please <a href="<?php echo URLROOT; ?>/users/login">login</a> to checkout</p>

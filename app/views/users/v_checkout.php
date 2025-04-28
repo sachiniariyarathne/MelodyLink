@@ -32,28 +32,28 @@
                                     <h6 class="my-0"><?php echo $item['name']; ?></h6>
                                     <small class="text-muted">Quantity: <?php echo $item['quantity']; ?></small>
                                 </div>
-                                <span class="text-muted">$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></span>
+                                <span class="text-muted">Rs<?php echo number_format($item['price'] * $item['quantity'], 2); ?></span>
                             </li>
                         <?php endforeach; ?>
                         
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Subtotal</span>
-                            <strong>$<?php echo number_format($data['subtotal'], 2); ?></strong>
+                            <strong>Rs<?php echo number_format($data['subtotal'], 2); ?></strong>
                         </li>
                         
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Tax (8%)</span>
-                            <strong>$<?php echo number_format($data['tax'], 2); ?></strong>
+                            <strong>Rs<?php echo number_format($data['tax'], 2); ?></strong>
                         </li>
                         
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Shipping</span>
-                            <strong>$<?php echo number_format($data['shipping'], 2); ?></strong>
+                            <strong>Rs<?php echo number_format($data['shipping'], 2); ?></strong>
                         </li>
                         
                         <li class="list-group-item d-flex justify-content-between bg-light">
                             <span class="text-success">Total (USD)</span>
-                            <strong class="text-success">$<?php echo number_format($data['total'], 2); ?></strong>
+                            <strong class="text-success">Rs<?php echo number_format($data['total'], 2); ?></strong>
                         </li>
                     </ul>
                 </div>
@@ -94,7 +94,7 @@
                             <input type="text" class="form-control" id="address2" name="address2" placeholder="Apartment or suite">
                         </div>
                         
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-5 mb-3">
                                 <label for="country">Country</label>
                                 <select class="custom-select d-block w-100" id="country" name="country" required>
@@ -102,17 +102,17 @@
                                     <option value="US">United States</option>
                                     <option value="CA">Canada</option>
                                 </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
+                            </div> -->
+                            <!-- <div class="col-md-4 mb-3">
                                 <label for="state">State</label>
                                 <select class="custom-select d-block w-100" id="state" name="state" required>
                                     <option value="">Choose...</option>
                                     <option value="CA">California</option>
                                     <option value="NY">New York</option>
                                     <option value="TX">Texas</option>
-                                    <!-- Add more states as needed -->
-                                </select>
-                            </div>
+                                     Add more states as needed -->
+                                <!-- </select>
+                            </div> --> 
                             <div class="col-md-3 mb-3">
                                 <label for="zip">Zip</label>
                                 <input type="text" class="form-control" id="zip" name="zip" required>
