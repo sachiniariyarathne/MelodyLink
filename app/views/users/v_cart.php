@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
     <!-- <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css"> -->
-    <!-- Include any additional CSS frameworks you're using -->
+   
 </head>
 <body>
     <?php require APPROOT . '/views/inc/header2.php'; ?>
@@ -64,7 +64,7 @@
                                         <span class="cart-product-name"><?php echo $item['name']; ?></span>
                                     </div>
                                 </td>
-                                <td>$<?php echo number_format($item['price'], 2); ?></td>
+                                <td>Rs<?php echo number_format($item['price'], 2); ?></td>
                                 <td>
                                     <form action="<?php echo URLROOT; ?>/cart/updateQuantity" method="post" class="quantity-form">
                                         <input type="hidden" name="merch_id" value="<?php echo $item['id']; ?>">
@@ -72,7 +72,7 @@
                                         <button type="submit" class="btn btn-sm btn-update">Update</button>
                                     </form>
                                 </td>
-                                <td>$<?php echo number_format($itemTotal, 2); ?></td>
+                                <td>Rs<?php echo number_format($itemTotal, 2); ?></td>
                                 <td>
                                     <form action="<?php echo URLROOT; ?>/merchandise/removeFromCart" method="post">
                                         <input type="hidden" name="merch_id" value="<?php echo $item['id']; ?>">

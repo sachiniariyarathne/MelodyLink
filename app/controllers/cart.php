@@ -157,7 +157,7 @@ class Cart extends Controller {
     }
     
     // Update item quantity in cart
-    public function update() {
+    public function updateQuantity() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $merchId = isset($_POST['merch_id']) ? $_POST['merch_id'] : null;
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
