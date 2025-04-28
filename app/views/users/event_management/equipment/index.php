@@ -43,8 +43,7 @@
                             <span><?php echo ucfirst($item->category); ?></span>
                         </div>
                         <div class="detail">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>$<?php echo number_format($item->price, 2); ?>/day</span>
+                            <span>Rs. <?php echo number_format($item->price, 2); ?>/day</span>
                         </div>
                     </div>
                     <div class="equipment-meta">

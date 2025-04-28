@@ -14,21 +14,33 @@
     <div class="events-filters">
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search events...">
+            <input type="text" id="searchInput" placeholder="Search events...">
         </div>
         <div class="filter-actions">
-            <button class="btn-filter">
-                <i class="fas fa-filter"></i> Filter
-            </button>
-            <button class="btn-sort">
-                <i class="fas fa-sort"></i> Sort
-            </button>
+            <select id="statusFilter" class="filter-select">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="ended">Ended</option>
+            </select>
+            <select id="bookingFilter" class="filter-select">
+                <option value="all">All Bookings</option>
+                <option value="with">With Bookings</option>
+                <option value="without">Without Bookings</option>
+            </select>
+            <select id="sortFilter" class="filter-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
         </div>
     </div>
 
-    <div class="events-grid">
+    <div class="events-grid" id="eventsGrid">
         <?php foreach($data['events'] as $event): ?>
-            <div class="event-card">
+            <div class="event-card" 
+                 data-title="<?php echo htmlspecialchars($event->title); ?>"
+                 data-status="<?php echo $event->status; ?>"
+                 data-bookings="<?php echo $event->total_bookings > 0 ? 'with' : 'without'; ?>"
+                 data-date="<?php echo strtotime($event->event_date); ?>">
                 <div class="event-image">
                     <img src="<?php echo URLROOT; ?>/public/<?php echo $event->image; ?>" alt="<?php echo $event->title; ?>">
                     <div class="event-status <?php echo $event->status; ?>">
@@ -53,12 +65,12 @@
                     </div>
                     <div class="event-stats">
                         <div class="stat">
-                            <i></i>
-                            <span>RS. <?php echo $event->total_bookings; ?> Bookings</span>
+                            <i class="fas fa-ticket-alt"></i>
+                            <span><?php echo $event->total_bookings; ?> Bookings</span>
                         </div>
                         <div class="stat">
-                            <i class="fas fa-rupee-sign"></i>
-                            <span><?php echo number_format($event->total_income, 2); ?></span>
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Rs. <?php echo number_format($event->total_income, 2); ?></span>
                         </div>
                     </div>
                     <div class="event-actions">
@@ -303,12 +315,79 @@
         max-width: 100%;
     }
 }
+
+.filter-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.filter-select option {
+    background: #1a1625;
+    color: #fff;
+}
 </style>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const bookingFilter = document.getElementById('bookingFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const eventsGrid = document.getElementById('eventsGrid');
+    const eventCards = Array.from(eventsGrid.getElementsByClassName('event-card'));
+
+    function filterAndSortEvents() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+        const bookingValue = bookingFilter.value;
+        const sortValue = sortFilter.value;
+
+        eventCards.forEach(card => {
+            const title = card.dataset.title.toLowerCase();
+            const status = card.dataset.status;
+            const bookings = card.dataset.bookings;
+            const matchesSearch = title.includes(searchTerm);
+            const matchesStatus = statusValue === 'all' || status === statusValue;
+            const matchesBookings = bookingValue === 'all' || bookings === bookingValue;
+
+            if (matchesSearch && matchesStatus && matchesBookings) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Sort the visible cards
+        const visibleCards = eventCards.filter(card => card.style.display !== 'none');
+        visibleCards.sort((a, b) => {
+            const dateA = parseInt(a.dataset.date);
+            const dateB = parseInt(b.dataset.date);
+            return sortValue === 'newest' ? dateB - dateA : dateA - dateB;
+        });
+
+        // Reorder the cards in the grid
+        visibleCards.forEach(card => {
+            eventsGrid.appendChild(card);
+        });
+    }
+
+    // Add event listeners
+    searchInput.addEventListener('input', filterAndSortEvents);
+    statusFilter.addEventListener('change', filterAndSortEvents);
+    bookingFilter.addEventListener('change', filterAndSortEvents);
+    sortFilter.addEventListener('change', filterAndSortEvents);
+
+    // Initial filter and sort
+    filterAndSortEvents();
+});
+
 function confirmDelete(id) {
     if (confirm('Are you sure you want to delete this event?')) {
-        // Create a form dynamically
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '<?php echo URLROOT; ?>/eventmanagement/delete/' + id;

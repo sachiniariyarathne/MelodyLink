@@ -25,7 +25,7 @@
                             <?php if (isset($req->category)): ?>
                                 <span class="badge bg-category"><i class="fas fa-tag me-1"></i> <?php echo ucfirst($req->category); ?></span>
                             <?php endif; ?>
-                            <span class="ms-2"><i class="fas fa-dollar-sign me-1"></i><?php echo number_format($req->price, 2); ?>/day</span>
+                            <span class="ms-2">Rs. <?php echo number_format($req->price, 2); ?>/day</span>
                         </div>
                         <div class="mb-1"><strong>Message:</strong> <span class="text-light" id="msg-<?php echo $req->id; ?>"><?php echo htmlspecialchars($req->message); ?></span></div>
                         <div class="mb-2"><strong>Date:</strong> <span class="text-light" id="date-<?php echo $req->id; ?>"><?php echo date('Y-m-d\TH:i', strtotime($req->request_date)); ?></span></div>

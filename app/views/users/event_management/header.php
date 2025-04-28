@@ -147,7 +147,7 @@
                     <i class="fas fa-calendar-alt"></i>
                     Events
                 </a>
-                <a href="<?php echo URLROOT; ?>/eventequipmentcontroller/index" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI'], '/eventmanagement/events') !== false) ? 'active' : ''; ?>">
+                <a href="<?php echo URLROOT; ?>/eventequipmentcontroller/index" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI'], '/eventequipmentcontroller/index') !== false) ? 'active' : ''; ?>">
                     <i class="fas fa-calendar-alt"></i>
                     Event Equipment
                 </a>

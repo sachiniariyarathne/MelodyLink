@@ -14,7 +14,7 @@
             </div>
             <div class="form-group">
                 <label>Price (per day)</label>
-                <input type="text" class="form-control" value="$<?php echo number_format($data['equipment']->price, 2); ?>" readonly>
+                <input type="text" class="form-control" value="Rs. <?php echo number_format($data['equipment']->price, 2); ?>" readonly>
             </div>
             <div class="form-group">
                 <label for="message">Request Message <span class="text-danger">*</span></label>
