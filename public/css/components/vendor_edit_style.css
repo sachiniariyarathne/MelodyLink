@@ -1,0 +1,85 @@
+/* Supplier Profile Edit - Custom Styles */
+.profile-edit-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .profile-edit-header {
+    padding: 1.5rem;
+    position: relative;
+  }
+  
+  .profile-edit-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .profile-edit-form label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .profile-edit-form label sup {
+    color: #dc3545;
+    font-size: 70%;
+    top: -0.5em;
+  }
+  
+  .profile-edit-form .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+  }
+  
+  .profile-edit-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .profile-edit-section h4 {
+    color: #495057;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-actions {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .profile-actions .btn {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  /* Optional: Custom input styling */
+  .profile-edit-form .form-control {
+    border-color: #ced4da;
+    padding: 0.625rem 0.875rem;
+  }
+  
+  /* Optional: Feedback text styling */
+  .profile-edit-form .invalid-feedback {
+    font-size: 80%;
+    margin-top: 0.25rem;
+  }
+  
+  /* Optional: Custom responsive adjustments */
+  @media (max-width: 768px) {
+    .profile-actions {
+      flex-direction: column;
+    }
+    
+    .profile-actions .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }

@@ -78,7 +78,7 @@ class VendorMerchandise extends Controller {
                 'name' => trim($_POST['name']),
                 'price' => trim($_POST['price']),
                 'description' => trim($_POST['description']),
-                'user_id' => $_SESSION['user_id'], // Changed from supplier_id to user_id
+                'user_id' => $_SESSION['user_id'], 
                 'name_err' => '',
                 'price_err' => '',
                 'description_err' => '',
@@ -216,8 +216,7 @@ class VendorMerchandise extends Controller {
             $mail->Port = 587;
             $mail->setFrom('MelodyLink.noreply@gmail.com', 'MelodyLink');
             
-            // Add a test email address to verify if emails are being sent
-            // Replace with your actual email for testing
+            
             $mail->addAddress('your-test-email@example.com'); 
             
             // Add BCC for all members 
@@ -243,7 +242,7 @@ class VendorMerchandise extends Controller {
             // Format price with two decimal places
             $formattedPrice = number_format($productData['price'], 2);
             
-            // Create an attractive, non-spammy email
+           
             $emailBody = "
             <html>
             <head>

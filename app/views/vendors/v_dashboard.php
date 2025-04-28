@@ -1,5 +1,5 @@
-<?php require APPROOT . '/views/inc/header3.php'; ?>
-<?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
+<?php require APPROOT . '/views/inc/headerind.php'; ?>
+<?php require APPROOT . '/views/inc/components/topnavbar_vendor.php'; ?>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
