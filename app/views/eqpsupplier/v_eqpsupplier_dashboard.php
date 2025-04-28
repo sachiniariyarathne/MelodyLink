@@ -1,4 +1,7 @@
 <?php require APPROOT . '/views/inc/header6.php'; ?>
+<?php require APPROOT . '/views/inc/components/topnavbar_eqpsupplier.php'; ?>
+
+
 
 <div class="dashboard-container">
     <!-- Dashboard Stats -->
@@ -118,7 +121,7 @@
     <div class="product-management">
         <div class="section-header">
             <h2>Product Management</h2>
-            <a href="#" class="add-btn">
+            <a href="http://localhost/Framework//equipment/add" class="add-btn">
                 <i class="fas fa-plus"></i> Add Product
             </a>
         </div>
@@ -168,3 +171,4 @@
         </div>
     </div>
 </div>
+<?php require APPROOT . '/views/inc/footer.php'; ?>
