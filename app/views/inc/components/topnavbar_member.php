@@ -18,6 +18,7 @@
                     <li><a href="<?php echo URLROOT; ?>/Merchandise">Store</a></li>
                     <li><a href="<?php echo URLROOT; ?>/Member_Music">Music</a></li>
                     <li><a href="#">Contact us</a></li>
+                    <li><?php if (!isset($_SESSION['user_id'])): ?><a href="<?php echo URLROOT; ?>/users/register" class="btn-signup">Sign Up</a><?php endif; ?></li>
                 </ul>
             </div>
             <div class="navbar-right">

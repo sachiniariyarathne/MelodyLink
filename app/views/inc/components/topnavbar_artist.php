@@ -8,6 +8,9 @@
                 <li><a href="<?php echo URLROOT; ?>/artist_reviews">New Releases</a></li>
                 <li><a href="<?php echo URLROOT; ?>/artist_communities">Explore</a></li>
                 <li><a href="<?php echo URLROOT; ?>/artist_requests">Contact Us</a></li>
+                <li>            <?php if (!isset($_SESSION['user_id'])): ?>
+                <a href="<?php echo URLROOT; ?>/users/register" class="btn-signup">Sign Up</a>
+                <?php endif; ?></li>
             </ul>
         </div>
         <div class="navbar-right">
