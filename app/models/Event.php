@@ -7,45 +7,76 @@ class Event {
     }
 
     // Dashboard Methods
-    public function getTotalBookings() {
-        $this->db->query('SELECT COUNT(*) as total FROM event_bookings WHERE status = "confirmed"');
+    public function getTotalBookings($organizerId) {
+        $this->db->query('
+            SELECT COUNT(*) as total 
+            FROM event_bookings eb
+            JOIN events e ON eb.event_id = e.event_id
+            WHERE e.organiser_id = :organizer_id AND eb.payment_status = "completed"
+        ');
+        $this->db->bind(':organizer_id', $organizerId);
         $result = $this->db->single();
         return $result->total ?? 0;
     }
 
-    public function getTotalRevenue() {
-        $this->db->query('SELECT SUM(total_price) as total FROM event_bookings WHERE status = "confirmed"');
+    public function getTotalRevenue($organizerId) {
+        $this->db->query('
+            SELECT SUM(eb.total_price) as total 
+            FROM event_bookings eb
+            JOIN events e ON eb.event_id = e.event_id
+            WHERE e.organiser_id = :organizer_id AND eb.payment_status = "completed"
+        ');
+        $this->db->bind(':organizer_id', $organizerId);
         $result = $this->db->single();
         return $result->total ?? 0;
     }
 
-    public function getActiveEventsCount() {
-        $this->db->query('SELECT COUNT(*) as total FROM events WHERE event_date >= CURDATE()');
+    public function getActiveEventsCount($organizerId) {
+        $this->db->query('
+            SELECT COUNT(*) as total 
+            FROM events 
+            WHERE organiser_id = :organizer_id AND event_date >= CURDATE()
+        ');
+        $this->db->bind(':organizer_id', $organizerId);
         $result = $this->db->single();
         return $result->total ?? 0;
     }
 
-    public function getEndingSoonCount() {
-        $this->db->query('SELECT COUNT(*) as total FROM events WHERE event_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)');
+    public function getEndingSoonCount($organizerId) {
+        $this->db->query('
+            SELECT COUNT(*) as total 
+            FROM events 
+            WHERE organiser_id = :organizer_id 
+            AND event_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+        ');
+        $this->db->bind(':organizer_id', $organizerId);
         $result = $this->db->single();
         return $result->total ?? 0;
     }
 
-    public function getTotalCustomers() {
-        $this->db->query('SELECT COUNT(DISTINCT user_id) as total FROM event_bookings');
+    public function getTotalCustomers($organizerId) {
+        $this->db->query('
+            SELECT COUNT(DISTINCT eb.user_id) as total 
+            FROM event_bookings eb
+            JOIN events e ON eb.event_id = e.event_id
+            WHERE e.organiser_id = :organizer_id
+        ');
+        $this->db->bind(':organizer_id', $organizerId);
         $result = $this->db->single();
         return $result->total ?? 0;
     }
 
-    public function getRecentBookings($limit = 10) {
+    public function getRecentBookings($organizerId, $limit = 10) {
         $this->db->query('
             SELECT eb.*, e.title as event_title, m.Username as customer_name, m.profile_pic as user_avatar 
             FROM event_bookings eb
             JOIN events e ON eb.event_id = e.event_id
             JOIN member m ON eb.user_id = m.member_id
+            WHERE e.organiser_id = :organizer_id
             ORDER BY eb.created_at DESC
             LIMIT :limit
         ');
+        $this->db->bind(':organizer_id', $organizerId);
         $this->db->bind(':limit', $limit);
         return $this->db->resultSet();
     }

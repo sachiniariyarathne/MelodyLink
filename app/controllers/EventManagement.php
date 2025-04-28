@@ -27,14 +27,19 @@ class EventManagement extends Controller {
     }
 
     public function index() {
-        // Get dashboard data
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+
+        $organizerId = $_SESSION['user_id'];
+
         $data = [
-            'total_bookings' => $this->eventModel->getTotalBookings(),
-            'total_revenue' => $this->eventModel->getTotalRevenue(),
-            'active_events' => $this->eventModel->getActiveEventsCount(),
-            'ending_soon' => $this->eventModel->getEndingSoonCount(),
-            'total_customers' => $this->eventModel->getTotalCustomers(),
-            'recent_bookings' => $this->eventModel->getRecentBookings()
+            'total_bookings' => $this->eventModel->getTotalBookings($organizerId),
+            'total_revenue' => $this->eventModel->getTotalRevenue($organizerId),
+            'active_events' => $this->eventModel->getActiveEventsCount($organizerId),
+            'ending_soon' => $this->eventModel->getEndingSoonCount($organizerId),
+            'total_customers' => $this->eventModel->getTotalCustomers($organizerId),
+            'recent_bookings' => $this->eventModel->getRecentBookings($organizerId)
         ];
 
         $this->view('users/event_management/index', $data);

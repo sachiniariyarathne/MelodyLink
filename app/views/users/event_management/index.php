@@ -52,41 +52,31 @@
     <div class="recent-bookings-section">
         <div class="section-header">
             <h2>Recent Bookings</h2>
-            <div class="header-actions">
-                <button class="btn-filter"><i class="fas fa-filter"></i> Filter</button>
-                <button class="btn-export"><i class="fas fa-download"></i> Export</button>
-            </div>
         </div>
-
         <div class="table-responsive">
             <table class="bookings-table">
                 <thead>
                     <tr>
-                        <th>Customer</th>
+                        <th>Username</th>
                         <th>Event</th>
                         <th>Date</th>
-                        <th>Tickets</th>
-                        <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($data['recent_bookings'] as $booking): ?>
+                    <?php $count = 0; foreach($data['recent_bookings'] as $booking): if ($count++ >= 5) break; ?>
                     <tr>
+                        <td><?php echo htmlspecialchars($booking->customer_name); ?></td>
+                        <td><?php echo htmlspecialchars($booking->event_title); ?></td>
                         <td>
-                            <div class="customer-info">
-                                <img src="<?php echo URLROOT; ?>/public/img/avatars/<?php echo $booking->user_avatar; ?>" alt="Avatar" class="avatar">
-                                <span><?php echo $booking->customer_name; ?></span>
-                            </div>
-                        </td>
-                        <td><?php echo $booking->event_title; ?></td>
-                        <td><?php echo date('M d, Y', strtotime($booking->booking_date)); ?></td>
-                        <td><?php echo $booking->ticket_count; ?></td>
-                        <td><span class="status-badge <?php echo strtolower($booking->status); ?>"><?php echo $booking->status; ?></span></td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-icon" title="More options"><i class="fas fa-ellipsis-v"></i></button>
-                            </div>
+                            <?php 
+                            if (isset($booking->booking_date)) {
+                                echo date('M d, Y', strtotime($booking->booking_date));
+                            } elseif (isset($booking->created_at)) {
+                                echo date('M d, Y', strtotime($booking->created_at));
+                            } else {
+                                echo '-';
+                            }
+                            ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -179,27 +169,6 @@
     margin: 0;
 }
 
-.header-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.btn-filter, .btn-export {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-filter:hover, .btn-export:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
 /* Table Styles */
 .table-responsive {
     overflow-x: auto;
@@ -221,47 +190,6 @@
 .bookings-table td {
     padding: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.customer-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.avatar {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-}
-
-.status-badge.confirmed {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4caf50;
-}
-
-.status-badge.pending {
-    background: rgba(255, 152, 0, 0.2);
-    color: #ff9800;
-}
-
-.btn-icon {
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    padding: 0.25rem;
-}
-
-.btn-icon:hover {
-    color: #ff4d94;
 }
 
 /* Responsive Design */

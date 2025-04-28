@@ -147,9 +147,13 @@
                     <i class="fas fa-calendar-alt"></i>
                     Events
                 </a>
+                <a href="<?php echo URLROOT; ?>/eventequipmentcontroller/index" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI'], '/eventmanagement/events') !== false) ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar-alt"></i>
+                    Event Equipment
+                </a>
                 <div class="user-menu">
                     <button class="user-button">
-                        <img src="<?php echo URLROOT; ?>/public/img/avatars/default.jpg" alt="User Avatar" class="user-avatar">
+                        <img src="<?php echo URLROOT; ?>/public/img/avatars/default.png" alt="User Avatar" class="user-avatar">
                         <span><?php echo $_SESSION['username']; ?></span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
