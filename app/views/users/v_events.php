@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header6.php'; ?> 
+<?php require APPROOT . '/views/inc/header7.php'; ?> 
 <?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
 
 <head>
@@ -119,7 +119,10 @@
         <div class="events-cta">
             <h2><i class="fas fa-headphones-alt"></i> Ready for Your Next Music Experience?</h2>
             <p>Get started today and be part of the largest music event community</p>
-                <a href="<?php echo URLROOT; ?>/users/register" class="cta-button">Sign Up Now<i class="fas fa-plus-circle"></i></a>
+            <?php if (!isset($_SESSION['user_id'])): ?>
+                <a href="<?php echo URLROOT; ?>/users/register" class="btn-signup">Sign Up</a>
+            <?php endif; ?>
+
         </div>
     </section>
 </body>
