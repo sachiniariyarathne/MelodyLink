@@ -26,7 +26,7 @@
                     <h4>Summer Vibes Festival</h4>
                     <p>July 10, 2025 · Central Park</p>
                     <div class="hp_event-bottom">
-                        <span>$49.00</span>
+                        <span>Rs.1000</span>
                         <button>Book Now</button>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                     <h4>Electric Dreams</h4>
                     <p>August 5, 2025 · Neon Arena</p>
                     <div class="hp_event-bottom">
-                        <span>$65.00</span>
+                        <span>Rs.1500</span>
                         <button>Book Now</button>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                     <h4>Jazz & Blues Evening</h4>
                     <p>September 20, 2025 · Blue Note</p>
                     <div class="hp_event-bottom">
-                        <span>$48.00</span>
+                        <span>Rs.2000</span>
                         <button>Book Now</button>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <h4>Summer Vibes Festival</h4>
                     <p>July 10, 2025 · Central Park</p>
                     <div class="hp_event-bottom">
-                        <span>$49.00</span>
+                        <span>Rs.1500</span>
                         <button>Book Now</button>
                     </div>
                 </div>
@@ -74,31 +74,31 @@
             <div class="hp_merch-card">
                 <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=200&q=80" alt="Festival T-shirt">
                 <p>Festival T-shirt</p>
-                <span>$29.00</span>
+                <span>Rs.1500</span>
                 <button>Add to Cart</button>
             </div>
             <div class="hp_merch-card">
                 <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=200&q=80" alt="Music Inside">
                 <p>Music Inside</p>
-                <span>$49.00</span>
+                <span>Rs.1300</span>
                 <button>Add to Cart</button>
             </div>
             <div class="hp_merch-card">
                 <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80" alt="Festival Cap">
                 <p>Festival Cap</p>
-                <span>$24.00</span>
+                <span>Rs.800</span>
                 <button>Add to Cart</button>
             </div>
             <div class="hp_merch-card">
                 <img src="https://images.unsplash.com/photo-1526178613658-3f1622045544?auto=format&fit=crop&w=200&q=80" alt="Event Tote Bag">
                 <p>Event Tote Bag</p>
-                <span>$19.00</span>
+                <span>Rs.1000</span>
                 <button>Add to Cart</button>
             </div>
             <div class="hp_merch-card">
                 <img src="https://images.unsplash.com/photo-1526178613658-3f1622045544?auto=format&fit=crop&w=200&q=80" alt="Event Tote Bag">
                 <p>Event Tote Bag</p>
-                <span>$19.00</span>
+                <span>Rs.1000</span>
                 <button>Add to Cart</button>
             </div>
         </div>
@@ -110,7 +110,7 @@
         <div class="hp_songs-list">
             <div class="hp_song-card">
                 <div class="hp_song-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3f5e?auto=format&fit=crop&w=200&q=80" alt="Summer Nights">
+                <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3f5e?auto=format&fit=crop&w=200&q=80" alt="Summer Nights">
                     <button class="hp_play-btn"><i class="fa fa-play"></i></button>
                 </div>
                 <div class="hp_song-info">
