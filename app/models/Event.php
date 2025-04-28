@@ -91,7 +91,7 @@ class Event {
         $this->db->query('
             SELECT e.*, 
                    COUNT(DISTINCT eb.booking_id) as total_bookings,
-                   SUM(CASE WHEN eb.status = "confirmed" THEN eb.total_price ELSE 0 END) as total_income,
+                   SUM(CASE WHEN eb.payment_status = "completed" THEN eb.total_price ELSE 0 END) as total_income,
                    CASE 
                        WHEN e.event_date < CURDATE() THEN "ended"
                        ELSE "active"
@@ -180,6 +180,12 @@ class Event {
         $this->db->beginTransaction();
 
         try {
+            // Validate required fields
+            if (empty($data['event_id']) || empty($data['title']) || empty($data['description']) || 
+                empty($data['event_date']) || empty($data['event_time']) || empty($data['venue'])) {
+                throw new Exception('Missing required fields');
+            }
+
             // Update event
             $this->db->query('UPDATE events SET title = :title, description = :description, 
                             event_date = :event_date, event_time = :event_time, 
@@ -194,24 +200,37 @@ class Event {
             $this->db->bind(':venue', $data['venue']);
             $this->db->bind(':image', $data['image']);
 
-            $this->db->execute();
+            if (!$this->db->execute()) {
+                throw new Exception('Failed to update event');
+            }
 
             // Delete existing ticket types
             $this->db->query('DELETE FROM ticket_types WHERE event_id = :event_id');
             $this->db->bind(':event_id', $data['event_id']);
-            $this->db->execute();
+            
+            if (!$this->db->execute()) {
+                throw new Exception('Failed to delete existing ticket types');
+            }
 
             // Insert new ticket types
-            foreach ($data['ticket_types'] as $ticket) {
-                $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity_available) 
-                                VALUES (:event_id, :name, :price, :quantity)');
-                
-                $this->db->bind(':event_id', $data['event_id']);
-                $this->db->bind(':name', $ticket['name']);
-                $this->db->bind(':price', $ticket['price']);
-                $this->db->bind(':quantity', $ticket['quantity']);
+            if (!empty($data['ticket_types'])) {
+                foreach ($data['ticket_types'] as $ticket) {
+                    if (empty($ticket['name']) || !isset($ticket['price']) || !isset($ticket['quantity'])) {
+                        throw new Exception('Invalid ticket type data');
+                    }
 
-                $this->db->execute();
+                    $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity_available) 
+                                    VALUES (:event_id, :name, :price, :quantity)');
+                    
+                    $this->db->bind(':event_id', $data['event_id']);
+                    $this->db->bind(':name', $ticket['name']);
+                    $this->db->bind(':price', $ticket['price']);
+                    $this->db->bind(':quantity', $ticket['quantity']);
+
+                    if (!$this->db->execute()) {
+                        throw new Exception('Failed to insert ticket type');
+                    }
+                }
             }
 
             $this->db->commit();
@@ -321,5 +340,27 @@ class Event {
 
     public function lastInsertId() {
         return $this->db->lastInsertId();
+    }
+
+    public function getOrganizerById($id) {
+        $this->db->query('SELECT * FROM event_organiser WHERE organiser_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function updateOrganizerProfile($data) {
+        $this->db->query('UPDATE event_organiser SET username = :username, Organization = :organization, updated_at = CURRENT_TIMESTAMP WHERE organiser_id = :id');
+        
+        // Bind values
+        $this->db->bind(':id', $data['organizer_id']);
+        $this->db->bind(':username', $data['username']);
+        $this->db->bind(':organization', $data['organization']);
+
+        // Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 } 
