@@ -10,7 +10,7 @@ class EventManagement extends Controller {
         }
 
         // Load helpers
-        require_once '../app/helpers/flash_helper.php';
+        require_once '../app/helpers/session_helper.php';
 
         // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {

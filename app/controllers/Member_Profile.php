@@ -1,184 +1,164 @@
 <?php
-class Member_Profile extends Controller{
-    public function __construct(){
-        // parent::__construct(); // Important to call parent constructor
-        $this->userModel = $this->model('m_users'); // Use your actual model name
-    }
+require_once APPROOT . '/helpers/flash_helper.php';
 
-    public function index(){
-        // Your index logic
+class Member_Profile extends Controller {
+    private $userModel;
+
+    public function __construct() {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'member') {
+            redirect('users/login');
+        }
+        $this->userModel = $this->model('m_member');
     }
 
     public function profile() {
-        // Check if user is logged in
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
-            redirect('/users/login');
-            exit;
-        }
-        
         $userId = $_SESSION['user_id'];
-        $userType = $_SESSION['user_type'];
-        
-        // Get user data from model
         $user = $this->userModel->getUserData($userId);
         
-        // Prepare data for view
         $data = [
             'member_id' => $user->member_id,
             'username' => $user->Username,
             'email' => $user->email,
             'phone_number' => $user->Phone_number,
             'address' => $user->Address,
-            'profile_pic' => $user->profile_pic
+            'profile_pic' => $user->profile_pic ?? 'default-avatar.png'
         ];
         
-        // Load view
         $this->view('users/v_member_profile', $data);
     }
 
     public function update() {
-        // Check if user is logged in
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
-            redirect('/users/login');
-            exit;
-        }
-    
         $userId = $_SESSION['user_id'];
-        $userType = $_SESSION['user_type'];
         $user = $this->userModel->getUserData($userId);
-    
-        // If form submitted
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    
+            
             $data = [
-                'member_id' => $user->member_id,
+                'member_id' => $userId,
                 'username' => trim($_POST['username']),
                 'email' => trim($_POST['email']),
                 'phone_number' => trim($_POST['phone']),
                 'address' => trim($_POST['address']),
-                'password' => trim($_POST['password']),
-                'confirm_password' => trim($_POST['confirm_password']),
-                'profile_pic' => $_FILES['profile_pic']['name'] ?? $user->profile_pic,
-                // Error fields
+                'profile_pic' => $user->profile_pic,
                 'username_err' => '',
                 'email_err' => '',
                 'phone_err' => '',
                 'address_err' => '',
-                'password_err' => '',
-                'confirm_password_err' => '',
                 'profile_pic_err' => ''
             ];
-    
-            // Username validation
+
+            // Validate username
             if (empty($data['username'])) {
-                $data['username_err'] = 'Please enter a username.';
+                $data['username_err'] = 'Please enter username';
             }
-    
-            // Email validation
+
+            // Validate email
             if (empty($data['email'])) {
-                $data['email_err'] = 'Please enter an email.';
+                $data['email_err'] = 'Please enter email';
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                $data['email_err'] = 'Please enter a valid email address.';
+                $data['email_err'] = 'Invalid email format';
             } else {
-                $existingUser = $this->userModel->findUserByEmail($data['email'], $userType);
-                if ($existingUser && $data['email'] != $user->email) {
-                    $data['email_err'] = 'Email is already registered.';
+                $existingUser = $this->userModel->findMemberByEmail($data['email']);
+                if ($existingUser && $existingUser->member_id != $userId) {
+                    $data['email_err'] = 'Email already registered';
                 }
             }
-    
-            // Phone validation (optional, but realistic)
-            if (!empty($data['phone_number']) && !preg_match('/^\+?\d{7,15}$/', $data['phone_number'])) {
-                $data['phone_err'] = 'Please enter a valid phone number.';
-            }
-    
-            // Address validation (optional)
-            if (!empty($data['address']) && strlen($data['address']) < 5) {
-                $data['address_err'] = 'Address is too short.';
-            }
-    
-            // Password validation
-            if (!empty($data['password'])) {
-                if (strlen($data['password']) < 6) {
-                    $data['password_err'] = 'Password must be at least 6 characters.';
-                }
-                if (empty($data['confirm_password'])) {
-                    $data['confirm_password_err'] = 'Please confirm the password.';
-                } elseif ($data['password'] != $data['confirm_password']) {
-                    $data['confirm_password_err'] = 'Passwords do not match.';
-                }
-            }
-    
-            // Profile picture validation
+
+            // Handle file upload
             if (!empty($_FILES['profile_pic']['name'])) {
-                $target_dir = APPROOT . '/public/uploads/';
-                $target_file = $target_dir . basename($_FILES['profile_pic']['name']);
-                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                $check = getimagesize($_FILES['profile_pic']['tmp_name']);
-                if ($check === false) {
-                    $data['profile_pic_err'] = 'File is not an image.';
-                } elseif ($_FILES['profile_pic']['size'] > 2 * 1024 * 1024) {
-                    $data['profile_pic_err'] = 'File size must be less than 2MB.';
-                } elseif (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-                    $data['profile_pic_err'] = 'Only JPG, JPEG, PNG & GIF files are allowed.';
-                } elseif (!move_uploaded_file($_FILES['profile_pic']['tmp_name'], $target_file)) {
-                    $data['profile_pic_err'] = 'There was an error uploading your profile picture.';
+                $uploadResult = $this->handleFileUpload();
+                if ($uploadResult['success']) {
+                    $data['profile_pic'] = $uploadResult['filename'];
                 } else {
-                    $data['profile_pic'] = basename($_FILES['profile_pic']['name']);
+                    $data['profile_pic_err'] = $uploadResult['error'];
                 }
             }
-    
-            // If no errors, update user
-            if (
-                empty($data['username_err']) && empty($data['email_err']) &&
+
+            // Proceed if no errors
+            if (empty($data['username_err']) && empty($data['email_err']) && 
                 empty($data['phone_err']) && empty($data['address_err']) &&
-                empty($data['password_err']) && empty($data['confirm_password_err']) &&
-                empty($data['profile_pic_err'])
-            ) {
+                empty($data['profile_pic_err'])) {
+                
+                // Update profile data
                 $updateData = [
+                    'id' => $userId,
                     'username' => $data['username'],
                     'email' => $data['email'],
-                    'Phone_number' => $data['phone_number'],
-                    'Address' => $data['address']
+                    'phone' => $data['phone_number'],
+                    'address' => $data['address']
                 ];
-    
-                // Only update password if provided
-                if (!empty($data['password'])) {
-                    $updateData['Password'] = password_hash($data['password'], PASSWORD_DEFAULT);
-                }
-    
-                if ($this->userModel->updateUserInfo($userId, $updateData, $userType)) {
-                    if (!empty($_FILES['profile_pic']['name'])) {
-                        $this->userModel->updateProfilePic($userId, $data['profile_pic'], $userType);
+
+                if ($this->userModel->updateProfile($updateData)) {
+                    // Update profile picture if changed
+                    if ($data['profile_pic'] != $user->profile_pic) {
+                        $this->userModel->updateProfilePic($userId, $data['profile_pic']);
                     }
+                    
+                    // Update session data
                     $_SESSION['username'] = $data['username'];
-                    die('profile_updated,Your profile has been updated.');
+                    $_SESSION['profile_pic'] = $data['profile_pic'];
+                    
+                    // Set success message
+                    flash('profile_message', 'Profile updated successfully', 'alert alert-success');
+                    redirect('Member_Profile/profile');
                 } else {
-                    die('error,Something went wrong.');
+                    flash('profile_message', 'Failed to update profile', 'alert alert-danger');
                 }
             } else {
+                // Show errors
                 $this->view('users/v_member_profile_update', $data);
             }
         } else {
-            // GET request: load data
+            // Initial form load
             $data = [
                 'member_id' => $user->member_id,
                 'username' => $user->Username,
                 'email' => $user->email,
                 'phone_number' => $user->Phone_number,
                 'address' => $user->Address,
-                'profile_pic' => $user->profile_pic,
-                'username_err' => '',
-                'email_err' => '',
-                'phone_err' => '',
-                'address_err' => '',
-                'password_err' => '',
-                'confirm_password_err' => '',
-                'profile_pic_err' => ''
+                'profile_pic' => $user->profile_pic ?? 'default-avatar.png'
             ];
             $this->view('users/v_member_profile_update', $data);
         }
     }
-    
+
+    private function handleFileUpload() {
+        $target_dir = APPROOT . '/public/uploads/';
+        $filename = uniqid() . '_' . basename($_FILES['profile_pic']['name']);
+        $target_file = $target_dir . $filename;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        $max_size = 2 * 1024 * 1024; // 2MB
+
+        // Create directory if needed
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        // Check if image file
+        $check = getimagesize($_FILES['profile_pic']['tmp_name']);
+        if ($check === false) {
+            return ['success' => false, 'error' => 'File is not an image'];
+        }
+
+        // Check file size
+        if ($_FILES['profile_pic']['size'] > $max_size) {
+            return ['success' => false, 'error' => 'File too large (max 2MB)'];
+        }
+
+        // Allow certain file formats
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($imageFileType, $allowed_types)) {
+            return ['success' => false, 'error' => 'Only JPG, JPEG, PNG & GIF allowed'];
+        }
+
+        // Upload file
+        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $target_file)) {
+            return ['success' => true, 'filename' => $filename];
+        } else {
+            return ['success' => false, 'error' => 'Error uploading file'];
+        }
+    }
 }
 ?>
+

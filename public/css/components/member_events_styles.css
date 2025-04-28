@@ -1,0 +1,374 @@
+:root {
+  --primary: #7c3aed;
+  --primary-dark: #5f2eea;
+  --accent: #ef4444;
+  --success: #10b981;
+  --bg: #ffffff;
+  --text: #2d2d32;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(125,58,237,0.09);
+}
+
+/* Base Styles */
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f9fafb;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+.events-section {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Filter Form */
+.filter-form {
+  width: 100%;
+}
+
+/* Search and Filters */
+.events-controls {
+  margin-bottom: 2.5rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid #e5e7eb;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(124,58,237,0.08);
+  outline: none;
+}
+
+.search-container i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f3f4f6;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius);
+  flex: 1 1 180px;
+}
+
+.filter-select, .date-picker {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+}
+
+.filter-button, .reset-button {
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.filter-button {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.filter-button:hover {
+  background: var(--primary-dark);
+}
+
+.reset-button {
+  background: #f3f4f6;
+  color: var(--accent);
+  border: none;
+}
+
+.reset-button:hover {
+  background: #e5e7eb;
+}
+
+/* Event Cards */
+.events-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.event-card {
+  display: flex;
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-image {
+  flex: 0 0 300px;
+  height: 240px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.event-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255,255,255,0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.event-type-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.event-type-badge.indoor {
+  background: rgba(124,58,237,0.9);
+  color: white;
+}
+
+.event-type-badge.outdoor {
+  background: rgba(16,185,129,0.9);
+  color: white;
+}
+
+.card-content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.event-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.event-meta {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.details-btn {
+  background: var(--primary);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.3s ease;
+  font-weight: 600;
+}
+
+.details-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* Empty State */
+.events-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.events-empty i {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.events-empty h2 {
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.events-empty p {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* CTA Section */
+.events-cta {
+  text-align: center;
+  margin: 4rem 0;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: var(--radius);
+  color: white;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  color: var(--primary);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Pagination */
+.events-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .event-card {
+      flex-direction: column;
+  }
+  
+  .card-image {
+      height: 200px;
+      flex-basis: auto;
+  }
+  
+  .filter-container {
+      flex-direction: column;
+      align-items: stretch;
+  }
+  
+  .filter-group {
+      width: 100%;
+      flex-basis: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .events-section {
+      margin: 1rem auto;
+      padding: 0 0.5rem;
+  }
+  
+  .events-controls {
+      padding: 1rem;
+  }
+  
+  .card-content {
+      padding: 1rem;
+  }
+  
+  .event-title {
+      font-size: 1.25rem;
+  }
+  
+  .details-btn {
+      padding: 0.6rem 1rem;
+  }
+  
+  .events-cta {
+      padding: 2rem 1rem;
+  }
+}
+
+
+  
+  

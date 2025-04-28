@@ -13,24 +13,37 @@
     <h1 class="profile-title">Manage Profile</h1>
     <p class="profile-desc">Update your personal information and manage your account</p>
 
+    <?php if(function_exists('flash')) flash('profile_message'); ?>
+
+    
+    <?php if (isset($_SESSION['success'])) : ?>
+    <div class="success-msg">
+        <?php 
+        echo $_SESSION['success'];
+        unset($_SESSION['success']);
+        ?>
+    </div>
+    <?php endif; ?>
+
+
     <form class="profile-form" action="" method="POST" enctype="multipart/form-data">
         <!-- Profile Photo -->
         <div class="profile-card">
-            <div class="profile-photo-section">
-                <img class="profile-avatar"
-                     src="<?php echo !empty($data['profile_pic']) ? '/public/uploads/' . $data['profile_pic'] : '/images/default-avatar.png'; ?>"
-                     alt="Profile Photo">
-                <div>
-                    <label for="profile_pic" class="upload-btn">
-                        <i class="fa fa-upload"></i> Upload New Photo
-                        <input type="file" name="profile_pic" id="profile_pic" accept="image/*" style="display:none;">
-                    </label>
-                    <div class="profile-photo-hint">Maximum file size: 2MB</div>
-                    <?php if (!empty($data['profile_pic_err'])): ?>
-                        <div class="error-msg"><?php echo $data['profile_pic_err']; ?></div>
-                    <?php endif; ?>
-                </div>
+        <div class="profile-photo-section">
+        <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo !empty($data['profile_pic']) ? $data['profile_pic'] : 'default-avatar.png'; ?>" alt="Profile Photo" class="profile-avatar"style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid #8b5cf6;">
+
+            <div>
+                <label class="upload-btn">
+                    <input type="file" name="profile_pic" id="profile_pic" style="display: none;">
+                    Choose File
+                </label>
+                <span id="file-name" class="profile-photo-hint">
+                    <?php echo !empty($_FILES['profile_pic']['name']) ? $_FILES['profile_pic']['name'] : 'No file chosen'; ?>
+                </span>
+                <p class="profile-photo-hint">Maximum file size: 2MB</p>
+                <span class="error-msg"><?php echo isset($data['profile_pic_err']) ? $data['profile_pic_err'] : ''; ?></span>
             </div>
+        </div>
         </div>
 
         <!-- Personal Details -->
@@ -105,5 +118,13 @@
     </form>
 </div>
 </body>
+
+<script>
+document.getElementById('profile_pic').addEventListener('change', function(e) {
+    const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+    document.getElementById('file-name').textContent = fileName;
+});
+</script>
+
 <?php require APPROOT . '/views/inc/footer.php'; ?> 
 

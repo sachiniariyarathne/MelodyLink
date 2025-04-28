@@ -1,52 +1,87 @@
 <?php require APPROOT . '/views/inc/header1.php';?>
 
-<div class="background-overlay"></div>
+<head>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
 
 <nav class="navbar">
-    <div class="nav-content">
-        <div class="flex items-center">
-            <h1 class="text-2xl font-bold">MelodyLink Store</h1>
-        </div>
-        <div class="flex items-center gap-4">
-            <?php if(!$data['isLoggedIn']): ?>
-                <a href="<?php echo URLROOT; ?>/users/login" class="login-btn">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
-                    </svg>
-                    Login
-                </a>
-            <?php else: ?>
-                <a href="<?php echo URLROOT; ?>/users/logout" class="login-btn">Logout</a>
-            <?php endif; ?>
-            <a href="<?php echo URLROOT; ?>/cart" class="cart-btn">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="9" cy="21" r="1"/>
-                    <circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                </svg>
-                <span class="cart-count" id="cartCount">
-                    <?php echo isset($data['cartItems']) ? array_sum(array_column($data['cartItems'], 'quantity')) : 0; ?>
-                </span>
-                <span class="cart-tooltip">View Cart</span>
-            </a>
-        </div>
-    </div>
-</nav>
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <span class="logo"><i class="fa fa-music"></i> MelodyLink</span>
+                <ul class="nav-links">
+                    <li><a href="<?php echo URLROOT; ?>/Member_Homepage/Homepage">Home</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/users/dashboard">Dashboard</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/events">Upcoming Events</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/Merchandise">Store</a></li>
+                    <li><a href="#">Music</a></li>
+                    <li><a href="#">Contact us</a></li>
+                </ul>
+            </div>
+            <div class="navbar-right">
+                <button class="notif-btn" aria-label="Notifications">
+                    <i class="fa fa-bell"></i>
+                </button>
+                    <!-- Cart Button Start -->
+                    <a href="<?php echo URLROOT; ?>/cart" class="cart-btn" style="position: relative;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span class="cart-count" id="cartCount">
+                            <?php echo isset($data['cartItems']) ? array_sum(array_column($data['cartItems'], 'quantity')) : 0; ?>
+                        </span>
+                        <span class="cart-tooltip"></span>
+                    </a>
+                    <!-- Cart Button End -->
+                <div class="profile-dropdown">
+                    <button class="profile-btn" onclick="toggleDropdown()" aria-label="Profile">
+                        <i class="fa fa-user-circle"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="<?php echo URLROOT; ?>/Member_Profile/profile">Profile</a>
+                        <a href="<?php echo URLROOT; ?>/Member_Profile/update">Settings</a>
+                        <a href="<?php echo URLROOT; ?>/users/login">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function toggleDropdown() {
+                    document.getElementById("dropdownMenu").classList.toggle("show");
+                }
 
-<!-- Display success/error messages -->
-<?php if(isset($_SESSION['cart_message'])): ?>
-    <div class="notification success">
-        <?php echo $_SESSION['cart_message']; ?>
-        <?php unset($_SESSION['cart_message']); ?>
-    </div>
-<?php endif; ?>
+                // Close the dropdown if clicked outside
+                window.onclick = function(event) {
+                    if (!event.target.closest('.profile-dropdown')) {
+                        var dropdowns = document.getElementsByClassName("dropdown-menu");
+                        for (var i = 0; i < dropdowns.length; i++) {
+                            var openDropdown = dropdowns[i];
+                            if (openDropdown.classList.contains('show')) {
+                                openDropdown.classList.remove('show');
+                            }
+                        }
+                    }
+                }
+            </script>
 
-<?php if(isset($_SESSION['cart_error'])): ?>
-    <div class="notification error">
-        <?php echo $_SESSION['cart_error']; ?>
-        <?php unset($_SESSION['cart_error']); ?>
-    </div>
-<?php endif; ?>
+        </div>
+    </nav>
+
+    <!-- Display success/error messages -->
+    <?php if(isset($_SESSION['cart_message'])): ?>
+        <div class="notification success">
+            <?php echo $_SESSION['cart_message']; ?>
+            <?php unset($_SESSION['cart_message']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if(isset($_SESSION['cart_error'])): ?>
+        <div class="notification error">
+            <?php echo $_SESSION['cart_error']; ?>
+            <?php unset($_SESSION['cart_error']); ?>
+        </div>
+    <?php endif; ?>
 
 <main class="main-content">
     <div class="merch-grid">
@@ -89,7 +124,7 @@
     </div>
 </main>
 
-<footer class="footer">
+<!-- <footer class="footer">
     <div class="footer-content">
         <div>
             <h3>About MelodyLink</h3>
@@ -134,7 +169,7 @@
             </div>
         </div>
     </div>
-</footer>
+</footer> -->
 
 <style>
     .notification {
@@ -179,3 +214,4 @@
         });
     });
 </script>
+<?php require APPROOT . '/views/inc/footer.php'; ?> 

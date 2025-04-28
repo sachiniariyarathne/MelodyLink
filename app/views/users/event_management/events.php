@@ -1,5 +1,6 @@
 <?php require APPROOT . '/views/users/event_management/header.php'; ?>
 
+
 <div class="events-container">
     <div class="events-header">
         <h1>Events Management</h1>
@@ -52,8 +53,8 @@
                     </div>
                     <div class="event-stats">
                         <div class="stat">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span><?php echo $event->total_bookings; ?> Bookings</span>
+                            <i></i>
+                            <span>RS. <?php echo $event->total_bookings; ?> Bookings</span>
                         </div>
                         <div class="stat">
                             <i class="fas fa-rupee-sign"></i>

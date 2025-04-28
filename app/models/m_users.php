@@ -22,6 +22,9 @@ class m_users {
             case 'supplier':
                 $table = 'supplier';
                 break;
+            case 'merchandise_vendor':
+                $table = 'merchandise_vendor';
+                break;    
             default:
                 return false;
         }
@@ -98,6 +101,10 @@ class m_users {
                 $table = 'supplier';
                 $columns = '(username, email, Password, BusinessType)';
                 break;
+            case 'merchandise_vendor':
+                $table = 'merchandise_vendor';
+                $columns = '(Username, email, Password, ProductCategory)';
+                break;    
             default:
                 return false;
         }
@@ -121,6 +128,9 @@ class m_users {
             case 'supplier':
                 $this->db->bind(':extra', $data['business_type'] ?? '');
                 break;
+            case 'merchandise_vendor':
+                $this->db->bind(':extra', $data['product_category'] ?? '');
+                break;
             default:
                 $this->db->bind(':extra', $data['Phone_number'] ?? '');
         }
@@ -140,14 +150,15 @@ class m_users {
         $data = [];
     
         // Fetch member-specific details
-        $this->db->query("SELECT Username, email, Phone_number FROM member WHERE member_id = :userId");
+        $this->db->query("SELECT Username, email, Phone_number,profile_pic FROM member WHERE member_id = :userId");
         $this->db->bind(':userId', $userId);
         $memberDetails = $this->db->single();
     
         $data['member_info'] = [
             'username' => $memberDetails->Username,
             'email' => $memberDetails->email,
-            'phone' => $memberDetails->Phone_number
+            'phone' => $memberDetails->Phone_number, 
+            'profile_pic' => $memberDetails->profile_pic, 
         ];
     
         // Fetch recent activities or interactions
@@ -269,7 +280,8 @@ class m_users {
             'member' => 'member',
             'artist' => 'artist',
             'event_organiser' => 'organizer',
-            'supplier' => 'supplier'
+            'supplier' => 'supplier',
+            'merchandise_vendor' => 'merchandise_vendor'
         ];
         
         // Try each table
