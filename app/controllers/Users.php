@@ -34,8 +34,8 @@ class Users extends Controller {
 
             // Add optional fields if they exist
 
-            if (isset($_POST['specialty'])) {
-                $data['specialty'] = trim($_POST['specialty']);
+            if (isset($_POST['genre'])) {
+                $data['genre'] = trim($_POST['genre']);
             }
             if (isset($_POST['organization'])) {
                 $data['organization'] = trim($_POST['organization']);
@@ -45,6 +45,9 @@ class Users extends Controller {
             }
             if (isset($_POST['phone_number'])) {
                 $data['phone_number'] = trim($_POST['phone_number']);
+            }
+            if (isset($_POST['product_category'])) {
+                $data['product_category'] = trim($_POST['product_category']);
             }
 
             // Validate name
@@ -118,43 +121,69 @@ class Users extends Controller {
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    
+            
             $data = [
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
                 'email_err' => '',
                 'password_err' => ''
             ];
-    
+            
             if (empty($data['email'])) {
                 $data['email_err'] = 'Please enter email';
             }
-    
+            
             if (empty($data['password'])) {
                 $data['password_err'] = 'Please enter password';
             }
-    
+            
+            // Check if user exists
             $loggedInUser = $this->userModel->loginAcrossAllTables($data['email'], $data['password']);
-    
+            
             if ($loggedInUser) {
-                // Redirect based on user type
+                // Create session variables based on user type
                 switch($_SESSION['user_type']) {
-                    case 'member':
-                        redirect('/users/dashboard');
-                        break;
-                    case 'artist':
-                        redirect('/artist/dashboard');
-                        break;
                     case 'organizer':
-                        redirect('/organizer/dashboard');
+                        // Set organizer specific session data
+                        $_SESSION['user_id'] = $loggedInUser->organiser_id;
+                        $_SESSION['user_type'] = 'organizer';
+                        $_SESSION['username'] = $loggedInUser->username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('eventmanagement');
                         break;
+                        
+                    case 'member':
+                        $_SESSION['user_id'] = $loggedInUser->member_id;
+                        $_SESSION['user_type'] = 'member';
+                        $_SESSION['username'] = $loggedInUser->Username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('/Member_Homepage/Homepage');
+                        break;
+                        
+                    case 'artist':
+                        $_SESSION['user_id'] = $loggedInUser->Artist_id;
+                        $_SESSION['user_type'] = 'artist';
+                        $_SESSION['username'] = $loggedInUser->username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('Artist_Home/artist_home');
+                        break;
+                        
                     case 'supplier':
-                        redirect('/supplier/dashboard');
+                        // Changed from supplier_id to user_id to match the database column
+                        $_SESSION['user_id'] = $loggedInUser->user_id; 
+                        $_SESSION['user_type'] = 'supplier';
+                        $_SESSION['username'] = $loggedInUser->Username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('VendorMerchandise');
                         break;
-                    default:
-                        redirect('/pages/index');
-                }
-                exit;
+                    case 'merchandise_vendor':
+                        $_SESSION['user_id'] = $loggedInUser->user_id;
+                        $_SESSION['user_type'] = 'merchandise_vendor';
+                        $_SESSION['username'] = $loggedInUser->Username;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        redirect('merchandise_vendor/dashboard');
+                        break;
+            }
             } else {
                 $data['password_err'] = 'Invalid credentials';
                 $this->view('users/v_login', $data);
@@ -166,10 +195,15 @@ class Users extends Controller {
                 'email_err' => '',
                 'password_err' => ''
             ];
-    
+            
             $this->view('users/v_login', $data);
         }
     }
+    
+    
+
+
+            
 
     public function dashboard() {
         // Check if user is logged in and is a member
@@ -184,7 +218,10 @@ class Users extends Controller {
                         redirect('/organizer/dashboard');
                         break;
                     case 'supplier':
-                        redirect('/supplier/dashboard');
+                        redirect('/VendorMerchandise');
+                        break;
+                    case 'supplier':
+                        redirect('merchandise_vendor/dashboard');
                         break;
                 }
             } else {
@@ -197,9 +234,12 @@ class Users extends Controller {
         $userType = $_SESSION['user_type'];
     
         $data = $this->userModel->getDashboardData($userId, $userType);
+           // Fetch profile pic
+        $userData = $this->userModel->getUserData($userId);
+        $data['profile_pic'] = !empty($userData->profile_pic) ? $userData->profile_pic : 'default-avatar.png';
+
         $data['user_type'] = $userType;
         $data['username'] = $_SESSION['username'];
-    
         $this->view('users/v_member_dashboard', $data);
     }
 

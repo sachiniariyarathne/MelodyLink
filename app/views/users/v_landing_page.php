@@ -15,11 +15,11 @@
         <span>MelodyLink</span>
       </div>
       <ul class="nav-links">
-        <li><a href="#">Events</a></li>
+        <li><a href="<?php echo URLROOT; ?>/events">Events</a></li>
         <li><a href="#">Marketplace</a></li>
         <li><a href="#">Suppliers</a></li>
         <li><a href="#">Artists</a></li>
-        <li><a href="#" class="sign-in">Sign In</a></li>
+        <li><a href="<?php echo URLROOT; ?>/users/login" class="sign-in">Sign In</a></li>
       </ul>
     </nav>
 
@@ -106,55 +106,6 @@
           <a href="#" class="btn-primary">Sign Up Now</a>
         </div>
     
-        <div class="footer">
-          <div class="footer-content">
-            <div class="footer-brand">
-              <div class="logo">
-                <img src="<?php echo URLROOT; ?>public/img/logo.png" alt="MelodyLink Logo" />
-                <span>MelodyLink</span>
-              </div>
-              <br>
-              <p>Connecting the music community worldwide</p>
-            </div>
-    
-            <div class="footer-links">
-              <div class="links-column">
-                <h4>Quick Links</h4>
-                <ul>
-                  <li><a href="#">About Us</a></li>
-                  <li><a href="#">Events</a></li>
-                  <li><a href="#">Marketplace</a></li>
-                  <li><a href="#">Suppliers</a></li>
-                </ul>
-              </div>
-    
-              <div class="links-column">
-                <h4>Support</h4>
-                <ul>
-                  <li><a href="#">Help Center</a></li>
-                  <li><a href="#">Privacy Policy</a></li>
-                  <li><a href="#">Terms of Service</a></li>
-                  <li><a href="#">Contact Us</a></li>
-                </ul>
-              </div>
-    
-              <div class="links-column">
-                <h4>Follow Us</h4>
-                <div class="social-icons">
-                  <a href="#"> <img src="<?php echo URLROOT; ?>public/img/fb.png" alt="Facebook" width="30px" /></a>
-                  <a href="#"><img src="<?php echo URLROOT; ?>public/img/inst.png" alt="Instagram" width="30px" /></a>
-                  <a href="#"><img src="<?php echo URLROOT; ?>public/img/tw.png" alt="Twitter" width="30px" /></a>
-                  <a href="#"><img src="<?php echo URLROOT; ?>public/img/yt.png" alt="Youtube" width="30px" /></a>
-                </div>
-              </div>
-            </div>
-          </div>
-    
-          <div class="footer-bottom">
-            <p>© 2025 MelodyLink. All rights reserved.</p>
-          </div>
-        </div>
-      </section>
-      
 </body>
 </html>
+<?php require APPROOT . '/views/inc/footer.php'; ?>

@@ -19,10 +19,12 @@
             <div class="form-group">
                 <label for="userType">Register as</label>
                 <select id="userType" required>
-                    <option value="member">Member (Subscriber)</option>
+                    <option value="member">Member</option>
                     <option value="artist">Artist</option>
                     <option value="organizer">Event Organizer</option>
-                    <option value="supplier">Merchandise/Equipment Supplier</option>
+                    <option value="supplier">Event Equipment Supplier</option>
+                    <option value="merchandise_vendor">Merchandise Vendor</option>
+
                 </select>
             </div>
 

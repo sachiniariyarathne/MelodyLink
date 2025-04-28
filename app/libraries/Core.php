@@ -8,6 +8,11 @@ protected $param=[];
   public function __construct(){
 //    print_r($this->getURL());//
 
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
  $url=$this->getURL();
    if(file_exists('../app/controllers/'.ucwords($url[0]).'.php')){
    //If the controller exists then laod it//
