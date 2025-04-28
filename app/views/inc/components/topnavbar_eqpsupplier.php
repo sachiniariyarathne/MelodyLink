@@ -15,6 +15,7 @@
                     <li><a href="<?php echo URLROOT; ?>/EqpSupplierDashboard">Dashboard</a></li>
                     <li><a href="<?php echo URLROOT; ?>/equipment">Equipments</a></li>
                     <li><a href="<?php echo URLROOT; ?>/Messages">Messages</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/contact_us/contact">Contact Us</a></li>
                 </ul>
             </div>
             <div class="navbar-right">
