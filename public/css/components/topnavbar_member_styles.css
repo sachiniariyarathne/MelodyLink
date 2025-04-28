@@ -60,6 +60,14 @@
     transition: color 0.2s;
 }
 
+.nav-links a.sign-in {
+    background-color: #8f44fd;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    color: #fff;
+  }
+
 .nav-links li a:hover {
     color: #7c3aed;
 }

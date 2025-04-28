@@ -1,5 +1,4 @@
 <?php
-require_once APPROOT . '/helpers/flash_helper.php';
 
 class Member_Profile extends Controller {
     private $userModel;

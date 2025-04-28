@@ -10,12 +10,12 @@
             <div class="navbar-left">
                 <span class="logo"><i class="fa fa-music"></i> MelodyLink</span>
                 <ul class="nav-links">
-                    <li><a href="<?php echo URLROOT; ?>/Member_Homepage/Homepage">Home</a></li>
+                <li><a href="<?php echo URLROOT; ?>/Member_Homepage/Homepage">Home</a></li>
                     <li><a href="<?php echo URLROOT; ?>/users/dashboard">Dashboard</a></li>
                     <li><a href="<?php echo URLROOT; ?>/events">Upcoming Events</a></li>
                     <li><a href="<?php echo URLROOT; ?>/Merchandise">Store</a></li>
-                    <li><a href="#">Music</a></li>
-                    <li><a href="#">Contact us</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/Member_Music">Music</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/contact_us/contact">Contact Us</a></li>
                 </ul>
             </div>
             <div class="navbar-right">
