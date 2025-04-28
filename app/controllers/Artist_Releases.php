@@ -1,7 +1,5 @@
 <?php
 
-require_once APPROOT . '/helpers/flash_helper.php';
-
 class Artist_Releases extends Controller {
     private $releaseModel;
 

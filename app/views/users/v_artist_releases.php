@@ -10,7 +10,7 @@
         <!-- Include the sidebar -->
     <aside class="md_sidebar">
         <div class="md_profile-section">
-            <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $data['profile_pic']; ?>" alt="Profile" class="md_profile-avatar">
+            <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $data['profile_pic']; ?>" alt="Profile" class="md_profile-avatar">
             <h2><?php echo $data['username']; ?></h2>
             <p>Verified Artist</p>
         </div>
@@ -44,7 +44,7 @@
                     <?php foreach($data['albums'] as $album): ?>
                         <div class="md_release-card">
                             <div class="md_release-cover">
-                                <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $album->album_cover; ?>" alt="<?php echo $album->album_name; ?>">
+                                <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $album->album_cover; ?>" alt="<?php echo $album->album_name; ?>">
                                 <div class="md_release-actions">
                                     <a href="<?php echo URLROOT; ?>/Artist_Releases/edit/<?php echo $album->album_id; ?>" class="md_edit-btn">
                                         <i class="fa fa-edit"></i>
