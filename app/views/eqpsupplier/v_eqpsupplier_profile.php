@@ -32,10 +32,7 @@
                     <span class="stat-value">24</span>
                     <span class="stat-label">Active Orders</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-value">4.8</span>
-                    <span class="stat-label">Rating</span>
-                </div>
+                
             </div>
         </div>
     </div>
