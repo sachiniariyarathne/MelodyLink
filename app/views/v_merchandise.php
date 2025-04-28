@@ -100,7 +100,7 @@
                     <div class="merch-details">
                         <div class="merch-header">
                             <h2 class="merch-title"><?= htmlspecialchars($item->Name ?? ''); ?></h2>
-                            <span class="merch-price">$<?= number_format($item->Price ?? 0, 2); ?></span>
+                            <span class="merch-price">Rs<?= number_format($item->Price ?? 0, 2); ?></span>
                         </div>
                         <p class="merch-description"><?= htmlspecialchars($item->Description ?? ''); ?></p>
                         

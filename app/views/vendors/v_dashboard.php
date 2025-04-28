@@ -29,7 +29,7 @@
                                 <tr>
                                     <td><img src="<?php echo URLROOT; ?>/public/images/<?php echo $item->image; ?>" alt="<?php echo $item->Name; ?>" style="width: 50px; height: 50px;"></td>
                                     <td><?php echo $item->Name; ?></td>
-                                    <td>$<?php echo number_format($item->Price, 2); ?></td>
+                                    <td>Rs<?php echo number_format($item->Price, 2); ?></td>
                                     <td><?php echo substr($item->Description, 0, 50) . (strlen($item->Description) > 50 ? '...' : ''); ?></td>
                                     <td>
                                         <a href="<?php echo URLROOT; ?>/vendorMerchandise/edit/<?php echo $item->merch_id; ?>" class="btn btn-sm" style="background-color: #6610f2; color: white;">Edit</a>

@@ -26,14 +26,12 @@ class Users extends Controller {
                 'userType_err' => ''
             ];
 
-
             // Validate userType
             if (empty($data['userType'])) {
                 $data['userType_err'] = 'Please select a user type';
             }
 
             // Add optional fields if they exist
-
             if (isset($_POST['genre'])) {
                 $data['genre'] = trim($_POST['genre']);
             }
@@ -49,6 +47,10 @@ class Users extends Controller {
             if (isset($_POST['product_category'])) {
                 $data['product_category'] = trim($_POST['product_category']);
             }
+            // Add company_name field for h_eqp_suppliers
+            if (isset($_POST['company_name'])) {
+                $data['company_name'] = trim($_POST['company_name']);
+            }
 
             // Validate name
             if (empty($data['name'])) {
@@ -63,7 +65,6 @@ class Users extends Controller {
                 $userType = trim($_POST['userType'] ?? 'member'); // Default to member if not set
                 $existingUser = $this->userModel->findUserByEmail($data['email'], $userType);
                 if ($existingUser) {
-
                     $data['email_err'] = 'Email is already registered';
                 }
             }
@@ -83,14 +84,12 @@ class Users extends Controller {
             if (empty($data['name_err']) && empty($data['email_err']) 
                 && empty($data['password_err']) && empty($data['confirm_password_err'])
                 && empty($data['userType_err'])) {
-
                 
                 // Hash the password
                 $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
                 // Register user
                 if ($this->userModel->register($data, $data['userType'])) {
-
                     die('register_success,You are now registered and can log in');
                 } else {
                     die('register_error,Something went wrong');
@@ -112,7 +111,6 @@ class Users extends Controller {
                 'confirm_password_err' => '',
                 'userType_err' => ''
             ];
-
 
             $this->view('users/v_register', $data);
         }
@@ -165,7 +163,7 @@ class Users extends Controller {
                         $_SESSION['user_type'] = 'artist';
                         $_SESSION['username'] = $loggedInUser->username;
                         $_SESSION['email'] = $loggedInUser->email;
-                        redirect('Artist_Home');
+                        redirect('Artist_Home/artist_home');
                         break;
                         
                     case 'supplier':
@@ -183,7 +181,15 @@ class Users extends Controller {
                         $_SESSION['email'] = $loggedInUser->email;
                         redirect('merchandise_vendor/dashboard');
                         break;
-            }
+                    case 'h_eqp_suppliers':
+                        $_SESSION['user_id'] = $loggedInUser->id;
+                        $_SESSION['user_type'] = 'h_eqp_suppliers';
+                        $_SESSION['username'] = $loggedInUser->owner_name;
+                        $_SESSION['email'] = $loggedInUser->email;
+                        $_SESSION['company_name'] = $loggedInUser->company_name;
+                        redirect('EqpSupplierDashboard');
+                        break;
+                }
             } else {
                 $data['password_err'] = 'Invalid credentials';
                 $this->view('users/v_login', $data);
@@ -200,11 +206,6 @@ class Users extends Controller {
         }
     }
     
-    
-
-
-            
-
     public function dashboard() {
         // Check if user is logged in and is a member
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'member') {
@@ -220,8 +221,11 @@ class Users extends Controller {
                     case 'supplier':
                         redirect('/VendorMerchandise');
                         break;
-                    case 'supplier':
+                    case 'merchandise_vendor':
                         redirect('merchandise_vendor/dashboard');
+                        break;
+                    case 'h_eqp_suppliers':
+                        redirect('EqpSupplierDashboard');
                         break;
                 }
             } else {
@@ -234,7 +238,7 @@ class Users extends Controller {
         $userType = $_SESSION['user_type'];
     
         $data = $this->userModel->getDashboardData($userId, $userType);
-           // Fetch profile pic
+        // Fetch profile pic
         $userData = $this->userModel->getUserData($userId);
         $data['profile_pic'] = !empty($userData->profile_pic) ? $userData->profile_pic : 'default-avatar.png';
 
@@ -286,7 +290,6 @@ class Users extends Controller {
             } else {
                 $existingUser = $this->userModel->findUserByEmail($data['email'], $userType);
                 if ($existingUser && $data['email'] != $userData->email) {
-
                     $data['email_err'] = 'Email is already registered.';
                 }
             }
@@ -340,9 +343,9 @@ class Users extends Controller {
             }
         } else {
             $data = [
-                'username' => $userData->Username ?? $userData->username,
+                'username' => $userData->Username ?? $userData->username ?? $userData->owner_name,
                 'email' => $userData->email,
-                'profile_pic' => $userData->profile_pic,
+                'profile_pic' => $userData->profile_pic ?? $userData->profile_image ?? 'default-avatar.png',
                 'username_err' => '',
                 'email_err' => '',
                 'password_err' => '',
@@ -352,5 +355,13 @@ class Users extends Controller {
 
             $this->view('users/v_settings', $data);
         }
+    }
+    
+    // Debug function to check session data
+    public function debug_session() {
+        echo "<pre>";
+        print_r($_SESSION);
+        echo "</pre>";
+        exit;
     }
 }

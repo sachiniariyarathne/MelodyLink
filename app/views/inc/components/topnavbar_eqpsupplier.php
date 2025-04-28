@@ -26,8 +26,8 @@
                         <i class="fa fa-user-circle"></i>
                     </button>
                     <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="<?php echo URLROOT; ?>/Member_Profile/profile">Profile</a>
-                        <a href="<?php echo URLROOT; ?>/Member_Profile/update">Settings</a>
+                        <a href="<?php echo URLROOT; ?>EqpSupplierProfile">Profile</a>
+                        <a href="<?php echo URLROOT; ?>EqpSupplierProfile/updateProfile">Settings</a>
                         <a href="<?php echo URLROOT; ?>/Home/home">Logout</a>
                     </div>
                 </div>
