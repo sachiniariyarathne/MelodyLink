@@ -1,40 +1,49 @@
 <?php require APPROOT . '/views/inc/event_header.php'; ?>
 
 <div class="payment-container">
-    <div class="payment-form">
-        <h2>Payment Details</h2>
-        <div class="booking-summary">
-            <h3>Booking Summary</h3>
-            <div class="summary-item">
-                <span>Event:</span>
-                <span><?php echo $data['event']->title; ?></span>
-            </div>
-            <div class="summary-item">
-                <span>Ticket Type:</span>
-                <span><?php echo $data['ticket']->name; ?></span>
-            </div>
-            <div class="summary-item">
-                <span>Quantity:</span>
-                <span><?php echo $data['quantity']; ?></span>
-            </div>
-            <div class="summary-item total">
-                <span>Total Amount:</span>
-                <span>Rs.<?php echo number_format($data['total_price'], 2); ?></span>
+    <div class="payment-content">
+        <div class="payment-header">
+            <h1>Complete Your Booking</h1>
+            <div class="booking-summary">
+                <h3>Booking Summary</h3>
+                <div class="summary-item">
+                    <span>Event:</span>
+                    <span><?php echo $data['event']->title; ?></span>
+                </div>
+                <div class="summary-item">
+                    <span>Ticket Type:</span>
+                    <span><?php echo $data['ticket']->name; ?></span>
+                </div>
+                <div class="summary-item">
+                    <span>Quantity:</span>
+                    <span><?php echo $data['quantity']; ?></span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total Amount:</span>
+                    <span>Rs.<?php echo number_format($data['total_price'], 2); ?></span>
+                </div>
             </div>
         </div>
 
-        <form id="payment-form">
-            <input type="hidden" name="ticket_type_id" value="<?php echo $data['ticket']->id; ?>">
+        <form id="payment-form" action="<?php echo URLROOT; ?>/events/processPayment/<?php echo $data['event']->event_id; ?>" method="POST">
+            <input type="hidden" name="ticket_type_id" value="<?php echo $data['ticket']->ticket_type_id; ?>">
             <input type="hidden" name="quantity" value="<?php echo $data['quantity']; ?>">
             <input type="hidden" name="total_price" value="<?php echo $data['total_price']; ?>">
-            <input type="hidden" name="payment_intent_id" id="payment-intent-id">
 
             <div class="form-group">
-                <label for="card-element">Card Details</label>
-                <div id="card-element" class="form-control">
-                    <!-- Stripe Card Element will be inserted here -->
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" class="form-control" placeholder="4242 4242 4242 4242" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="card-expiry">Expiry Date</label>
+                    <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" required>
                 </div>
-                <div id="card-errors" class="invalid-feedback" role="alert"></div>
+                <div class="form-group col-md-6">
+                    <label for="card-cvc">CVC</label>
+                    <input type="text" id="card-cvc" class="form-control" placeholder="123" required>
+                </div>
             </div>
 
             <div class="form-group">
@@ -60,16 +69,21 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.payment-form {
+.payment-content {
     background: rgba(255, 255, 255, 0.05);
     padding: 2rem;
     border-radius: 8px;
 }
 
-.payment-form h2 {
-    color: var(--text-primary);
-    margin-bottom: 2rem;
+.payment-header {
     text-align: center;
+    margin-bottom: 2rem;
+}
+
+.payment-header h1 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    margin-bottom: 1rem;
 }
 
 .booking-summary {
@@ -112,7 +126,7 @@
 .form-control {
     width: 100%;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-color);
     border-radius: 4px;
     color: var(--text-primary);
@@ -121,6 +135,15 @@
 .form-control:focus {
     outline: none;
     border-color: var(--accent-primary);
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
 }
 
 .btn-pay {
@@ -166,155 +189,6 @@
 @keyframes spin {
     to { transform: translateY(-50%) rotate(360deg); }
 }
-
-#card-element {
-    padding: 10px;
-    background: #ffffff;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    min-height: 40px;
-    display: block;
-}
-
-.StripeElement {
-    background-color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    box-shadow: 0 1px 3px 0 #e6ebf1;
-    transition: box-shadow 150ms ease;
-    width: 100%;
-    display: block;
-}
-
-.StripeElement--focus {
-    box-shadow: 0 1px 3px 0 #cfd7df;
-}
-
-.StripeElement--invalid {
-    border-color: #fa755a;
-}
-
-.StripeElement--webkit-autofill {
-    background-color: #fefde5 !important;
-}
-
-#card-errors {
-    color: #fa755a;
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-    display: block;
-}
 </style>
-
-<script src="https://js.stripe.com/v3/"></script>
-<script>
-// Initialize Stripe
-const stripe = Stripe('pk_test_51Qe7HeA97EM7XCbcUIwrluRAjLN0fcIo74r7nIyv2b8hu6cN6AS6gOrE2P5OL5ZERvw4mrSQRgnfsI5xTXDdmxnC00wTQJE4bu');
-const elements = stripe.elements();
-
-// Create and mount the card element
-const card = elements.create('card', {
-    style: {
-        base: {
-            color: '#32325d',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: 'antialiased',
-            fontSize: '16px',
-            '::placeholder': {
-                color: '#aab7c4'
-            }
-        },
-        invalid: {
-            color: '#fa755a',
-            iconColor: '#fa755a'
-        }
-    }
-});
-
-// Mount the card element
-card.mount('#card-element');
-
-// Handle real-time validation errors
-card.addEventListener('change', function(event) {
-    const displayError = document.getElementById('card-errors');
-    if (event.error) {
-        displayError.textContent = event.error.message;
-    } else {
-        displayError.textContent = '';
-    }
-});
-
-// Create payment intent when page loads
-let paymentIntentId = null;
-fetch('<?php echo URLROOT; ?>/events/createPaymentIntent', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-        amount: <?php echo $data['total_price']; ?>,
-        ticket_type_id: <?php echo $data['ticket']->ticket_type_id; ?>,
-        quantity: <?php echo $data['quantity']; ?>
-    })
-})
-.then(response => response.json())
-.then(data => {
-    if (data.success) {
-        paymentIntentId = data.paymentIntentId;
-        document.getElementById('payment-intent-id').value = paymentIntentId;
-    } else {
-        throw new Error(data.error);
-    }
-})
-.catch(error => {
-    console.error('Error:', error);
-    showError('Failed to initialize payment. Please try again.');
-});
-
-// Handle form submission
-const form = document.getElementById('payment-form');
-const submitButton = document.getElementById('submit-button');
-const buttonText = document.getElementById('button-text');
-const spinner = document.getElementById('spinner');
-
-form.addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    if (!paymentIntentId) {
-        showError('Payment initialization failed. Please refresh the page.');
-        return;
-    }
-    
-    submitButton.disabled = true;
-    buttonText.textContent = 'Processing...';
-    spinner.classList.remove('hidden');
-    
-    stripe.confirmCardPayment(paymentIntentId, {
-        payment_method: {
-            card: card,
-            billing_details: {
-                name: document.getElementById('card-holder-name').value
-            }
-        }
-    })
-    .then(function(result) {
-        if (result.error) {
-            showError(result.error.message);
-            submitButton.disabled = false;
-            buttonText.textContent = 'Pay Now';
-            spinner.classList.add('hidden');
-        } else {
-            // Payment successful
-            form.submit();
-        }
-    });
-});
-
-function showError(message) {
-    const errorElement = document.getElementById('card-errors');
-    errorElement.textContent = message;
-}
-</script>
 
 <?php require APPROOT . '/views/inc/event_footer.php'; ?> 

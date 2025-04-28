@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <a class="hp_see-more-btn" href="events.html">See More</a>
+            <a class="hp_see-more-btn" href="<?php echo URLROOT; ?>/events">See More</a>
         </div>
     </section>
 
@@ -102,7 +102,7 @@
                 <button>Add to Cart</button>
             </div>
         </div>
-        <a class="hp_explore-btn" href="merchandise.html">Explore</a>
+        <a class="hp_explore-btn" href="<?php echo URLROOT; ?>/Merchandise">Explore</a>
     </section>
 
     <section class="hp_section">
@@ -149,7 +149,7 @@
                 </div>
                 </div>
         </div>
-        <a class="hp_explore-btn" href="songs.html">Explore</a>
+        <a class="hp_explore-btn" href="<?php echo URLROOT; ?>/Merchandise">Explore</a>
     </section>
 
     <script>

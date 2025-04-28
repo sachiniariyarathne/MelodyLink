@@ -1,342 +1,233 @@
 <?php require APPROOT . '/views/users/event_management/header.php'; ?>
 
-<div class="event-view-container">
+<div class="event-details-container">
     <div class="event-header">
-        <div class="header-content">
-            <h1><?php echo $data['event']->title; ?></h1>
-            <div class="event-actions">
-                <a href="<?php echo URLROOT; ?>/eventmanagement/edit/<?php echo $data['event']->event_id; ?>" class="btn btn-edit">
-                    <i class="fas fa-edit"></i> Edit Event
-                </a>
-                <button class="btn btn-delete" onclick="confirmDelete(<?php echo $data['event']->event_id; ?>)">
-                    <i class="fas fa-trash"></i> Delete Event
-                </button>
-            </div>
-        </div>
-        <div class="event-status <?php echo $data['event']->status; ?>">
+        <h1><?php echo $data['event']->title; ?></h1>
+        <div class="event-status <?php echo strtolower($data['event']->status); ?>">
             <?php echo ucfirst($data['event']->status); ?>
         </div>
     </div>
 
-    <div class="event-content">
-        <div class="event-main">
-            <div class="event-image">
-                <img src="<?php echo URLROOT; ?>/<?php echo $data['event']->image; ?>" alt="<?php echo $data['event']->title; ?>">
-            </div>
-            
-            <div class="event-details">
-                <div class="detail-group">
-                    <h3>Event Details</h3>
-                    <div class="detail-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>Date: <?php echo date('F d, Y', strtotime($data['event']->event_date)); ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span>Time: <?php echo date('h:i A', strtotime($data['event']->event_time)); ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Venue: <?php echo $data['event']->venue; ?></span>
-                    </div>
-                </div>
-
-                <div class="description">
-                    <h3>Description</h3>
-                    <p><?php echo $data['event']->description; ?></p>
-                </div>
-            </div>
-
-            <div class="ticket-types">
-                <h3>Ticket Types</h3>
-                <div class="ticket-grid">
-                    <?php foreach($data['ticket_types'] as $ticket): ?>
-                        <div class="ticket-card">
-                            <div class="ticket-header">
-                                <h4><?php echo $ticket->name; ?></h4>
-                                <div class="price">Rs. <?php echo number_format($ticket->price, 2); ?></div>
-                            </div>
-                            <div class="ticket-info">
-                                <div class="quantity">
-                                    <span>Available:</span>
-                                    <strong><?php echo $ticket->quantity_available; ?></strong>
-                                </div>
-                                <div class="sold">
-                                    <span>Sold:</span>
-                                    <strong><?php echo $ticket->quantity_sold; ?></strong>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <?php if (!empty($data['bookings'])): ?>
-            <div class="bookings-section">
-                <h3>Recent Bookings</h3>
-                <div class="table-responsive">
-                    <table class="bookings-table">
-                        <thead>
-                            <tr>
-                                <th>Customer</th>
-                                <th>Ticket Type</th>
-                                <th>Quantity</th>
-                                <th>Total Amount</th>
-                                <th>Booking Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach($data['bookings'] as $booking): ?>
-                                <tr>
-                                    <td><?php echo $booking->customer_name; ?></td>
-                                    <td><?php echo $booking->ticket_type; ?></td>
-                                    <td><?php echo $booking->quantity; ?></td>
-                                    <td>Rs. <?php echo number_format($booking->total_amount, 2); ?></td>
-                                    <td><?php echo date('M d, Y', strtotime($booking->booking_date)); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <?php endif; ?>
+    <div class="event-info">
+        <div class="info-section">
+            <h2>Event Information</h2>
+            <p><strong>Date:</strong> <?php echo date('F j, Y', strtotime($data['event']->event_date)); ?></p>
+            <p><strong>Time:</strong> <?php echo date('g:i A', strtotime($data['event']->event_time)); ?></p>
+            <p><strong>Venue:</strong> <?php echo $data['event']->venue; ?></p>
+            <p><strong>Description:</strong> <?php echo $data['event']->description; ?></p>
         </div>
+
+        <div class="stats-section">
+            <h2>Event Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Total Bookings</span>
+                    <span class="stat-value"><?php echo $data['event']->total_bookings; ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Quantity Sold</span>
+                    <span class="stat-value"><?php echo $data['event']->quantity_sold; ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Income</span>
+                    <span class="stat-value">Rs.<?php echo number_format($data['event']->total_income); ?></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ticket-types">
+        <h2>Ticket Types</h2>
+        <div class="ticket-grid">
+            <?php foreach($data['ticket_types'] as $ticket): ?>
+                <div class="ticket-card">
+                    <h3><?php echo $ticket->ticket_type; ?></h3>
+                    <div class="ticket-details">
+                        <p><strong>Price:</strong> Rs.<?php echo number_format($ticket->price); ?></p>
+                        <p><strong>Available:</strong> <?php echo $ticket->available_quantity; ?></p>
+                        <p><strong>Sold:</strong> <?php echo $ticket->quantity_sold; ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="event-actions">
+        <a href="<?php echo URLROOT; ?>/eventmanagement/edit/<?php echo $data['event']->event_id; ?>" class="btn btn-primary">Edit Event</a>
+        <a href="<?php echo URLROOT; ?>/eventmanagement/bookings/<?php echo $data['event']->event_id; ?>" class="btn btn-secondary">View Bookings</a>
     </div>
 </div>
 
 <style>
-.event-view-container {
+.event-details-container {
+    max-width: 1200px;
+    margin: 2rem auto;
     padding: 2rem;
-    background: #1a1625;
-    min-height: 100vh;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .event-header {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
-    backdrop-filter: blur(10px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
 }
 
 .event-header h1 {
-    color: #fff;
-    margin: 0;
+    color: var(--text-primary);
     font-size: 2rem;
-}
-
-.event-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.btn-edit {
-    background: #2196f3;
-    color: #fff;
-    text-decoration: none;
-}
-
-.btn-edit:hover {
-    background: #1976d2;
-}
-
-.btn-delete {
-    background: #f44336;
-    color: #fff;
-}
-
-.btn-delete:hover {
-    background: #d32f2f;
+    margin: 0;
 }
 
 .event-status {
     padding: 0.5rem 1rem;
-    border-radius: 2rem;
+    border-radius: 20px;
     font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.875rem;
 }
 
 .event-status.active {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4caf50;
+    background: #4CAF50;
+    color: white;
 }
 
 .event-status.ended {
-    background: rgba(244, 67, 54, 0.2);
-    color: #f44336;
+    background: #f44336;
+    color: white;
 }
 
-.event-content {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    padding: 2rem;
-    backdrop-filter: blur(10px);
-}
-
-.event-image {
-    width: 100%;
-    height: 400px;
-    border-radius: 0.5rem;
-    overflow: hidden;
+.event-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
     margin-bottom: 2rem;
 }
 
-.event-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.info-section, .stats-section {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 8px;
 }
 
-.event-details {
-    color: #fff;
-}
-
-.detail-group {
-    margin-bottom: 2rem;
-}
-
-.detail-group h3 {
+.info-section h2, .stats-section h2 {
+    color: var(--text-primary);
     margin-bottom: 1rem;
-    color: #fff;
 }
 
-.detail-item {
-    display: flex;
-    align-items: center;
+.info-section p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    margin-bottom: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
 }
 
-.description {
-    margin-bottom: 2rem;
+.stat-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
 }
 
-.description p {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
+.stat-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    display: block;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 500;
 }
 
 .ticket-types {
     margin-bottom: 2rem;
 }
 
+.ticket-types h2 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
 .ticket-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
+    gap: 1rem;
 }
 
 .ticket-card {
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 0.5rem;
     padding: 1.5rem;
+    border-radius: 8px;
 }
 
-.ticket-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.ticket-card h3 {
+    color: var(--text-primary);
     margin-bottom: 1rem;
 }
 
-.ticket-header h4 {
-    color: #fff;
-    margin: 0;
+.ticket-details p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
 }
 
-.price {
-    color: #4caf50;
-    font-weight: 600;
-}
-
-.ticket-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.quantity, .sold {
+.event-actions {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    gap: 1rem;
+    justify-content: center;
 }
 
-.quantity span, .sold span {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
-}
-
-.quantity strong, .sold strong {
-    color: #fff;
-}
-
-.bookings-section {
-    margin-top: 2rem;
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-.bookings-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #fff;
-}
-
-.bookings-table th,
-.bookings-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.bookings-table th {
-    background: rgba(255, 255, 255, 0.05);
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--accent-secondary);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
-    .event-header {
-        flex-direction: column;
-        gap: 1rem;
+    .event-info {
+        grid-template-columns: 1fr;
     }
 
-    .header-content {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
+    .stats-grid {
+        grid-template-columns: 1fr;
     }
 
     .event-actions {
-        justify-content: center;
+        flex-direction: column;
     }
 
-    .event-image {
-        height: 300px;
+    .btn {
+        width: 100%;
+        text-align: center;
     }
 }
 </style>

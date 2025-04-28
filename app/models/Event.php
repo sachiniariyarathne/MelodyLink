@@ -79,7 +79,22 @@ class Event {
         $this->db->query('
             SELECT e.*, 
                    COUNT(DISTINCT eb.booking_id) as total_bookings,
-                   SUM(CASE WHEN eb.status = "confirmed" THEN eb.total_price ELSE 0 END) as total_income
+                   SUM(CASE WHEN eb.status = "confirmed" THEN eb.total_price ELSE 0 END) as total_income,
+                   CASE 
+                       WHEN e.event_date < CURDATE() THEN "ended"
+                       ELSE "active"
+                   END as status,
+                   COALESCE(SUM(
+                       CASE 
+                           WHEN eb.status = "confirmed" 
+                           THEN (
+                               SELECT SUM(CAST(JSON_EXTRACT(eb.tickets, CONCAT("$.", t.ticket_type_id)) AS UNSIGNED))
+                               FROM ticket_types t
+                               WHERE t.event_id = e.event_id
+                           )
+                           ELSE 0 
+                       END
+                   ), 0) as quantity_sold
             FROM events e
             LEFT JOIN event_bookings eb ON e.event_id = eb.event_id
             WHERE e.event_id = :id
@@ -187,7 +202,9 @@ class Event {
     public function getEventTicketTypes($eventId) {
         $this->db->query('
             SELECT t.*, 
-                   (t.quantity_available - COALESCE(SUM(CASE WHEN b.status = "confirmed" THEN JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id)) ELSE 0 END), 0)) as available_quantity
+                   (t.quantity_available - COALESCE(SUM(CASE WHEN b.status = "confirmed" THEN JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id)) ELSE 0 END), 0)) as available_quantity,
+                   COALESCE(SUM(CASE WHEN b.status = "confirmed" THEN JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id)) ELSE 0 END), 0) as quantity_sold,
+                   t.name as ticket_type
             FROM ticket_types t
             LEFT JOIN event_bookings b ON t.event_id = b.event_id
             WHERE t.event_id = :event_id
@@ -215,10 +232,12 @@ class Event {
         return $this->db->single();
     }
 
-    public function getUserById($id) {
-        $this->db->query('SELECT * FROM member WHERE member_id = :id');
-        $this->db->bind(':id', $id);
-        return $this->db->single();
+    public function getUserById($userId) {
+        $this->db->query('SELECT * FROM member WHERE member_id = :user_id');
+        $this->db->bind(':user_id', $userId);
+        
+        $row = $this->db->single();
+        return $row;
     }
 
     public function createBooking($data) {
@@ -242,6 +261,9 @@ class Event {
 
             $this->db->execute();
 
+            // Get the booking ID
+            $bookingId = $this->db->lastInsertId();
+
             // Update available quantity
             $this->db->query('UPDATE ticket_types SET quantity_available = quantity_available - :quantity 
                             WHERE ticket_type_id = :ticket_type_id');
@@ -252,11 +274,21 @@ class Event {
             $this->db->execute();
 
             $this->db->commit();
-            return true;
+            return $bookingId; // Return the booking ID on success
         } catch (Exception $e) {
             $this->db->rollBack();
             error_log('Error creating booking: ' . $e->getMessage());
             return false;
         }
+    }
+
+    public function getBookingById($id) {
+        $this->db->query('SELECT * FROM event_bookings WHERE booking_id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function lastInsertId() {
+        return $this->db->lastInsertId();
     }
 } 
