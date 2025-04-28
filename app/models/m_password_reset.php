@@ -27,6 +27,14 @@ class M_Password_Reset {
             $member = $this->db->single();
         }
 
+        // Check Merchandise vendor table
+
+        if (!$member) {
+            $this->db->query("SELECT 'merchandise_vendor' AS user_type, user_id, email FROM merchandise_vendor WHERE email = :email");
+            $this->db->bind(':email', $email);
+            $member = $this->db->single();
+        }
+
         // Check event organizer table
         if (!$member) {
             $this->db->query("SELECT 'event_organiser' AS user_type, user_id, email FROM event_organiser WHERE email = :email");
@@ -45,6 +53,7 @@ class M_Password_Reset {
             'artist' => ['table' => 'artist', 'id_column' => 'user_id'],
             'supplier' => ['table' => 'supplier', 'id_column' => 'user_id'],
             'event_organizer' => ['table' => 'event_organiser', 'id_column' => 'user_id']
+            'merchandise_vendor' => ['table' => 'merchandise_vendor', 'id_column' => 'user_id']
         ];
 
         // Validate user type
@@ -80,6 +89,7 @@ $this->db->bind(':expires', date('Y-m-d H:i:s', strtotime('+1 hour')));
             ['table' => 'artist', 'id_column' => 'user_id'],
             ['table' => 'supplier', 'id_column' => 'user_id'],
             ['table' => 'event_organiser', 'id_column' => 'user_id']
+            ['table' => 'merchandise_vendor', 'id_column' => 'user_id']
         ];
         
         foreach ($tables as $tableInfo) {
@@ -109,6 +119,7 @@ $this->db->bind(':expires', date('Y-m-d H:i:s', strtotime('+1 hour')));
             'artist' => 'artist',
             'supplier' => 'supplier',
             'event_organisers' => 'event_organiser'
+            'merchandise_vendor' => 'merchandise_vendor'
         ];
         return $typeMap[$table] ?? $table;
     }
@@ -121,6 +132,7 @@ $this->db->bind(':expires', date('Y-m-d H:i:s', strtotime('+1 hour')));
             'artist' => ['table' => 'artist', 'id_column' => 'user_id'],
             'supplier' => ['table' => 'suppliers', 'id_column' => 'user_id'],
             'event_organizer' => ['table' => 'event_organiser', 'id_column' => 'user_id']
+            'merchandise_vendor' => ['table' => 'merchandise_vendor', 'id_column' => 'user_id']
         ];
 
         // Validate user type

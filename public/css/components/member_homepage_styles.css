@@ -81,10 +81,10 @@ body {
 
 /* Events Section */
 .hp_events-section {
-    background: #120e23;
+    background: #ffffff;
     padding: 36px 0 0 0;
     width: 100%;
-    height: 70vh;
+    height: 80vh;
     margin: 0 auto;
     }
 .hp_events-container {
@@ -175,7 +175,7 @@ body {
     display: flex;
     gap: 22px;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 }
 .hp_merch-card {
@@ -234,6 +234,7 @@ body {
 .hp_explore-btn {
     display: inline-block;
     padding: 9px 22px;
+    margin-left: 8%;
     background: #7c3aed;
     color: #fff;
     border-radius: 24px;
@@ -261,7 +262,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 32px;
-    justify-content: flex-start;
+    justify-content: center;
   }
   
   .hp_song-card {
@@ -375,7 +376,7 @@ body {
     margin: 0;
     font-size: 1.35em;
     font-weight: 700;
-    color: #ffffff;
+    color: #222;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -432,7 +433,7 @@ body {
     }
     .hp_merch-list, .hp_songs-list {
         flex-wrap: wrap;
-        justify-content: flex-start;
+        justify-content: center;
     }
     .hp_navbar-left .hp_nav-links {
         gap: 12px;
