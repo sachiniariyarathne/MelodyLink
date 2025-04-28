@@ -9,7 +9,7 @@
 <div class="md_dashboard-container">
     <aside class="md_sidebar">
         <div class="md_profile-section">
-            <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $data['profile_pic']; ?>" alt="Profile" class="md_profile-avatar">
+            <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $data['profile_pic']; ?>" alt="Profile" class="md_profile-avatar">
             <h2><?php echo $data['username']; ?></h2>
             <p>Verified Artist</p>
         </div>
@@ -17,8 +17,6 @@
             <ul>
                 <li class="md_active"><a href="<?php echo URLROOT; ?>/artist_dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
                 <li><a href="<?php echo URLROOT; ?>/Artist_Releases/artist_releases"><i class="fa fa-music"></i> My Releases</a></li>
-                <li><a href="<?php echo URLROOT; ?>/artist/ratings"><i class="fa fa-star"></i> Ratings & Reviews</a></li>
-                <li><a href="<?php echo URLROOT; ?>/artist/communities"><i class="fa fa-users"></i>Communities</a></li>
                 <li><a href="<?php echo URLROOT; ?>/artist/requests"><i class="fa fa-bell"></i> Requests</a></li>
             </ul>
         </nav>

@@ -61,7 +61,7 @@
         </section>
 
         <!-- Community Highlights -->
-        <section class="artist-section">
+        <!-- <section class="artist-section">
             <div class="section-header">
                 <h3><i class="fa fa-users"></i> Community Highlights</h3>
                 <a href="<?php echo URLROOT; ?>/artist_communities" class="see-more-btn">Join Communities</a>
@@ -78,7 +78,7 @@
                 <div class="no-content">Not a member of any community yet.</div>
                 <?php endif; ?>
             </div>
-        </section>
+        </section> -->
     </div>
 </body>
 

@@ -18,8 +18,8 @@
             <ul>
                 <li><a href="<?php echo URLROOT; ?>/Artist_Dashboard/artist_dashboard"><i class="fa fa-home"></i> Dashboard</a></li>
                 <li class="md_active"><a href="<?php echo URLROOT; ?>/Artist_Releases/artist_releases"><i class="fa fa-music"></i> My Releases</a></li>
-                <li><a href="<?php echo URLROOT; ?>/artist/ratings"><i class="fa fa-star"></i> Ratings & Reviews</a></li>
-                <li><a href="<?php echo URLROOT; ?>/artist/communities"><i class="fa fa-users"></i>Communities</a></li>
+                <!-- <li><a href="<?php echo URLROOT; ?>/artist/ratings"><i class="fa fa-star"></i> Ratings & Reviews</a></li>
+                <li><a href="<?php echo URLROOT; ?>/artist/communities"><i class="fa fa-users"></i>Communities</a></li> -->
                 <li><a href="<?php echo URLROOT; ?>/artist/requests"><i class="fa fa-bell"></i> Requests</a></li>
             </ul>
         </nav>
