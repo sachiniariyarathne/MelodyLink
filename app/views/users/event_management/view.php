@@ -53,9 +53,10 @@
     </div>
 
     <div class="event-actions">
-        <a href="<?php echo URLROOT; ?>/eventmanagement/edit/<?php echo $data['event']->event_id; ?>" class="btn btn-primary">Edit Event</a>
-        <a href="<?php echo URLROOT; ?>/eventmanagement/bookings/<?php echo $data['event']->event_id; ?>" class="btn btn-secondary">View Bookings</a>
-    </div>
+    <a href="<?php echo URLROOT; ?>/eventmanagement/edit/<?php echo $data['event']->event_id; ?>" class="btn btn-primary">Edit Event</a>
+    <a href="<?php echo URLROOT; ?>/eventmanagement/bookings/<?php echo $data['event']->event_id; ?>" class="btn btn-secondary">View Bookings</a>
+    <!-- <button onclick="confirmDelete(<?php echo $data['event']->event_id; ?>)" class="btn btn-danger">Delete Event</button> -->
+</div>
 </div>
 
 <style>

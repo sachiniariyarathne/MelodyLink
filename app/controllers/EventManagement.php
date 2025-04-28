@@ -427,16 +427,16 @@ class EventManagement extends Controller {
         $event = $this->eventModel->getEventById($id);
         
         // Check for owner
-        if($event->organizer_id != $_SESSION['user_id']) {
+        if ($event->organiser_id != $_SESSION['user_id']) {
             redirect('eventmanagement/events');
         }
-
+    
         $bookings = $this->eventModel->getEventBookings($id);
         $data = [
             'event' => $event,
             'bookings' => $bookings
         ];
-
+    
         $this->view('users/event_management/bookings', $data);
     }
 
