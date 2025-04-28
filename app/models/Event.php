@@ -110,21 +110,16 @@ class Event {
         $this->db->query('
             SELECT e.*, 
                    COUNT(DISTINCT eb.booking_id) as total_bookings,
-                   SUM(CASE WHEN eb.status = "confirmed" THEN eb.total_price ELSE 0 END) as total_income,
+                   COALESCE(SUM(CASE WHEN eb.payment_status = "completed" THEN eb.total_price ELSE 0 END), 0) as total_income,
                    CASE 
                        WHEN e.event_date < CURDATE() THEN "ended"
                        ELSE "active"
                    END as status,
-                   COALESCE(SUM(
-                       CASE 
-                           WHEN eb.status = "confirmed" 
-                           THEN (
-                               SELECT SUM(CAST(JSON_EXTRACT(eb.tickets, CONCAT("$.", t.ticket_type_id)) AS UNSIGNED))
-                               FROM ticket_types t
-                               WHERE t.event_id = e.event_id
-                           )
-                           ELSE 0 
-                       END
+                   COALESCE((
+                       SELECT SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(eb2.tickets, CONCAT("$.", t.ticket_type_id))) AS UNSIGNED))
+                       FROM event_bookings eb2
+                       JOIN ticket_types t ON t.event_id = eb2.event_id
+                       WHERE eb2.event_id = e.event_id AND eb2.payment_status = "completed"
                    ), 0) as quantity_sold
             FROM events e
             LEFT JOIN event_bookings eb ON e.event_id = eb.event_id
@@ -132,7 +127,15 @@ class Event {
             GROUP BY e.event_id
         ');
         $this->db->bind(':id', $id);
-        return $this->db->single();
+        $result = $this->db->single();
+    
+        if (!$result) {
+            error_log("No event found for event_id: $id");
+            return false;
+        }
+    
+        error_log("Event ID: $id, Quantity Sold: {$result->quantity_sold}, Total Bookings: {$result->total_bookings}");
+        return $result;
     }
 
     public function createEvent($data) {
@@ -252,28 +255,75 @@ class Event {
     public function getEventTicketTypes($eventId) {
         $this->db->query('
             SELECT t.*, 
-                   (t.quantity_available - COALESCE(SUM(CASE WHEN b.status = "confirmed" THEN JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id)) ELSE 0 END), 0)) as available_quantity,
-                   COALESCE(SUM(CASE WHEN b.status = "confirmed" THEN JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id)) ELSE 0 END), 0) as quantity_sold,
-                   t.name as ticket_type
+                   t.name as ticket_type,
+                   t.quantity_available as original_quantity,
+                   COALESCE((
+                       SELECT SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(b.tickets, CONCAT("$.", t.ticket_type_id))) AS UNSIGNED))
+                       FROM event_bookings b
+                       WHERE b.event_id = t.event_id AND b.payment_status = "completed"
+                   ), 0) as quantity_sold
             FROM ticket_types t
-            LEFT JOIN event_bookings b ON t.event_id = b.event_id
             WHERE t.event_id = :event_id
-            GROUP BY t.ticket_type_id
         ');
         $this->db->bind(':event_id', $eventId);
-        return $this->db->resultSet();
+        $results = $this->db->resultSet();
+    
+        if (empty($results)) {
+            error_log("No ticket types found for event_id: $eventId");
+        }
+    
+        foreach ($results as $ticket) {
+            $ticket->available_quantity = $ticket->original_quantity - $ticket->quantity_sold;
+            error_log("Event ID: $eventId, Ticket Type ID: {$ticket->ticket_type_id}, Quantity Sold: {$ticket->quantity_sold}, Available: {$ticket->available_quantity}");
+        }
+    
+        return $results;
     }
 
     public function getEventBookings($eventId) {
         $this->db->query('
-            SELECT eb.*, m.Username as customer_name, m.email, m.Phone_number
+            SELECT eb.*, 
+                   m.Username as customer_name, 
+                   m.email, 
+                   m.Phone_number,
+                   t.name as ticket_type,
+                   JSON_EXTRACT(eb.tickets, CONCAT("$.", t.ticket_type_id)) as ticket_quantity
             FROM event_bookings eb
             JOIN member m ON eb.user_id = m.member_id
+            LEFT JOIN ticket_types t ON t.event_id = eb.event_id
             WHERE eb.event_id = :event_id
             ORDER BY eb.created_at DESC
         ');
         $this->db->bind(':event_id', $eventId);
-        return $this->db->resultSet();
+        $results = $this->db->resultSet();
+    
+        // Process results to handle multiple ticket types per booking
+        $bookings = [];
+        foreach ($results as $row) {
+            $bookingId = $row->booking_id;
+            if (!isset($bookings[$bookingId])) {
+                $bookings[$bookingId] = (object)[
+                    'booking_id' => $row->booking_id,
+                    'event_id' => $row->event_id,
+                    'user_id' => $row->user_id,
+                    'customer_name' => $row->customer_name,
+                    'email' => $row->email,
+                    'secret_code' => $row->secret_code,
+                    'total_price' => $row->total_price,
+                    'payment_status' => $row->payment_status,
+                    'created_at' => $row->created_at,
+                    'status' => $row->status,
+                    'tickets' => []
+                ];
+            }
+            if ($row->ticket_type && $row->ticket_quantity) {
+                $bookings[$bookingId]->tickets[] = (object)[
+                    'ticket_type' => $row->ticket_type,
+                    'quantity' => $row->ticket_quantity
+                ];
+            }
+        }
+        return array_values($bookings);
     }
 
     public function getTicketTypeById($id) {
