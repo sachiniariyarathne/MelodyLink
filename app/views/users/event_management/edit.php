@@ -7,33 +7,37 @@
             <div class="form-group">
                 <label for="title">Event Title</label>
                 <input type="text" name="title" class="form-control <?php echo (!empty($data['title_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event']->title; ?>">
-                <span class="invalid-feedback"><?php echo $data['title_err']; ?></span>
+                <span class="error"><?php echo $data['title_err'] ?? ''; ?></span>
+
+                
             </div>
 
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea name="description" class="form-control <?php echo (!empty($data['description_err'])) ? 'is-invalid' : ''; ?>" rows="4"><?php echo $data['event']->description; ?></textarea>
-                <span class="invalid-feedback"><?php echo $data['description_err']; ?></span>
+                <span class="error"><?php echo $data['description_err'] ?? ''; ?></span>
+
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="event_date">Event Date</label>
                     <input type="date" name="event_date" class="form-control <?php echo (!empty($data['event_date_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event']->event_date; ?>">
-                    <span class="invalid-feedback"><?php echo $data['event_date_err']; ?></span>
+                    <span class="error"><?php echo $data['event_date_err'] ?? ''; ?></span>
+                    
                 </div>
 
                 <div class="form-group col-md-6">
                     <label for="event_time">Event Time</label>
                     <input type="time" name="event_time" class="form-control <?php echo (!empty($data['event_time_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event']->event_time; ?>">
-                    <span class="invalid-feedback"><?php echo $data['event_time_err']; ?></span>
+                    <span class="error"><?php echo $data['event_time_err'] ?? ''; ?></span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="venue">Venue</label>
                 <input type="text" name="venue" class="form-control <?php echo (!empty($data['venue_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event']->venue; ?>">
-                <span class="invalid-feedback"><?php echo $data['venue_err']; ?></span>
+                <span class="error"><?php echo $data['venue_err'] ?? ''; ?></span>
             </div>
 
             <div class="form-group">
@@ -43,7 +47,7 @@
                 </div>
                 <input type="file" name="image" class="form-control-file">
                 <small class="form-text text-muted">Leave empty to keep current image</small>
-                <span class="invalid-feedback"><?php echo $data['image_err']; ?></span>
+                <span class="error"><?php echo $data['image_err'] ?? ''; ?></span>
             </div>
 
             <div class="form-group">

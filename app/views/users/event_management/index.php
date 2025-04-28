@@ -80,8 +80,8 @@
                             </div>
                         </td>
                         <td><?php echo $booking->event_title; ?></td>
-                        <td><?php echo date('M d, Y', strtotime($booking->booking_date)); ?></td>
-                        <td><?php echo $booking->ticket_count; ?></td>
+                        <td><?php echo $booking->booking_date ?? 'N/A'; ?></td>
+                        <td><?php echo $booking->ticket_count ?? 0; ?></td>
                         <td><span class="status-badge <?php echo strtolower($booking->status); ?>"><?php echo $booking->status; ?></span></td>
                         <td>
                             <div class="action-buttons">

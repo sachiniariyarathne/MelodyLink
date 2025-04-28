@@ -12,10 +12,13 @@
     <!-- Sidebar (reuse your dashboard sidebar code here) -->
     <aside class="md_sidebar">
         <div class="md_profile-section">
-        <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo !empty($data['profile_pic']) ? $data['profile_pic'] : 'default-avatar.png'; ?>"
-        alt="Profile Photo"
-        class="profile-avatar"
-        style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:16px;">
+        <?php $profilePic = !empty($member_info['profile_pic']) ? $member_info['profile_pic'] : 'default-avatar.png';?>
+                <img 
+                src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $profilePic; ?>" 
+                alt="Profile Photo" 
+                class="profile-avatar"
+                style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:16px;">
+
             <h2><?php echo $data['member_info']['username']; ?></h2>
             <p><?php echo $data['member_info']['email']; ?></p>
         </div>

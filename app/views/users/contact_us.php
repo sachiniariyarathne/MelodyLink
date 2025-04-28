@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header7.php'; ?> 
-<?php require APPROOT . '/views/inc/components/topnavbar_artist.php'; ?>
+<?php require APPROOT . '/views/inc/components/topnavbar_member.php'; ?>
 
 <head>
     <meta charset="UTF-8">
