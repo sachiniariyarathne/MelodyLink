@@ -3,13 +3,16 @@ class Artist_Home extends Controller {
     private $artistHomeModel;
 
     public function __construct() {
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'artist') {
-            redirect('users/login');
-        }
+        
         $this->artistHomeModel = $this->model('m_artist_home');
     }
 
     public function index() {
+
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'artist') {
+            redirect('users/login');
+        }
+
         $artist_id = $_SESSION['user_id'];
         $artist = $this->artistHomeModel->getArtistInfo($artist_id);
 
@@ -26,10 +29,10 @@ class Artist_Home extends Controller {
     }
 
     
-    public function artist_home() {
-        // This can be removed as index() handles the functionality
-        $this->index();
-    }
+    //  public function artist_home() {
+    // //     // This can be removed as index() handles the functionality
+    //     $this->index();
+    //  }
 
 }
 ?>
