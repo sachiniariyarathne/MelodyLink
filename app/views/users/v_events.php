@@ -68,7 +68,7 @@
                      data-title="<?php echo htmlspecialchars($event->title); ?>"
                      data-venue="<?php echo htmlspecialchars($event->venue); ?>"
                      data-date="<?php echo strtotime($event->event_date); ?>">
-                    <div class="card-image" style="background-image: url('<?php echo URLROOT; ?>/public/<?php echo isset($event->image) ? $event->image : 'default-event.jpg'; ?>')">
+                    <div class="card-image" style="background-image: url('<?php echo URLROOT; ?>/public/uploads/img/<?php echo isset($event->image) ? $event->image : 'default-event.jpg'; ?>')">
                         <span class="event-badge">
                             <i class="fas fa-calendar-alt"></i>
                             <?php echo isset($event->event_date) ? date('M d', strtotime($event->event_date)) : 'TBD'; ?>
