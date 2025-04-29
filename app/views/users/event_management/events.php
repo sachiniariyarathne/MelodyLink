@@ -42,7 +42,7 @@
                  data-bookings="<?php echo $event->total_bookings > 0 ? 'with' : 'without'; ?>"
                  data-date="<?php echo strtotime($event->event_date); ?>">
                 <div class="event-image">
-                    <img src="<?php echo URLROOT; ?>/public/<?php echo $event->image; ?>" alt="<?php echo $event->title; ?>">
+                    <img src="<?php echo URLROOT; ?>/public/uploads/img/<?php echo $event->image; ?>" alt="<?php echo $event->title; ?>">
                     <div class="event-status <?php echo $event->status; ?>">
                         <?php echo ucfirst($event->status); ?>
                     </div>

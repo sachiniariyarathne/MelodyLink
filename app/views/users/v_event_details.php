@@ -4,7 +4,7 @@
     <div class="event-details-container">
         <div class="event-details-content">
             <div class="event-image">
-                <img src="<?php echo URLROOT . '/public/' . $data['event']->image; ?>" alt="<?php echo $data['event']->title; ?>">
+                <img src="<?php echo URLROOT . '/public/uploads/img/' . $data['event']->image; ?>" alt="<?php echo $data['event']->title; ?>">
             </div>
             
             <div class="event-info">
