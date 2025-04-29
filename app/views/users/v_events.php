@@ -59,7 +59,7 @@
                     </button>
                 </div>
             </form>
-        </div>
+    </div>
 
         <!-- Events Grid -->
         <div class="events-grid" id="eventsGrid">
@@ -107,7 +107,7 @@
             <i class="fas fa-calendar-times"></i>
             <h2>No Events Found</h2>
             <p>Try adjusting your filters or check back later!</p>
-        </div>
+            </div>
 
         <!-- CTA Section -->
         <div class="events-cta">
@@ -115,8 +115,8 @@
             <p>Get started today and be part of the largest music event community</p>
             <?php if (!isset($_SESSION['user_id'])): ?>
                 <a href="<?php echo URLROOT; ?>/users/register" class="btn-signup">Sign Up</a>
-            <?php endif; ?>
-        </div>
+        <?php endif; ?>
+    </div>
     </section>
 
     <script>

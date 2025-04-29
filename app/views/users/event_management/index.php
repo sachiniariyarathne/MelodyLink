@@ -7,34 +7,34 @@
             <div class="stat-header">
                 <h3>Total Bookings</h3>
                 <i class="fas fa-ticket-alt"></i>
-            </div>
+    </div>
             <div class="stat-value"><?php echo number_format($data['total_bookings']); ?></div>
             <div class="stat-trend positive">
                 +12.5% from last month
-            </div>
-        </div>
+                </div>
+                        </div>
 
         <div class="stat-card">
             <div class="stat-header">
                 <h3>Revenue</h3>
                 <i class="fas fa-dollar-sign"></i>
-            </div>
+                        </div>
             <div class="stat-value">Rs.<?php echo number_format($data['total_revenue']); ?></div>
             <div class="stat-trend positive">
                 +8.3% from last month
-            </div>
-        </div>
+                        </div>
+                    </div>
 
         <div class="stat-card">
             <div class="stat-header">
                 <h3>Active Events</h3>
                 <i class="fas fa-calendar-alt"></i>
-            </div>
+                        </div>
             <div class="stat-value"><?php echo $data['active_events']; ?></div>
             <div class="stat-info">
                 <?php echo $data['ending_soon']; ?> ending soon
-            </div>
-        </div>
+                        </div>
+                    </div>
 
         <div class="stat-card">
             <div class="stat-header">
@@ -44,9 +44,9 @@
             <div class="stat-value"><?php echo number_format($data['total_customers']); ?></div>
             <div class="stat-trend positive">
                 +15.2% from last month
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
     <!-- Recent Bookings -->
     <div class="recent-bookings-section">
@@ -79,7 +79,7 @@
                             ?>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
+        <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

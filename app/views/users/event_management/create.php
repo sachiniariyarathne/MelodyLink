@@ -2,63 +2,63 @@
 
 <div class="create-event-container">
     <div class="form-container">
-        <h2>Create New Event</h2>
-        <form action="<?php echo URLROOT; ?>/eventmanagement/create" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="title">Event Title</label>
-                <input type="text" name="title" class="form-control <?php echo (!empty($data['title_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['title']; ?>">
-                <span class="invalid-feedback"><?php echo $data['title_err']; ?></span>
-            </div>
-
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea name="description" class="form-control <?php echo (!empty($data['description_err'])) ? 'is-invalid' : ''; ?>" rows="4"><?php echo $data['description']; ?></textarea>
-                <span class="invalid-feedback"><?php echo $data['description_err']; ?></span>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="event_date">Event Date</label>
-                    <input type="date" name="event_date" class="form-control <?php echo (!empty($data['event_date_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event_date']; ?>">
-                    <span class="invalid-feedback"><?php echo $data['event_date_err']; ?></span>
+            <h2>Create New Event</h2>
+            <form action="<?php echo URLROOT; ?>/eventmanagement/create" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Event Title</label>
+                    <input type="text" name="title" class="form-control <?php echo (!empty($data['title_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['title']; ?>">
+                    <span class="invalid-feedback"><?php echo $data['title_err']; ?></span>
                 </div>
 
-                <div class="form-group col-md-6">
-                    <label for="event_time">Event Time</label>
-                    <input type="time" name="event_time" class="form-control <?php echo (!empty($data['event_time_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event_time']; ?>">
-                    <span class="invalid-feedback"><?php echo $data['event_time_err']; ?></span>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" class="form-control <?php echo (!empty($data['description_err'])) ? 'is-invalid' : ''; ?>" rows="4"><?php echo $data['description']; ?></textarea>
+                    <span class="invalid-feedback"><?php echo $data['description_err']; ?></span>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="venue">Venue</label>
-                <input type="text" name="venue" class="form-control <?php echo (!empty($data['venue_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['venue']; ?>">
-                <span class="invalid-feedback"><?php echo $data['venue_err']; ?></span>
-            </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="event_date">Event Date</label>
+                        <input type="date" name="event_date" class="form-control <?php echo (!empty($data['event_date_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event_date']; ?>">
+                        <span class="invalid-feedback"><?php echo $data['event_date_err']; ?></span>
+                    </div>
 
-            <div class="form-group">
-                <label for="image">Event Image</label>
-                <input type="file" name="image" class="form-control-file <?php echo (!empty($data['image_err'])) ? 'is-invalid' : ''; ?>">
-                <span class="invalid-feedback"><?php echo $data['image_err']; ?></span>
-            </div>
+                    <div class="form-group col-md-6">
+                        <label for="event_time">Event Time</label>
+                        <input type="time" name="event_time" class="form-control <?php echo (!empty($data['event_time_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['event_time']; ?>">
+                        <span class="invalid-feedback"><?php echo $data['event_time_err']; ?></span>
+                    </div>
+                </div>
 
-            <div class="form-group">
+                <div class="form-group">
+                    <label for="venue">Venue</label>
+                    <input type="text" name="venue" class="form-control <?php echo (!empty($data['venue_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['venue']; ?>">
+                    <span class="invalid-feedback"><?php echo $data['venue_err']; ?></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Event Image</label>
+                    <input type="file" name="image" class="form-control-file <?php echo (!empty($data['image_err'])) ? 'is-invalid' : ''; ?>">
+                    <span class="invalid-feedback"><?php echo $data['image_err']; ?></span>
+                </div>
+
+                <div class="form-group">
                 <h3>Ticket Types</h3>
-                <div id="ticket-types-container">
+                    <div id="ticket-types-container">
                     <div class="ticket-type-row">
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label>Ticket Name</label>
                                 <input type="text" name="ticket_name[]" class="form-control" required>
-                            </div>
+                                </div>
                             <div class="form-group col-md-3">
                                 <label>Price (Rs.)</label>
                                 <input type="number" name="ticket_price[]" class="form-control" min="0" step="0.01" required>
-                            </div>
+                                </div>
                             <div class="form-group col-md-3">
                                 <label>Quantity Available</label>
                                 <input type="number" name="ticket_quantity[]" class="form-control" min="1" required>
-                            </div>
+                                </div>
                             <div class="form-group col-md-2">
                                 <label>&nbsp;</label>
                                 <button type="button" class="btn btn-danger btn-block remove-ticket" style="display: none;">Remove</button>
@@ -68,15 +68,15 @@
                 </div>
                 <button type="button" class="btn btn-secondary mt-2" id="add-ticket-type">Add Another Ticket Type</button>
                 <span class="invalid-feedback"><?php echo $data['ticket_types_err']; ?></span>
-            </div>
+                </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Create Event</button>
-                <a href="<?php echo URLROOT; ?>/eventmanagement" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <a href="<?php echo URLROOT; ?>/eventmanagement" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 <style>
 .create-event-container {
@@ -184,18 +184,18 @@ label {
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('ticket-types-container');
     const addButton = document.getElementById('add-ticket-type');
-    
+
     addButton.addEventListener('click', function() {
         const newRow = container.firstElementChild.cloneNode(true);
         newRow.querySelectorAll('input').forEach(input => input.value = '');
         newRow.querySelector('.remove-ticket').style.display = 'block';
         container.appendChild(newRow);
     });
-    
+
     container.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-ticket')) {
             if (container.children.length > 1) {
-                e.target.closest('.ticket-type-row').remove();
+            e.target.closest('.ticket-type-row').remove();
             }
         }
     });
