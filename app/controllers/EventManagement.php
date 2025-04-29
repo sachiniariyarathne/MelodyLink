@@ -4,20 +4,16 @@ class EventManagement extends Controller {
     private $userModel;
 
     public function __construct() {
-        // Start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Load helpers
         require_once '../app/helpers/session_helper.php';
 
-        // Check if user is logged in
         if (!isset($_SESSION['user_id'])) {
             redirect('users/login');
         }
         
-        // Check if user is an organizer
         if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'organizer') {
             redirect('events');
         }
@@ -46,7 +42,6 @@ class EventManagement extends Controller {
     }
 
     public function events() {
-        // Get all events for the current organizer
         $events = $this->eventModel->getOrganizerEvents($_SESSION['user_id']);
         
         $data = [
@@ -58,12 +53,12 @@ class EventManagement extends Controller {
 
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
                 'organiser_id' => $_SESSION['user_id'],
                 'title' => trim($_POST['title']),
+                'eventType' => trim($_POST['eventType']),
                 'description' => trim($_POST['description']),
                 'event_date' => trim($_POST['event_date']),
                 'event_time' => trim($_POST['event_time']),
@@ -71,6 +66,7 @@ class EventManagement extends Controller {
                 'image' => '',
                 'ticket_types' => [],
                 'title_err' => '',
+                'eventType_err' => '',
                 'description_err' => '',
                 'event_date_err' => '',
                 'event_time_err' => '',
@@ -79,7 +75,6 @@ class EventManagement extends Controller {
                 'ticket_types_err' => ''
             ];
 
-            // Validate ticket types
             if (isset($_POST['ticket_name']) && is_array($_POST['ticket_name'])) {
                 foreach ($_POST['ticket_name'] as $index => $name) {
                     if (empty($name) || empty($_POST['ticket_price'][$index]) || empty($_POST['ticket_quantity'][$index])) {
@@ -96,7 +91,6 @@ class EventManagement extends Controller {
                 $data['ticket_types_err'] = 'At least one ticket type is required';
             }
 
-            // Validate image
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $allowed = ['jpg', 'jpeg', 'png', 'gif'];
                 $allowed_mime = ['image/jpeg', 'image/png', 'image/gif'];
@@ -106,7 +100,6 @@ class EventManagement extends Controller {
                 $filetype = $_FILES['image']['type'];
                 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-                // Validate file size
                 if ($filesize > $max_size) {
                     $data['image_err'] = 'File size must be less than 5MB';
                     error_log('File size too large: ' . $filesize . ' bytes');
@@ -114,7 +107,6 @@ class EventManagement extends Controller {
                     return;
                 }
 
-                // Validate file type
                 if (!in_array($ext, $allowed) || !in_array($filetype, $allowed_mime)) {
                     $data['image_err'] = 'Invalid file type. Only JPG, JPEG, PNG & GIF files are allowed';
                     error_log('Invalid file type: ' . $filetype);
@@ -122,11 +114,9 @@ class EventManagement extends Controller {
                     return;
                 }
 
-                // Generate a more secure filename with limited entropy
                 $newFilename = bin2hex(random_bytes(6)) . '.' . $ext;
                 $uploadDir = dirname(APPROOT) . '/public/uploads/events/';
                 
-                // Create directory if it doesn't exist with proper permissions
                 if (!is_dir($uploadDir)) {
                     if (!mkdir($uploadDir, 0775, true)) {
                         $error = error_get_last();
@@ -135,14 +125,12 @@ class EventManagement extends Controller {
                         $this->view('users/event_management/create', $data);
                         return;
                     }
-                    // Set proper ownership
                     chown($uploadDir, 'daemon');
                     chgrp($uploadDir, 'daemon');
                 }
 
                 $uploadPath = $uploadDir . $newFilename;
 
-                // Verify MIME type using FileInfo
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mime_type = finfo_file($finfo, $_FILES['image']['tmp_name']);
                 finfo_close($finfo);
@@ -155,28 +143,24 @@ class EventManagement extends Controller {
                 }
 
                 if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-                    // Set proper permissions for the uploaded file
                     chmod($uploadPath, 0664);
                     
-                    // Optimize image if possible
                     if (extension_loaded('gd')) {
                         $image = null;
                         if ($ext === 'jpg' || $ext === 'jpeg') {
                             $image = imagecreatefromjpeg($uploadPath);
-                            imagejpeg($image, $uploadPath, 85); // Compress JPEG
+                            imagejpeg($image, $uploadPath, 85); 
                         } elseif ($ext === 'png') {
                             $image = imagecreatefrompng($uploadPath);
-                            imagepng($image, $uploadPath, 8); // Compress PNG
+                            imagepng($image, $uploadPath, 8); 
                         }
                         if ($image) {
                             imagedestroy($image);
                         }
                     }
 
-                    // Store relative path in database
                     $data['image'] = 'uploads/events/' . $newFilename;
                     
-                    // Log successful upload
                     error_log('Successfully uploaded file: ' . $newFilename . ' (size: ' . $filesize . ' bytes, type: ' . $mime_type . ')');
                 } else {
                     $error = error_get_last();
@@ -193,10 +177,14 @@ class EventManagement extends Controller {
                 error_log('File upload error: ' . $upload_error);
             }
 
-            // Validate other fields
             if (empty($data['title'])) {
                 $data['title_err'] = 'Please enter event title';
             }
+
+            if (empty($data['eventType'])) {
+                $data['eventType_err'] = 'Please enter event Type';
+            }
+
             if (empty($data['description'])) {
                 $data['description_err'] = 'Please enter event description';
             }
@@ -210,8 +198,7 @@ class EventManagement extends Controller {
                 $data['venue_err'] = 'Please enter venue';
             }
 
-            // Make sure no errors
-            if (empty($data['title_err']) && empty($data['description_err']) && 
+            if (empty($data['title_err']) && empty($data['eventType_err']) && empty($data['description_err']) && 
                 empty($data['event_date_err']) && empty($data['event_time_err']) && 
                 empty($data['venue_err']) && empty($data['image_err']) && 
                 empty($data['ticket_types_err'])) {
@@ -228,6 +215,7 @@ class EventManagement extends Controller {
         } else {
             $data = [
                 'title' => '',
+                'eventType' => '',
                 'description' => '',
                 'event_date' => '',
                 'event_time' => '',
@@ -235,6 +223,7 @@ class EventManagement extends Controller {
                 'image' => '',
                 'ticket_types' => [],
                 'title_err' => '',
+                'eventType_err' => '',
                 'description_err' => '',
                 'event_date_err' => '',
                 'event_time_err' => '',
@@ -265,10 +254,8 @@ class EventManagement extends Controller {
 
     public function edit($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            // Process ticket types
             $ticket_types = [];
             if (isset($_POST['ticket_name']) && is_array($_POST['ticket_name'])) {
                 foreach ($_POST['ticket_name'] as $index => $name) {
@@ -300,7 +287,6 @@ class EventManagement extends Controller {
                 'ticket_types_err' => ''
             ];
 
-            // Validate data
             if(empty($data['title'])) {
                 $data['title_err'] = 'Please enter event title';
             }
@@ -325,12 +311,10 @@ class EventManagement extends Controller {
                 $data['ticket_types_err'] = 'Please add at least one ticket type';
             }
 
-            // Make sure no errors
             if(empty($data['title_err']) && empty($data['description_err']) && 
                empty($data['event_date_err']) && empty($data['event_time_err']) && 
                empty($data['venue_err']) && empty($data['ticket_types_err'])) {
                 
-                // Handle image upload if new image is provided
                 if(isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                     $allowed = ['jpg', 'jpeg', 'png', 'gif'];
                     $max_size = 5 * 1024 * 1024; // 5MB
@@ -362,12 +346,10 @@ class EventManagement extends Controller {
                         return;
                     }
                 } else {
-                    // Keep existing image
                     $event = $this->eventModel->getEventById($id);
                     $data['image'] = $event->image;
                 }
                 
-                // Update event
                 if($this->eventModel->updateEvent($data)) {
                     flash('event_message', 'Event updated successfully');
                     redirect('eventmanagement/events');
@@ -376,14 +358,12 @@ class EventManagement extends Controller {
                     $this->view('users/event_management/edit', $data);
                 }
             } else {
-                // Load existing event data to show in form
                 $event = $this->eventModel->getEventById($id);
                 $data['event'] = $event;
                 $data['ticket_types'] = $this->eventModel->getEventTicketTypes($id);
                 $this->view('users/event_management/edit', $data);
             }
         } else {
-            // Get existing event
             $event = $this->eventModel->getEventById($id);
             
             if (!$event || $event->organiser_id != $_SESSION['user_id']) {
@@ -402,7 +382,6 @@ class EventManagement extends Controller {
 
     public function delete($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Get existing event
             $event = $this->eventModel->getEventById($id);
             
             if (!$event || $event->organiser_id != $_SESSION['user_id']) {
@@ -425,8 +404,6 @@ class EventManagement extends Controller {
 
     public function bookings($id) {
         $event = $this->eventModel->getEventById($id);
-        
-        // Check for owner
         if ($event->organiser_id != $_SESSION['user_id']) {
             redirect('eventmanagement/events');
         }
@@ -442,8 +419,6 @@ class EventManagement extends Controller {
 
     public function income($id) {
         $event = $this->eventModel->getEventById($id);
-        
-        // Check for owner
         if($event->organizer_id != $_SESSION['user_id']) {
             redirect('eventmanagement/events');
         }
@@ -478,7 +453,6 @@ class EventManagement extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
@@ -489,17 +463,14 @@ class EventManagement extends Controller {
                 'organization_err' => ''
             ];
 
-            // Validate username
             if (empty($data['username'])) {
                 $data['username_err'] = 'Please enter username';
             }
 
-            // Validate organization
             if (empty($data['organization'])) {
                 $data['organization_err'] = 'Please enter organization name';
             }
 
-            // Make sure no errors
             if (empty($data['username_err']) && empty($data['organization_err'])) {
                 if ($this->eventModel->updateOrganizerProfile($data)) {
                     flash('profile_message', 'Profile updated successfully');
@@ -508,7 +479,6 @@ class EventManagement extends Controller {
                     die('Something went wrong');
                 }
             } else {
-                // Load view with errors
                 $this->view('users/event_management/profile', $data);
             }
         } else {

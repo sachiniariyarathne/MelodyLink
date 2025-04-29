@@ -11,6 +11,19 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="eventType">Event Type</label>
+                    <select name="eventType" class="form-control <?php echo (!empty($data['eventType_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['eventType']; ?>">
+                        <option value=""></option>
+                        <option value="Classical">Classical</option>
+                        <option value="Jazz">Jazz</option>
+                        <option value="Western">Western</option>
+                        <option value="Rock">Rock</option>
+                    </select>
+
+                    <span class="invalid-feedback"><?php echo $data['eventType_err']; ?></span>
+                </div>
+
+                <div class="form-group">
                     <label for="description">Description</label>
                     <textarea name="description" class="form-control <?php echo (!empty($data['description_err'])) ? 'is-invalid' : ''; ?>" rows="4"><?php echo $data['description']; ?></textarea>
                     <span class="invalid-feedback"><?php echo $data['description_err']; ?></span>

@@ -11,6 +11,7 @@
     <div class="event-info">
         <div class="info-section">
             <h2>Event Information</h2>
+            <p><strong>Event Type:</strong> <?php echo $data['event']->eventType; ?></p>
             <p><strong>Date:</strong> <?php echo date('F j, Y', strtotime($data['event']->event_date)); ?></p>
             <p><strong>Time:</strong> <?php echo date('g:i A', strtotime($data['event']->event_time)); ?></p>
             <p><strong>Venue:</strong> <?php echo $data['event']->venue; ?></p>
@@ -236,7 +237,6 @@
 <script>
 function confirmDelete(id) {
     if (confirm('Are you sure you want to delete this event?')) {
-        // Create a form dynamically
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '<?php echo URLROOT; ?>/eventmanagement/delete/' + id;

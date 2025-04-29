@@ -6,7 +6,6 @@ class Event {
         $this->db = new Database();
     }
 
-    // Dashboard Methods
     public function getTotalBookings($organizerId) {
         $this->db->query('
             SELECT COUNT(*) as total 
@@ -142,12 +141,12 @@ class Event {
         $this->db->beginTransaction();
 
         try {
-            // Insert event
-            $this->db->query('INSERT INTO events (organiser_id, title, description, event_date, event_time, venue, image) 
-                            VALUES (:organiser_id, :title, :description, :event_date, :event_time, :venue, :image)');
+            $this->db->query('INSERT INTO events (organiser_id, title, eventType, description, event_date, event_time, venue, image) 
+                            VALUES (:organiser_id, :title, :eventType, :description, :event_date, :event_time, :venue, :image)');
             
             $this->db->bind(':organiser_id', $data['organiser_id']);
             $this->db->bind(':title', $data['title']);
+            $this->db->bind(':eventType', $data['eventType']);
             $this->db->bind(':description', $data['description']);
             $this->db->bind(':event_date', $data['event_date']);
             $this->db->bind(':event_time', $data['event_time']);
@@ -157,7 +156,6 @@ class Event {
             $this->db->execute();
             $eventId = $this->db->lastInsertId();
 
-            // Insert ticket types
             foreach ($data['ticket_types'] as $ticket) {
                 $this->db->query('INSERT INTO ticket_types (event_id, name, price, quantity_available) 
                                 VALUES (:event_id, :name, :price, :quantity)');
@@ -183,13 +181,10 @@ class Event {
         $this->db->beginTransaction();
 
         try {
-            // Validate required fields
             if (empty($data['event_id']) || empty($data['title']) || empty($data['description']) || 
                 empty($data['event_date']) || empty($data['event_time']) || empty($data['venue'])) {
                 throw new Exception('Missing required fields');
             }
-
-            // Update event
             $this->db->query('UPDATE events SET title = :title, description = :description, 
                             event_date = :event_date, event_time = :event_time, 
                             venue = :venue, image = :image 
@@ -207,7 +202,6 @@ class Event {
                 throw new Exception('Failed to update event');
             }
 
-            // Delete existing ticket types
             $this->db->query('DELETE FROM ticket_types WHERE event_id = :event_id');
             $this->db->bind(':event_id', $data['event_id']);
             
@@ -215,7 +209,6 @@ class Event {
                 throw new Exception('Failed to delete existing ticket types');
             }
 
-            // Insert new ticket types
             if (!empty($data['ticket_types'])) {
                 foreach ($data['ticket_types'] as $ticket) {
                     if (empty($ticket['name']) || !isset($ticket['price']) || !isset($ticket['quantity'])) {
@@ -246,7 +239,6 @@ class Event {
     }
 
     public function deleteEvent($id) {
-        // Delete event (ticket types will be deleted by foreign key cascade)
         $this->db->query('DELETE FROM events WHERE event_id = :id');
         $this->db->bind(':id', $id);
         return $this->db->execute();
@@ -297,7 +289,6 @@ class Event {
         $this->db->bind(':event_id', $eventId);
         $results = $this->db->resultSet();
     
-        // Process results to handle multiple ticket types per booking
         $bookings = [];
         foreach ($results as $row) {
             $bookingId = $row->booking_id;
@@ -344,7 +335,6 @@ class Event {
         $this->db->beginTransaction();
 
         try {
-            // Insert booking
             $this->db->query('INSERT INTO event_bookings (event_id, user_id, tickets, total_price, payment_status, payment_method, card_last_four, secret_code) 
                             VALUES (:event_id, :user_id, :tickets, :total_price, :payment_status, :payment_method, :card_last_four, :secret_code)');
             
@@ -361,10 +351,8 @@ class Event {
 
             $this->db->execute();
 
-            // Get the booking ID
             $bookingId = $this->db->lastInsertId();
 
-            // Update available quantity
             $this->db->query('UPDATE ticket_types SET quantity_available = quantity_available - :quantity 
                             WHERE ticket_type_id = :ticket_type_id');
             
@@ -374,7 +362,7 @@ class Event {
             $this->db->execute();
 
             $this->db->commit();
-            return $bookingId; // Return the booking ID on success
+            return $bookingId; 
         } catch (Exception $e) {
             $this->db->rollBack();
             error_log('Error creating booking: ' . $e->getMessage());
@@ -401,12 +389,10 @@ class Event {
     public function updateOrganizerProfile($data) {
         $this->db->query('UPDATE event_organiser SET username = :username, Organization = :organization, updated_at = CURRENT_TIMESTAMP WHERE organiser_id = :id');
         
-        // Bind values
         $this->db->bind(':id', $data['organizer_id']);
         $this->db->bind(':username', $data['username']);
         $this->db->bind(':organization', $data['organization']);
 
-        // Execute
         if ($this->db->execute()) {
             return true;
         } else {
