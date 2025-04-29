@@ -1,0 +1,115 @@
+To sort music albums for members by release date
+
+1. m_music.php
+    public function getPopularAlbums($limit = 6, $sort_by = 'release_date', $order = 'DESC') {
+        $allowed_sorts = ['release_date', 'album_name'];
+        if (!in_array($sort_by, $allowed_sorts)) $sort_by = 'release_date';
+        $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
+    
+        $this->db->query("SELECT a.*, art.Username as artist_name, art.profile_pic as artist_image 
+                          FROM albums a 
+                          JOIN artist art ON a.artist_id = art.Artist_id 
+                          ORDER BY a.$sort_by $order 
+                          LIMIT :limit");
+        $this->db->bind(':limit', $limit);
+        return is_array($result) ? $result : []; 
+    }
+2. controller
+$sort_by = $_GET['sort_by'] ?? 'release_date';
+$order = $_GET['order'] ?? 'DESC';
+$albums = $this->musicModel->getPopularAlbums(6, $sort_by, $order);
+
+
+    public function index() {
+        $sort_by = $_GET['sort_by'] ?? 'release_date';
+        $order = $_GET['order'] ?? 'DESC';
+        $albums = $this->musicModel->getPopularAlbums(6, $sort_by, $order);
+
+        $popularArtists = $this->musicModel->getPopularArtists();
+
+        $data = [
+            'albums' => $albums,
+            'artists' => $popularArtists
+        ];
+
+        $this->view('users/v_member_music', $data);
+    }
+
+
+3. viwer
+<form method="get" class="album-sort-form" style="margin-bottom:20px;">
+    <label for="sort_by">Sort by:</label>
+    <select name="sort_by" id="sort_by">
+        <option value="release_date" <?php if(($sort_by ?? '') === 'release_date') echo 'selected'; ?>>Release Date</option>
+        <option value="album_name" <?php if(($sort_by ?? '') === 'album_name') echo 'selected'; ?>>Album Name</option>
+    </select>
+    <select name="order" id="order">
+        <option value="DESC" <?php if(($order ?? '') === 'DESC') echo 'selected'; ?>>Newest First</option>
+        <option value="ASC" <?php if(($order ?? '') === 'ASC') echo 'selected'; ?>>Oldest First</option>
+    </select>
+    <button type="submit">Sort</button>
+</form>
+
+
+To implement the songs_count column for albums,
+
+1. ALTER TABLE albums ADD COLUMN songs_count INT NOT NULL DEFAULT 1 AFTER music_track;
+
+2. v_artist_add_release            
+            <div class="artist-add-field">
+                <label for="songs_count">Number of Songs<span>*</span></label>
+                <input type="number" id="songs_count" name="songs_count" min="1" required value="<?php echo $data['songs_count'] ?? ''; ?>">
+                <?php if (!empty($data['songs_count_err'])): ?>
+                    <span class="error"><?php echo $data['songs_count_err']; ?></span>
+                <?php endif; ?>
+            </div>
+3. Artist_Releases.php in add() method
+
+$data = [
+    // ...existing fields...
+    'songs_count' => trim($_POST['songs_count']),
+    // ...other error fields...
+    'songs_count_err' => '',
+    // ...
+];
+
+validation 
+if (empty($data['songs_count']) || !is_numeric($data['songs_count']) || $data['songs_count'] < 1) {
+    $data['songs_count_err'] = 'Enter a valid number of songs (at least 1)';
+}
+
+In the final check before saving:
+  empty($data['music_track_err']) && empty($data['songs_count_err'])
+
+4. m_artist_releases.php In addAlbum($data)
+
+$this->db->query("INSERT INTO albums (album_name, release_date, genre, featured_artists, artist_name, artist_id, album_cover, music_track, songs_count)
+VALUES (:album_name, :release_date, :genre, :featured_artists, :artist_name, :artist_id, :album_cover, :music_track, :songs_count)");
+
+$this->db->bind(':album_name', $data['album_name']);
+$this->db->bind(':release_date', $data['release_date']);
+$this->db->bind(':genre', $data['genre']);
+$this->db->bind(':featured_artists', $data['featured_artists']);
+$this->db->bind(':artist_name', $data['artist_name']);
+$this->db->bind(':artist_id', $data['artist_id']);
+$this->db->bind(':album_cover', $data['album_cover']);
+$this->db->bind(':music_track', $data['music_track']);
+$this->db->bind(':songs_count', $data['songs_count']);
+
+updateAlbum($data),
+
+$this->db->query("UPDATE albums
+SET album_name = :album_name, release_date = :release_date,
+genre = :genre, featured_artists = :featured_artists,
+album_cover = :album_cover, music_track = :music_track,
+songs_count = :songs_count
+WHERE album_id = :album_id AND artist_id = :artist_id");
+
+$this->db->bind(':songs_count', $data['songs_count']);
+
+5. v_artist_releases.php
+
+<p>Songs: <?php echo $album->songs_count; ?></p>
+
+
+

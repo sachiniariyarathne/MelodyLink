@@ -61,6 +61,7 @@
                                 <div class="md_release-details">
                                     <span class="md_release-date"><?php echo date('M d, Y', strtotime($album->release_date)); ?></span>
                                     <span class="md_release-genre"><?php echo $album->genre; ?></span>
+  
                                 </div>
                                 <?php if(!empty($album->featured_artists)): ?>
                                     <div class="md_featured-artists">

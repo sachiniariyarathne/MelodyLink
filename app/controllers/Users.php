@@ -161,7 +161,7 @@ class Users extends Controller {
                     case 'artist':
                         $_SESSION['user_id'] = $loggedInUser->Artist_id;
                         $_SESSION['user_type'] = 'artist';
-                        $_SESSION['username'] = $loggedInUser->username;
+                        $_SESSION['username'] = $loggedInUser->Username;
                         $_SESSION['email'] = $loggedInUser->email;
                         redirect('Artist_Home/artist_home');
                         break;

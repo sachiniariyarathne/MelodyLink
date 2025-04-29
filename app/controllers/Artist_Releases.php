@@ -51,7 +51,8 @@ class Artist_Releases extends Controller {
                 'release_date_err' => '',
                 'genre_err' => '',
                 'album_cover_err' => '',
-                'music_track_err' => ''
+                'music_track_err' => '',
+
             ];
             
             // Validate album name
@@ -156,7 +157,7 @@ class Artist_Releases extends Controller {
                 'release_date_err' => '',
                 'genre_err' => '',
                 'album_cover_err' => '',
-                'music_track_err' => ''
+                'music_track_err' => '',
             ];
             
             $this->view('users/v_artist_add_release', $data);
